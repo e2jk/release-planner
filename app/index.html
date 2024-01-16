@@ -274,12 +274,32 @@
             function updateTrainingEndDate() {
                 setEndDate(trainingStartDateInput, trainingDurationInput, trainingEndDateInput);
             }
-            // Set initial end dates
-            updateUpgradeEndDate();
-            updateAnalysisEndDate();
-            updateBuildEndDate();
-            updateTestingEndDate();
-            updateTrainingEndDate();
+            
+            function setDefaultDates() {
+                updateUpgradeEndDate();
+                
+                // Set start date of the Analysis phase is the same as start of the upgrade itself
+                analysisStartDateInput.value = upgradeStartDateInput.value;
+                updateAnalysisEndDate();
+
+                // Default start date of the build phase is the end of the analysis phase
+                buildStartDateInput.value = analysisEndDateInput.value;
+                updateBuildEndDate();
+
+                // Default start date of the testing phase is the end of the build phase
+                testingStartDateInput.value = buildEndDateInput.value;
+                updateTestingEndDate();
+
+                // Default start date of the training phase is the end of the build phase
+                trainingStartDateInput.value = testingEndDateInput.value;
+                updateTrainingEndDate();
+            }
+            setDefaultDates();
+
+            
+            upgradeStartDateInput.addEventListener('input', () => {
+                setDefaultDates();
+            });
             // Add event listeners to recalculate end dates on input changes
             upgradeStartDateInput.addEventListener('input', updateUpgradeEndDate);
             upgradeDurationInput.addEventListener('input', updateUpgradeEndDate);
