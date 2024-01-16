@@ -210,7 +210,27 @@
             upgradeDurationInput.addEventListener('input', () => {
                 upgradeDurationValue.textContent = `${upgradeDurationInput.value} weeks`;
             });
-        
+
+            // Set upgradeEndDate based on upgradeStartDate and upgradeDuration, and update when one of these change
+            const upgradeEndDateInput = document.getElementById('upgradeEndDate');
+
+            function updateUpgradeEndDate() {
+                const startDate = new Date(upgradeStartDateInput.value);
+                const durationWeeks = parseInt(upgradeDurationInput.value);
+                
+                if (!isNaN(startDate.getTime()) && !isNaN(durationWeeks)) {
+                    const endDate = new Date(startDate.getTime() + durationWeeks * 7 * 24 * 60 * 60 * 1000); // Convert weeks to milliseconds
+                    upgradeEndDateInput.valueAsDate = endDate;
+                } else {
+                    upgradeEndDateInput.value = ''; // Clear the value if inputs are not valid
+                }
+            }
+            // Set initial upgradeEndDate
+            updateUpgradeEndDate();
+            // Add event listeners to recalculate upgradeEndDate on input changes
+            upgradeStartDateInput.addEventListener('input', updateUpgradeEndDate);
+            upgradeDurationInput.addEventListener('input', updateUpgradeEndDate);
+
             // Update analysis & build duration value
             const analysisBuildDurationInput = document.getElementById('analysisBuildDuration');
             const analysisBuildDurationValue = document.getElementById('analysisBuildDurationValue');
