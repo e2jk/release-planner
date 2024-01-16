@@ -36,7 +36,7 @@
 
                     <div class="mb-3">
                         <label for="versionName" class="form-label">Name of the version you are upgrading to:</label>
-                        <input type="text" class="form-control" id="versionName" name="versionName">
+                                                <select class="form-select" id="versionName" name="versionName"></select>
                     </div>
 
                     <div class="mb-3">
@@ -155,6 +155,34 @@
         ></script>
 
         <script>
+            // Dynamically generate the list of versions for the 3 years around today
+            const versionNameSelect = document.getElementById('versionName');
+            const currentYear = new Date().getFullYear();
+            const nextYear = currentYear + 1;
+            const months = ['February', 'May', 'August', 'November'];
+            for (let year = currentYear - 1; year <= nextYear; year++) {
+                for (const month of months) {
+                    const monthID = `${2 + months.indexOf(month) * 3}`.padStart(2, '0');
+                    const optionValue = `${year}-${monthID}`;
+                    const optionText = `${month} ${year}`;
+                    const option = new Option(optionText, optionValue);
+                    versionNameSelect.add(option);
+                }
+            }
+
+            // Set the default selected upgrade version to the closest month in the future
+            const currentMonth = new Date().getMonth();
+            let year = currentYear;
+            if (currentMonth + 2 > 11) {
+                year = nextYear;
+            }
+            const nextReleaseMonth = `${Math.floor(((currentMonth + 2) % 12) / 3) * 3 + 2}`.padStart(2, '0');
+            const nextReleaseversion = `${year}-${nextReleaseMonth}`;
+            const defaultOption = versionNameSelect.querySelector(`[value="${nextReleaseversion}"]`);
+            if (defaultOption) {
+                defaultOption.selected = true;
+            }
+
             // Update upgrade duration value
             const upgradeDurationInput = document.getElementById('upgradeDuration');
             const upgradeDurationValue = document.getElementById('upgradeDurationValue');
