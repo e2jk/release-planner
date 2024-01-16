@@ -82,7 +82,7 @@
 
                     <div class="mb-3">
                         <label for="analysisDuration" class="form-label">Analysis Duration (weeks):</label>
-                        <input type="range" class="form-range" id="analysisDuration" name="analysisDuration" min="1" max="12" value="4">
+                        <input type="range" class="form-range" id="analysisDuration" name="analysisDuration" min="1">
                         <span id="analysisDurationValue">4 weeks</span>
                     </div>
 
@@ -103,7 +103,7 @@
 
                     <div class="mb-3">
                         <label for="buildDuration" class="form-label">Build Duration (weeks):</label>
-                        <input type="range" class="form-range" id="buildDuration" name="buildDuration" min="1" max="12" value="4">
+                        <input type="range" class="form-range" id="buildDuration" name="buildDuration" min="1">
                         <span id="buildDurationValue">4 weeks</span>
                     </div>
 
@@ -124,7 +124,7 @@
 
                     <div class="mb-3">
                         <label for="testingDuration" class="form-label">Testing Duration (weeks):</label>
-                        <input type="range" class="form-range" id="testingDuration" name="testingDuration" min="1" max="12" value="4">
+                        <input type="range" class="form-range" id="testingDuration" name="testingDuration" min="1">
                         <span id="testingDurationValue">4 weeks</span>
                     </div>
 
@@ -145,7 +145,7 @@
 
                     <div class="mb-3">
                         <label for="trainingDuration" class="form-label">Training Duration (weeks):</label>
-                        <input type="range" class="form-range" id="trainingDuration" name="trainingDuration" min="1" max="12" value="4">
+                        <input type="range" class="form-range" id="trainingDuration" name="trainingDuration" min="1">
                         <span id="trainingDurationValue">4 weeks</span>
                     </div>
 
@@ -283,7 +283,8 @@
             const trainingDurationValue = document.getElementById('trainingDurationValue');
             function determineDefaultPhaseLengths() {
                 //The length of phases depends on the number of weeks alloted for the entire upgrade
-                let durationToAllocate = parseInt(upgradeDurationInput.value);
+                const upgradeDuration = parseInt(upgradeDurationInput.value);
+                let durationToAllocate = upgradeDuration;
 
                 // Minimum phase durations
                 let analysisDuration = 2;
@@ -328,12 +329,16 @@
                 }
 
                 analysisDurationInput.value = analysisDuration;
+                analysisDurationInput.max = upgradeDuration;
                 analysisDurationValue.textContent = `${analysisDurationInput.value} weeks`;
                 buildDurationInput.value = buildDuration;
+                buildDurationInput.max = upgradeDuration;
                 buildDurationValue.textContent = `${buildDurationInput.value} weeks`;
                 testingDurationInput.value = testingDuration;
+                testingDurationInput.max = upgradeDuration;
                 testingDurationValue.textContent = `${testingDurationInput.value} weeks`;
                 trainingDurationInput.value = trainingDuration;
+                trainingDurationInput.max = upgradeDuration;
                 trainingDurationValue.textContent = `${trainingDurationInput.value} weeks`;
             }
             
