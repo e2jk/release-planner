@@ -30,36 +30,47 @@
             <form>
                 <!-- General -->
                 <h3 class="mt-3">General</h3>
+                <div class="row row-gap-2">
+                    <div class="col-lg-3 col-md-6">
+                        <div>
+                            <label for="versionName" class="form-label">Version you are upgrading to:</label>
+                            <select class="form-select" id="versionName" name="versionName"></select>
+                        </div>
+                    </div>
 
-                <div>
-                    <label for="versionName" class="form-label">Name of the version you are upgrading to:</label>
-                    <select class="form-select" id="versionName" name="versionName"></select>
-                </div>
+                    <div class="col-lg-3 col-md-6">
+                        <div>
+                            <label for="numVersions" class="form-label">Number of Versions:</label>
+                            <select class="form-select" id="numVersions" name="numVersions">
+                                <option value="1">1 version</option>
+                                <option value="2" selected>2 versions</option>
+                                <option value="3">3 versions</option>
+                                <option value="4">4 versions</option>
+                            </select>
+                        </div>
+                    </div>
 
-                <div>
-                    <label for="numVersions" class="form-label">Number of Versions:</label>
-                    <select class="form-select" id="numVersions" name="numVersions">
-                        <option value="1">1 version</option>
-                        <option value="2" selected>2 versions</option>
-                        <option value="3">3 versions</option>
-                        <option value="4">4 versions</option>
-                    </select>
-                </div>
+                    <div class="col-lg-3 col-md-6">
+                        <div>
+                            <label for="upgradeStartDate" class="form-label">Upgrade Start Date:</label>
+                            <input type="date" class="form-control" id="upgradeStartDate" name="upgradeStartDate">
+                        </div>
+                    </div>
 
-                <div>
-                    <label for="upgradeStartDate" class="form-label">Upgrade Start Date:</label>
-                    <input type="date" class="form-control" id="upgradeStartDate" name="upgradeStartDate">
-                </div>
+                    <div class="col-lg-3 col-md-6">
+                        <div>
+                            <label for="upgradeEndDate" class="form-label">Upgrade End Date:</label>
+                            <input type="date" class="form-control" id="upgradeEndDate" name="upgradeEndDate">
+                        </div>
+                    </div>
 
-                <div>
-                    <label for="upgradeDuration" class="form-label">Upgrade Duration (weeks):</label>
-                    <input type="range" class="form-range" id="upgradeDuration" name="upgradeDuration" min="7" max="28" value="14">
-                    <span id="upgradeDurationValue">14 weeks</span>
-                </div>
-
-                <div>
-                    <label for="upgradeEndDate" class="form-label">Upgrade End Date:</label>
-                    <input type="date" class="form-control" id="upgradeEndDate" name="upgradeEndDate">
+                    <div class="col-12">
+                        <div>
+                            <label for="upgradeDuration" class="form-label">Upgrade Duration (weeks):</label>
+                            <input type="range" class="form-range" id="upgradeDuration" name="upgradeDuration" min="7" max="28" value="14">
+                            <span id="upgradeDurationValue">14 weeks</span>
+                        </div>
+                    </div>
                 </div>
 
                 <!-- Phases -->
