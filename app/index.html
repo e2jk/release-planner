@@ -226,11 +226,13 @@
                 
                 upgradeDurationInput.value = calculatedDuration;
                 upgradeDurationValue.textContent = `${calculatedDuration} weeks`;
-                updateUpgradeEndDate();
+                // Changing the number of versions changes the entire planning, so recalculate all default dates
+                setDefaultDates();
             }
             numVersionsSelect.addEventListener('change', changeNumVersions);
             upgradeDurationInput.addEventListener('input', () => {
                 upgradeDurationValue.textContent = `${upgradeDurationInput.value} weeks`;
+                setDefaultDates();
             });
 
             // Set end dates based on the related start dates and duration, and update when one of these change
@@ -274,10 +276,72 @@
             function updateTrainingEndDate() {
                 setEndDate(trainingStartDateInput, trainingDurationInput, trainingEndDateInput);
             }
+
+            const analysisDurationValue = document.getElementById('analysisDurationValue');
+            const buildDurationValue = document.getElementById('buildDurationValue');
+            const testingDurationValue = document.getElementById('testingDurationValue');
+            const trainingDurationValue = document.getElementById('trainingDurationValue');
+            function determineDefaultPhaseLengths() {
+                //The length of phases depends on the number of weeks alloted for the entire upgrade
+                let durationToAllocate = parseInt(upgradeDurationInput.value);
+
+                // Minimum phase durations
+                let analysisDuration = 2;
+                let buildDuration = 2;
+                let testingDuration = 1;
+                let trainingDuration = 2;
+                durationToAllocate = durationToAllocate - (analysisDuration + buildDuration + testingDuration + trainingDuration);
+
+                // Allocate the time evenly to the 4 different phases
+                let equalDivide = Math.floor(durationToAllocate / 4);
+                if (equalDivide > 0) {
+                    analysisDuration += equalDivide;
+                    buildDuration += equalDivide;
+                    testingDuration += equalDivide;
+                    trainingDuration += equalDivide;
+                    durationToAllocate -= (4*equalDivide);
+                }
+
+                // Do not allocate more that 4 weeks to the training phase
+                if (trainingDuration > 4) {
+                    durationToAllocate += trainingDuration - 4;
+                    trainingDuration = 4;
+                }
+
+                // Allocate the remaining time on the phases except Training
+                equalDivide = Math.floor(durationToAllocate / 3);
+                if (equalDivide > 0) {
+                    analysisDuration += equalDivide;
+                    buildDuration += equalDivide;
+                    testingDuration += equalDivide;
+                    durationToAllocate -= (3*equalDivide);
+                }
+
+                // Allocate the potential remaining weeks to Testing and Building (in that order of preference)
+                if (durationToAllocate > 0) {
+                    testingDuration += 1;
+                    durationToAllocate--;
+                }
+                if (durationToAllocate > 0) {
+                    buildDuration += 1;
+                    durationToAllocate--;
+                }
+
+                analysisDurationInput.value = analysisDuration;
+                analysisDurationValue.textContent = `${analysisDurationInput.value} weeks`;
+                buildDurationInput.value = buildDuration;
+                buildDurationValue.textContent = `${buildDurationInput.value} weeks`;
+                testingDurationInput.value = testingDuration;
+                testingDurationValue.textContent = `${testingDurationInput.value} weeks`;
+                trainingDurationInput.value = trainingDuration;
+                trainingDurationValue.textContent = `${trainingDurationInput.value} weeks`;
+            }
             
             function setDefaultDates() {
+                determineDefaultPhaseLengths();
+
                 updateUpgradeEndDate();
-                
+
                 // Set start date of the Analysis phase is the same as start of the upgrade itself
                 analysisStartDateInput.value = upgradeStartDateInput.value;
                 updateAnalysisEndDate();
@@ -295,11 +359,11 @@
                 updateTrainingEndDate();
             }
             setDefaultDates();
-
             
             upgradeStartDateInput.addEventListener('input', () => {
                 setDefaultDates();
             });
+
             // Add event listeners to recalculate end dates on input changes
             upgradeStartDateInput.addEventListener('input', updateUpgradeEndDate);
             upgradeDurationInput.addEventListener('input', updateUpgradeEndDate);
@@ -313,25 +377,21 @@
             trainingDurationInput.addEventListener('input', updateTrainingEndDate);
 
             // Update analysis duration value
-            const analysisDurationValue = document.getElementById('analysisDurationValue');
             analysisDurationInput.addEventListener('input', () => {
                 analysisDurationValue.textContent = `${analysisDurationInput.value} weeks`;
             });
 
             // Update build duration value
-            const buildDurationValue = document.getElementById('buildDurationValue');
             buildDurationInput.addEventListener('input', () => {
                 buildDurationValue.textContent = `${buildDurationInput.value} weeks`;
             });
         
             // Update testing duration value
-            const testingDurationValue = document.getElementById('testingDurationValue');
             testingDurationInput.addEventListener('input', () => {
                 testingDurationValue.textContent = `${testingDurationInput.value} weeks`;
             });
         
             // Update training duration value
-            const trainingDurationValue = document.getElementById('trainingDurationValue');
             trainingDurationInput.addEventListener('input', () => {
                 trainingDurationValue.textContent = `${trainingDurationInput.value} weeks`;
             });
