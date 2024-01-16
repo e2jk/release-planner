@@ -24,6 +24,119 @@
         </header>
         <main>
             <h1>Release Planner</h1>
+            
+            <div class="container mt-5">
+                <h2>Upgrade Planning Form</h2>
+
+                <form>
+                    <!-- General -->
+                    <div class="mb-4">
+                        <h3>General</h3>
+                    </div>
+
+                    <div class="mb-3">
+                        <label for="versionName" class="form-label">Name of the version you are upgrading to:</label>
+                        <input type="text" class="form-control" id="versionName" name="versionName">
+                    </div>
+
+                    <div class="mb-3">
+                        <label for="numVersions" class="form-label">Number of Versions:</label>
+                        <select class="form-select" id="numVersions" name="numVersions">
+                            <option value="1">1 version</option>
+                            <option value="2" selected>2 versions</option>
+                            <option value="3">3 versions</option>
+                            <option value="4">4 versions</option>
+                        </select>
+                    </div>
+
+                    <div class="mb-3">
+                        <label for="upgradeStartDate" class="form-label">Upgrade Start Date:</label>
+                        <input type="date" class="form-control" id="upgradeStartDate" name="upgradeStartDate">
+                    </div>
+
+                    <div class="mb-3">
+                        <label for="upgradeDuration" class="form-label">Upgrade Duration (weeks):</label>
+                        <input type="range" class="form-range" id="upgradeDuration" name="upgradeDuration" min="7" max="28" value="14">
+                        <span id="upgradeDurationValue">14 weeks</span>
+                    </div>
+
+                    <div class="mb-3">
+                        <label for="upgradeEndDate" class="form-label">Upgrade End Date:</label>
+                        <input type="date" class="form-control" id="upgradeEndDate" name="upgradeEndDate" disabled>
+                    </div>
+
+                    <!-- Phases -->
+                    <div class="mb-4">
+                        <h3>Phases</h3>
+                    </div>
+
+                    <!-- Analysis & build Phase -->
+                    <div class="mb-4">
+                        <h4>Analysis & build Phase</h4>
+                    </div>
+
+                    <div class="mb-3">
+                        <label for="analysisBuildStartDate" class="form-label">Analysis & Build Start Date:</label>
+                        <input type="date" class="form-control" id="analysisBuildStartDate" name="analysisBuildStartDate">
+                    </div>
+
+                    <div class="mb-3">
+                        <label for="analysisBuildDuration" class="form-label">Analysis & Build Duration (weeks):</label>
+                        <input type="range" class="form-range" id="analysisBuildDuration" name="analysisBuildDuration" min="1" max="12" value="4">
+                        <span id="analysisBuildDurationValue">4 weeks</span>
+                    </div>
+
+                    <div class="mb-3">
+                        <label for="analysisBuildEndDate" class="form-label">Analysis & Build End Date:</label>
+                        <input type="date" class="form-control" id="analysisBuildEndDate" name="analysisBuildEndDate" disabled>
+                    </div>
+
+                    <!-- Testing Phase -->
+                    <div class="mb-4">
+                        <h4>Testing Phase</h4>
+                    </div>
+                    
+                    <div class="mb-3">
+                        <label for="testingStartDate" class="form-label">Testing Start Date:</label>
+                        <input type="date" class="form-control" id="testingStartDate" name="testingStartDate">
+                    </div>
+
+                    <div class="mb-3">
+                        <label for="testingDuration" class="form-label">Testing Duration (weeks):</label>
+                        <input type="range" class="form-range" id="testingDuration" name="testingDuration" min="1" max="12" value="4">
+                        <span id="testingDurationValue">4 weeks</span>
+                    </div>
+
+                    <div class="mb-3">
+                        <label for="testingEndDate" class="form-label">Testing End Date:</label>
+                        <input type="date" class="form-control" id="testingEndDate" name="testingEndDate" disabled>
+                    </div>
+
+                    <!-- Training Phase -->
+                    <div class="mb-4">
+                        <h4>Training Phase</h4>
+                    </div>
+                    
+                    <div class="mb-3">
+                        <label for="trainingStartDate" class="form-label">Training Start Date:</label>
+                        <input type="date" class="form-control" id="trainingStartDate" name="trainingStartDate">
+                    </div>
+
+                    <div class="mb-3">
+                        <label for="trainingDuration" class="form-label">Training Duration (weeks):</label>
+                        <input type="range" class="form-range" id="trainingDuration" name="trainingDuration" min="1" max="12" value="4">
+                        <span id="trainingDurationValue">4 weeks</span>
+                    </div>
+
+                    <div class="mb-3">
+                        <label for="trainingEndDate" class="form-label">Training End Date:</label>
+                        <input type="date" class="form-control" id="trainingEndDate" name="trainingEndDate" disabled>
+                    </div>
+
+                    <button type="submit" class="btn btn-primary">Submit</button>
+                </form>
+            </div>
+
         </main>
         <footer>
             <!-- place footer here -->
@@ -40,5 +153,35 @@
             integrity="sha384-BBtl+eGJRgqQAUMxJ7pMwbEyER4l1g+O15P+16Ep7Q9Q+zqX6gSbd85u4mG4QzX+"
             crossorigin="anonymous"
         ></script>
+
+        <script>
+            // Update upgrade duration value
+            const upgradeDurationInput = document.getElementById('upgradeDuration');
+            const upgradeDurationValue = document.getElementById('upgradeDurationValue');
+            upgradeDurationInput.addEventListener('input', () => {
+                upgradeDurationValue.textContent = `${upgradeDurationInput.value} weeks`;
+            });
+        
+            // Update analysis & build duration value
+            const analysisBuildDurationInput = document.getElementById('analysisBuildDuration');
+            const analysisBuildDurationValue = document.getElementById('analysisBuildDurationValue');
+            analysisBuildDurationInput.addEventListener('input', () => {
+                analysisBuildDurationValue.textContent = `${analysisBuildDurationInput.value} weeks`;
+            });
+        
+            // Update testing duration value
+            const testingDurationInput = document.getElementById('testingDuration');
+            const testingDurationValue = document.getElementById('testingDurationValue');
+            testingDurationInput.addEventListener('input', () => {
+                testingDurationValue.textContent = `${testingDurationInput.value} weeks`;
+            });
+        
+            // Update training duration value
+            const trainingDurationInput = document.getElementById('trainingDuration');
+            const trainingDurationValue = document.getElementById('trainingDurationValue');
+            trainingDurationInput.addEventListener('input', () => {
+                trainingDurationValue.textContent = `${trainingDurationInput.value} weeks`;
+            });
+        </script>
     </body>
 </html>
