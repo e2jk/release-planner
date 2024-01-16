@@ -233,49 +233,109 @@
                 upgradeDurationValue.textContent = `${upgradeDurationInput.value} weeks`;
             });
 
-            // Set upgradeEndDate based on upgradeStartDate and upgradeDuration, and update when one of these change
+            // Set end dates based on the related start dates and duration, and update when one of these change
             const upgradeEndDateInput = document.getElementById('upgradeEndDate');
+            const analysisStartDateInput = document.getElementById('analysisStartDate');
+            const analysisDurationInput = document.getElementById('analysisDuration');
+            const analysisEndDateInput = document.getElementById('analysisEndDate');
+            const buildStartDateInput = document.getElementById('buildStartDate');
+            const buildDurationInput = document.getElementById('buildDuration');
+            const buildEndDateInput = document.getElementById('buildEndDate');
+            const testingStartDateInput = document.getElementById('testingStartDate');
+            const testingDurationInput = document.getElementById('testingDuration');
+            const testingEndDateInput = document.getElementById('testingEndDate');
+            const trainingStartDateInput = document.getElementById('trainingStartDate');
+            const trainingDurationInput = document.getElementById('trainingDuration');
+            const trainingEndDateInput = document.getElementById('trainingEndDate');
 
-            function updateUpgradeEndDate() {
-                const startDate = new Date(upgradeStartDateInput.value);
-                const durationWeeks = parseInt(upgradeDurationInput.value);
+            function getEndDate(startDateInput, durationWeeksInput) {
+                const startDate = new Date(startDateInput.value);
+                const durationWeeks = parseInt(durationWeeksInput.value);
                 
                 if (!isNaN(startDate.getTime()) && !isNaN(durationWeeks)) {
                     const endDate = new Date(startDate.getTime() + durationWeeks * 7 * 24 * 60 * 60 * 1000); // Convert weeks to milliseconds
-                    upgradeEndDateInput.valueAsDate = endDate;
+                    return endDate;
                 } else {
-                    upgradeEndDateInput.value = ''; // Clear the value if inputs are not valid
+                    return ''; // Clear the value if inputs are not valid
                 }
             }
-            // Set initial upgradeEndDate
+            function updateUpgradeEndDate() {
+                const endDate = getEndDate(upgradeStartDateInput, upgradeDurationInput);
+                if (endDate) {
+                    upgradeEndDateInput.valueAsDate = endDate;
+                } else {
+                    upgradeEndDateInput.value = '';
+                }
+            }
+            function updateAnalysisEndDate() {
+                const endDate = getEndDate(analysisStartDateInput, analysisDurationInput);
+                if (endDate) {
+                    analysisEndDateInput.valueAsDate = endDate;
+                } else {
+                    analysisEndDateInput.value = '';
+                }
+            }
+            function updateBuildEndDate() {
+                const endDate = getEndDate(buildStartDateInput, buildDurationInput);
+                if (endDate) {
+                    buildEndDateInput.valueAsDate = endDate;
+                } else {
+                    buildEndDateInput.value = '';
+                }
+            }
+            function updateTestingEndDate() {
+                const endDate = getEndDate(testingStartDateInput, testingDurationInput);
+                if (endDate) {
+                    testingEndDateInput.valueAsDate = endDate;
+                } else {
+                    testingEndDateInput.value = '';
+                }
+            }
+            function updateTrainingEndDate() {
+                const endDate = getEndDate(trainingStartDateInput, trainingDurationInput);
+                if (endDate) {
+                    trainingEndDateInput.valueAsDate = endDate;
+                } else {
+                    trainingEndDateInput.value = '';
+                }
+            }
+            // Set initial end dates
             updateUpgradeEndDate();
-            // Add event listeners to recalculate upgradeEndDate on input changes
+            updateAnalysisEndDate();
+            updateBuildEndDate();
+            updateTestingEndDate();
+            updateTrainingEndDate();
+            // Add event listeners to recalculate end dates on input changes
             upgradeStartDateInput.addEventListener('input', updateUpgradeEndDate);
             upgradeDurationInput.addEventListener('input', updateUpgradeEndDate);
+            analysisStartDateInput.addEventListener('input', updateAnalysisEndDate);
+            analysisDurationInput.addEventListener('input', updateAnalysisEndDate);
+            buildStartDateInput.addEventListener('input', updateBuildEndDate);
+            buildDurationInput.addEventListener('input', updateBuildEndDate);
+            testingStartDateInput.addEventListener('input', updateTestingEndDate);
+            testingDurationInput.addEventListener('input', updateTestingEndDate);
+            trainingStartDateInput.addEventListener('input', updateTrainingEndDate);
+            trainingDurationInput.addEventListener('input', updateTrainingEndDate);
 
             // Update analysis duration value
-            const analysisDurationInput = document.getElementById('analysisDuration');
             const analysisDurationValue = document.getElementById('analysisDurationValue');
             analysisDurationInput.addEventListener('input', () => {
                 analysisDurationValue.textContent = `${analysisDurationInput.value} weeks`;
             });
 
             // Update build duration value
-            const buildDurationInput = document.getElementById('buildDuration');
             const buildDurationValue = document.getElementById('buildDurationValue');
             buildDurationInput.addEventListener('input', () => {
                 buildDurationValue.textContent = `${buildDurationInput.value} weeks`;
             });
         
             // Update testing duration value
-            const testingDurationInput = document.getElementById('testingDuration');
             const testingDurationValue = document.getElementById('testingDurationValue');
             testingDurationInput.addEventListener('input', () => {
                 testingDurationValue.textContent = `${testingDurationInput.value} weeks`;
             });
         
             // Update training duration value
-            const trainingDurationInput = document.getElementById('trainingDuration');
             const trainingDurationValue = document.getElementById('trainingDurationValue');
             trainingDurationInput.addEventListener('input', () => {
                 trainingDurationValue.textContent = `${trainingDurationInput.value} weeks`;
