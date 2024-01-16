@@ -248,56 +248,31 @@
             const trainingDurationInput = document.getElementById('trainingDuration');
             const trainingEndDateInput = document.getElementById('trainingEndDate');
 
-            function getEndDate(startDateInput, durationWeeksInput) {
+            function setEndDate(startDateInput, durationWeeksInput, endDateInput) {
                 const startDate = new Date(startDateInput.value);
                 const durationWeeks = parseInt(durationWeeksInput.value);
                 
                 if (!isNaN(startDate.getTime()) && !isNaN(durationWeeks)) {
                     const endDate = new Date(startDate.getTime() + durationWeeks * 7 * 24 * 60 * 60 * 1000); // Convert weeks to milliseconds
-                    return endDate;
+                    endDateInput.valueAsDate = endDate;
                 } else {
-                    return ''; // Clear the value if inputs are not valid
+                    endDateInput.value = ''; // Clear the value if inputs are not valid
                 }
             }
             function updateUpgradeEndDate() {
-                const endDate = getEndDate(upgradeStartDateInput, upgradeDurationInput);
-                if (endDate) {
-                    upgradeEndDateInput.valueAsDate = endDate;
-                } else {
-                    upgradeEndDateInput.value = '';
-                }
+                setEndDate(upgradeStartDateInput, upgradeDurationInput, upgradeEndDateInput);
             }
             function updateAnalysisEndDate() {
-                const endDate = getEndDate(analysisStartDateInput, analysisDurationInput);
-                if (endDate) {
-                    analysisEndDateInput.valueAsDate = endDate;
-                } else {
-                    analysisEndDateInput.value = '';
-                }
+                setEndDate(analysisStartDateInput, analysisDurationInput, analysisEndDateInput);
             }
             function updateBuildEndDate() {
-                const endDate = getEndDate(buildStartDateInput, buildDurationInput);
-                if (endDate) {
-                    buildEndDateInput.valueAsDate = endDate;
-                } else {
-                    buildEndDateInput.value = '';
-                }
+                setEndDate(buildStartDateInput, buildDurationInput, buildEndDateInput);
             }
             function updateTestingEndDate() {
-                const endDate = getEndDate(testingStartDateInput, testingDurationInput);
-                if (endDate) {
-                    testingEndDateInput.valueAsDate = endDate;
-                } else {
-                    testingEndDateInput.value = '';
-                }
+                setEndDate(testingStartDateInput, testingDurationInput, testingEndDateInput);
             }
             function updateTrainingEndDate() {
-                const endDate = getEndDate(trainingStartDateInput, trainingDurationInput);
-                if (endDate) {
-                    trainingEndDateInput.valueAsDate = endDate;
-                } else {
-                    trainingEndDateInput.value = '';
-                }
+                setEndDate(trainingStartDateInput, trainingDurationInput, trainingEndDateInput);
             }
             // Set initial end dates
             updateUpgradeEndDate();
