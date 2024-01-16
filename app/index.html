@@ -29,9 +29,7 @@
 
             <form>
                 <!-- General -->
-                <div>
-                    <h3>General</h3>
-                </div>
+                <h3 class="mt-3">General</h3>
 
                 <div>
                     <label for="versionName" class="form-label">Name of the version you are upgrading to:</label>
@@ -65,95 +63,111 @@
                 </div>
 
                 <!-- Phases -->
-                <div>
-                    <h3>Phases</h3>
+                <h3 class="mt-3">Phases</h3>
+
+                <div class="row row-gap-3">
+                    <div class="col-lg-3 col-md-6">
+                        <!-- Analysis Phase -->
+                        <div class="card">
+                            <div class="card-body">
+                                <h4 class="card-title">Analysis Phase</h4>
+
+                                <div>
+                                    <label for="analysisStartDate" class="form-label">Analysis Start Date:</label>
+                                    <input type="date" class="form-control" id="analysisStartDate" name="analysisStartDate">
+                                </div>
+
+                                <div>
+                                    <label for="analysisDuration" class="form-label">Analysis Duration (weeks):</label>
+                                    <input type="range" class="form-range" id="analysisDuration" name="analysisDuration" min="1">
+                                    <span id="analysisDurationValue">4 weeks</span>
+                                </div>
+
+                                <div>
+                                    <label for="analysisEndDate" class="form-label">Analysis End Date:</label>
+                                    <input type="date" class="form-control" id="analysisEndDate" name="analysisEndDate">
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="col-lg-3 col-md-6">
+                        <!-- Build Phase -->
+                        <div class="card">
+                            <div class="card-body">
+                                <h4 class="card-title">Build Phase</h4>
+
+                                <div>
+                                    <label for="buildStartDate" class="form-label">Build Start Date:</label>
+                                    <input type="date" class="form-control" id="buildStartDate" name="buildStartDate">
+                                </div>
+
+                                <div>
+                                    <label for="buildDuration" class="form-label">Build Duration (weeks):</label>
+                                    <input type="range" class="form-range" id="buildDuration" name="buildDuration" min="1">
+                                    <span id="buildDurationValue">4 weeks</span>
+                                </div>
+
+                                <div>
+                                    <label for="buildEndDate" class="form-label">Build End Date:</label>
+                                    <input type="date" class="form-control" id="buildEndDate" name="buildEndDate">
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="col-lg-3 col-md-6">
+                        <!-- Testing Phase -->
+                        <div class="card">
+                            <div class="card-body">
+                                <h4 class="card-title">Testing Phase</h4>
+                                
+                                <div>
+                                    <label for="testingStartDate" class="form-label">Testing Start Date:</label>
+                                    <input type="date" class="form-control" id="testingStartDate" name="testingStartDate">
+                                </div>
+
+                                <div>
+                                    <label for="testingDuration" class="form-label">Testing Duration (weeks):</label>
+                                    <input type="range" class="form-range" id="testingDuration" name="testingDuration" min="1">
+                                    <span id="testingDurationValue">4 weeks</span>
+                                </div>
+
+                                <div>
+                                    <label for="testingEndDate" class="form-label">Testing End Date:</label>
+                                    <input type="date" class="form-control" id="testingEndDate" name="testingEndDate">
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="col-lg-3 col-md-6">
+                        <!-- Training Phase -->
+                        <div class="card">
+                            <div class="card-body">
+                                <h4 class="card-title">Training Phase</h4>
+                                
+                                <div>
+                                    <label for="trainingStartDate" class="form-label">Training Start Date:</label>
+                                    <input type="date" class="form-control" id="trainingStartDate" name="trainingStartDate">
+                                </div>
+
+                                <div>
+                                    <label for="trainingDuration" class="form-label">Training Duration (weeks):</label>
+                                    <input type="range" class="form-range" id="trainingDuration" name="trainingDuration" min="1">
+                                    <span id="trainingDurationValue">4 weeks</span>
+                                </div>
+
+                                <div>
+                                    <label for="trainingEndDate" class="form-label">Training End Date:</label>
+                                    <input type="date" class="form-control" id="trainingEndDate" name="trainingEndDate">
+                                </div>
+                            </div>
+                        </div>
+                    </div>
                 </div>
 
-                <!-- Analysis Phase -->
-                <div>
-                    <h4>Analysis Phase</h4>
-                </div>
-
-                <div>
-                    <label for="analysisStartDate" class="form-label">Analysis Start Date:</label>
-                    <input type="date" class="form-control" id="analysisStartDate" name="analysisStartDate">
-                </div>
-
-                <div>
-                    <label for="analysisDuration" class="form-label">Analysis Duration (weeks):</label>
-                    <input type="range" class="form-range" id="analysisDuration" name="analysisDuration" min="1">
-                    <span id="analysisDurationValue">4 weeks</span>
-                </div>
-
-                <div>
-                    <label for="analysisEndDate" class="form-label">Analysis End Date:</label>
-                    <input type="date" class="form-control" id="analysisEndDate" name="analysisEndDate">
-                </div>
-
-                <!-- Build Phase -->
-                <div>
-                    <h4>Build Phase</h4>
-                </div>
-
-                <div>
-                    <label for="buildStartDate" class="form-label">Build Start Date:</label>
-                    <input type="date" class="form-control" id="buildStartDate" name="buildStartDate">
-                </div>
-
-                <div>
-                    <label for="buildDuration" class="form-label">Build Duration (weeks):</label>
-                    <input type="range" class="form-range" id="buildDuration" name="buildDuration" min="1">
-                    <span id="buildDurationValue">4 weeks</span>
-                </div>
-
-                <div>
-                    <label for="buildEndDate" class="form-label">Build End Date:</label>
-                    <input type="date" class="form-control" id="buildEndDate" name="buildEndDate">
-                </div>
-
-                <!-- Testing Phase -->
-                <div>
-                    <h4>Testing Phase</h4>
-                </div>
-                
-                <div>
-                    <label for="testingStartDate" class="form-label">Testing Start Date:</label>
-                    <input type="date" class="form-control" id="testingStartDate" name="testingStartDate">
-                </div>
-
-                <div>
-                    <label for="testingDuration" class="form-label">Testing Duration (weeks):</label>
-                    <input type="range" class="form-range" id="testingDuration" name="testingDuration" min="1">
-                    <span id="testingDurationValue">4 weeks</span>
-                </div>
-
-                <div>
-                    <label for="testingEndDate" class="form-label">Testing End Date:</label>
-                    <input type="date" class="form-control" id="testingEndDate" name="testingEndDate">
-                </div>
-
-                <!-- Training Phase -->
-                <div>
-                    <h4>Training Phase</h4>
-                </div>
-                
-                <div>
-                    <label for="trainingStartDate" class="form-label">Training Start Date:</label>
-                    <input type="date" class="form-control" id="trainingStartDate" name="trainingStartDate">
-                </div>
-
-                <div>
-                    <label for="trainingDuration" class="form-label">Training Duration (weeks):</label>
-                    <input type="range" class="form-range" id="trainingDuration" name="trainingDuration" min="1">
-                    <span id="trainingDurationValue">4 weeks</span>
-                </div>
-
-                <div>
-                    <label for="trainingEndDate" class="form-label">Training End Date:</label>
-                    <input type="date" class="form-control" id="trainingEndDate" name="trainingEndDate">
-                </div>
-
-                <button type="submit" class="btn btn-primary">Submit</button>
+                <button type="submit" class="btn btn-primary mt-3">Submit</button>
             </form>
 
         </main>
