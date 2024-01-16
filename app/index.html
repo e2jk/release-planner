@@ -158,6 +158,16 @@
             // Update upgrade duration value
             const upgradeDurationInput = document.getElementById('upgradeDuration');
             const upgradeDurationValue = document.getElementById('upgradeDurationValue');
+            const numVersionsSelect = document.getElementById('numVersions');
+            
+            function updateUpgradeDuration() {
+                const numVersions = parseInt(numVersionsSelect.value);
+                const calculatedDuration = 7 * numVersions;
+                
+                upgradeDurationInput.value = calculatedDuration;
+                upgradeDurationValue.textContent = `${calculatedDuration} weeks`;
+            }
+            numVersionsSelect.addEventListener('change', updateUpgradeDuration);
             upgradeDurationInput.addEventListener('input', () => {
                 upgradeDurationValue.textContent = `${upgradeDurationInput.value} weeks`;
             });
