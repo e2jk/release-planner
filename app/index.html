@@ -182,6 +182,17 @@
             if (defaultOption) {
                 defaultOption.selected = true;
             }
+            
+            // Set the default upgradeStartDate to be the Monday in 4 weeks
+            const upgradeStartDateInput = document.getElementById('upgradeStartDate');
+            const today = new Date();
+            // 3 weeks * 7 days * 24 hours * 60 minutes * 60 seconds * 1000 milliseconds
+            const mondayInFourWeeks = new Date(today.getTime() + 3 * 7 * 24 * 60 * 60 * 1000);
+            // Find the next Monday
+            mondayInFourWeeks.setDate(mondayInFourWeeks.getDate() + (1 + 7 - mondayInFourWeeks.getDay()) % 7);
+            // Format the date as 'YYYY-MM-DD' for the input field
+            const formattedDate = `${mondayInFourWeeks.getFullYear()}-${(mondayInFourWeeks.getMonth() + 1).toString().padStart(2, '0')}-${mondayInFourWeeks.getDate().toString().padStart(2, '0')}`;
+            upgradeStartDateInput.value = formattedDate;
 
             // Update upgrade duration value
             const upgradeDurationInput = document.getElementById('upgradeDuration');
