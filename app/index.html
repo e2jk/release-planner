@@ -22,141 +22,139 @@
         <header>
             <!-- place navbar here -->
         </header>
-        <main>
+        <main class="container">
             <h1>Release Planner</h1>
             
-            <div class="container mt-5">
-                <h2>Upgrade Planning Form</h2>
+            <h2>Upgrade Planning Form</h2>
 
-                <form>
-                    <!-- General -->
-                    <div class="mb-4">
-                        <h3>General</h3>
-                    </div>
+            <form>
+                <!-- General -->
+                <div>
+                    <h3>General</h3>
+                </div>
 
-                    <div class="mb-3">
-                        <label for="versionName" class="form-label">Name of the version you are upgrading to:</label>
-                                                <select class="form-select" id="versionName" name="versionName"></select>
-                    </div>
+                <div>
+                    <label for="versionName" class="form-label">Name of the version you are upgrading to:</label>
+                    <select class="form-select" id="versionName" name="versionName"></select>
+                </div>
 
-                    <div class="mb-3">
-                        <label for="numVersions" class="form-label">Number of Versions:</label>
-                        <select class="form-select" id="numVersions" name="numVersions">
-                            <option value="1">1 version</option>
-                            <option value="2" selected>2 versions</option>
-                            <option value="3">3 versions</option>
-                            <option value="4">4 versions</option>
-                        </select>
-                    </div>
+                <div>
+                    <label for="numVersions" class="form-label">Number of Versions:</label>
+                    <select class="form-select" id="numVersions" name="numVersions">
+                        <option value="1">1 version</option>
+                        <option value="2" selected>2 versions</option>
+                        <option value="3">3 versions</option>
+                        <option value="4">4 versions</option>
+                    </select>
+                </div>
 
-                    <div class="mb-3">
-                        <label for="upgradeStartDate" class="form-label">Upgrade Start Date:</label>
-                        <input type="date" class="form-control" id="upgradeStartDate" name="upgradeStartDate">
-                    </div>
+                <div>
+                    <label for="upgradeStartDate" class="form-label">Upgrade Start Date:</label>
+                    <input type="date" class="form-control" id="upgradeStartDate" name="upgradeStartDate">
+                </div>
 
-                    <div class="mb-3">
-                        <label for="upgradeDuration" class="form-label">Upgrade Duration (weeks):</label>
-                        <input type="range" class="form-range" id="upgradeDuration" name="upgradeDuration" min="7" max="28" value="14">
-                        <span id="upgradeDurationValue">14 weeks</span>
-                    </div>
+                <div>
+                    <label for="upgradeDuration" class="form-label">Upgrade Duration (weeks):</label>
+                    <input type="range" class="form-range" id="upgradeDuration" name="upgradeDuration" min="7" max="28" value="14">
+                    <span id="upgradeDurationValue">14 weeks</span>
+                </div>
 
-                    <div class="mb-3">
-                        <label for="upgradeEndDate" class="form-label">Upgrade End Date:</label>
-                        <input type="date" class="form-control" id="upgradeEndDate" name="upgradeEndDate">
-                    </div>
+                <div>
+                    <label for="upgradeEndDate" class="form-label">Upgrade End Date:</label>
+                    <input type="date" class="form-control" id="upgradeEndDate" name="upgradeEndDate">
+                </div>
 
-                    <!-- Phases -->
-                    <div class="mb-4">
-                        <h3>Phases</h3>
-                    </div>
+                <!-- Phases -->
+                <div>
+                    <h3>Phases</h3>
+                </div>
 
-                    <!-- Analysis Phase -->
-                    <div class="mb-4">
-                        <h4>Analysis Phase</h4>
-                    </div>
+                <!-- Analysis Phase -->
+                <div>
+                    <h4>Analysis Phase</h4>
+                </div>
 
-                    <div class="mb-3">
-                        <label for="analysisStartDate" class="form-label">Analysis Start Date:</label>
-                        <input type="date" class="form-control" id="analysisStartDate" name="analysisStartDate">
-                    </div>
+                <div>
+                    <label for="analysisStartDate" class="form-label">Analysis Start Date:</label>
+                    <input type="date" class="form-control" id="analysisStartDate" name="analysisStartDate">
+                </div>
 
-                    <div class="mb-3">
-                        <label for="analysisDuration" class="form-label">Analysis Duration (weeks):</label>
-                        <input type="range" class="form-range" id="analysisDuration" name="analysisDuration" min="1">
-                        <span id="analysisDurationValue">4 weeks</span>
-                    </div>
+                <div>
+                    <label for="analysisDuration" class="form-label">Analysis Duration (weeks):</label>
+                    <input type="range" class="form-range" id="analysisDuration" name="analysisDuration" min="1">
+                    <span id="analysisDurationValue">4 weeks</span>
+                </div>
 
-                    <div class="mb-3">
-                        <label for="analysisEndDate" class="form-label">Analysis End Date:</label>
-                        <input type="date" class="form-control" id="analysisEndDate" name="analysisEndDate">
-                    </div>
+                <div>
+                    <label for="analysisEndDate" class="form-label">Analysis End Date:</label>
+                    <input type="date" class="form-control" id="analysisEndDate" name="analysisEndDate">
+                </div>
 
-                    <!-- Build Phase -->
-                    <div class="mb-4">
-                        <h4>Build Phase</h4>
-                    </div>
+                <!-- Build Phase -->
+                <div>
+                    <h4>Build Phase</h4>
+                </div>
 
-                    <div class="mb-3">
-                        <label for="buildStartDate" class="form-label">Build Start Date:</label>
-                        <input type="date" class="form-control" id="buildStartDate" name="buildStartDate">
-                    </div>
+                <div>
+                    <label for="buildStartDate" class="form-label">Build Start Date:</label>
+                    <input type="date" class="form-control" id="buildStartDate" name="buildStartDate">
+                </div>
 
-                    <div class="mb-3">
-                        <label for="buildDuration" class="form-label">Build Duration (weeks):</label>
-                        <input type="range" class="form-range" id="buildDuration" name="buildDuration" min="1">
-                        <span id="buildDurationValue">4 weeks</span>
-                    </div>
+                <div>
+                    <label for="buildDuration" class="form-label">Build Duration (weeks):</label>
+                    <input type="range" class="form-range" id="buildDuration" name="buildDuration" min="1">
+                    <span id="buildDurationValue">4 weeks</span>
+                </div>
 
-                    <div class="mb-3">
-                        <label for="buildEndDate" class="form-label">Build End Date:</label>
-                        <input type="date" class="form-control" id="buildEndDate" name="buildEndDate">
-                    </div>
+                <div>
+                    <label for="buildEndDate" class="form-label">Build End Date:</label>
+                    <input type="date" class="form-control" id="buildEndDate" name="buildEndDate">
+                </div>
 
-                    <!-- Testing Phase -->
-                    <div class="mb-4">
-                        <h4>Testing Phase</h4>
-                    </div>
-                    
-                    <div class="mb-3">
-                        <label for="testingStartDate" class="form-label">Testing Start Date:</label>
-                        <input type="date" class="form-control" id="testingStartDate" name="testingStartDate">
-                    </div>
+                <!-- Testing Phase -->
+                <div>
+                    <h4>Testing Phase</h4>
+                </div>
+                
+                <div>
+                    <label for="testingStartDate" class="form-label">Testing Start Date:</label>
+                    <input type="date" class="form-control" id="testingStartDate" name="testingStartDate">
+                </div>
 
-                    <div class="mb-3">
-                        <label for="testingDuration" class="form-label">Testing Duration (weeks):</label>
-                        <input type="range" class="form-range" id="testingDuration" name="testingDuration" min="1">
-                        <span id="testingDurationValue">4 weeks</span>
-                    </div>
+                <div>
+                    <label for="testingDuration" class="form-label">Testing Duration (weeks):</label>
+                    <input type="range" class="form-range" id="testingDuration" name="testingDuration" min="1">
+                    <span id="testingDurationValue">4 weeks</span>
+                </div>
 
-                    <div class="mb-3">
-                        <label for="testingEndDate" class="form-label">Testing End Date:</label>
-                        <input type="date" class="form-control" id="testingEndDate" name="testingEndDate">
-                    </div>
+                <div>
+                    <label for="testingEndDate" class="form-label">Testing End Date:</label>
+                    <input type="date" class="form-control" id="testingEndDate" name="testingEndDate">
+                </div>
 
-                    <!-- Training Phase -->
-                    <div class="mb-4">
-                        <h4>Training Phase</h4>
-                    </div>
-                    
-                    <div class="mb-3">
-                        <label for="trainingStartDate" class="form-label">Training Start Date:</label>
-                        <input type="date" class="form-control" id="trainingStartDate" name="trainingStartDate">
-                    </div>
+                <!-- Training Phase -->
+                <div>
+                    <h4>Training Phase</h4>
+                </div>
+                
+                <div>
+                    <label for="trainingStartDate" class="form-label">Training Start Date:</label>
+                    <input type="date" class="form-control" id="trainingStartDate" name="trainingStartDate">
+                </div>
 
-                    <div class="mb-3">
-                        <label for="trainingDuration" class="form-label">Training Duration (weeks):</label>
-                        <input type="range" class="form-range" id="trainingDuration" name="trainingDuration" min="1">
-                        <span id="trainingDurationValue">4 weeks</span>
-                    </div>
+                <div>
+                    <label for="trainingDuration" class="form-label">Training Duration (weeks):</label>
+                    <input type="range" class="form-range" id="trainingDuration" name="trainingDuration" min="1">
+                    <span id="trainingDurationValue">4 weeks</span>
+                </div>
 
-                    <div class="mb-3">
-                        <label for="trainingEndDate" class="form-label">Training End Date:</label>
-                        <input type="date" class="form-control" id="trainingEndDate" name="trainingEndDate">
-                    </div>
+                <div>
+                    <label for="trainingEndDate" class="form-label">Training End Date:</label>
+                    <input type="date" class="form-control" id="trainingEndDate" name="trainingEndDate">
+                </div>
 
-                    <button type="submit" class="btn btn-primary">Submit</button>
-                </form>
-            </div>
+                <button type="submit" class="btn btn-primary">Submit</button>
+            </form>
 
         </main>
         <footer>
