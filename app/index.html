@@ -70,25 +70,46 @@
                         <h3>Phases</h3>
                     </div>
 
-                    <!-- Analysis & build Phase -->
+                    <!-- Analysis Phase -->
                     <div class="mb-4">
-                        <h4>Analysis & build Phase</h4>
+                        <h4>Analysis Phase</h4>
                     </div>
 
                     <div class="mb-3">
-                        <label for="analysisBuildStartDate" class="form-label">Analysis & Build Start Date:</label>
-                        <input type="date" class="form-control" id="analysisBuildStartDate" name="analysisBuildStartDate">
+                        <label for="analysisStartDate" class="form-label">Analysis Start Date:</label>
+                        <input type="date" class="form-control" id="analysisStartDate" name="analysisStartDate">
                     </div>
 
                     <div class="mb-3">
-                        <label for="analysisBuildDuration" class="form-label">Analysis & Build Duration (weeks):</label>
-                        <input type="range" class="form-range" id="analysisBuildDuration" name="analysisBuildDuration" min="1" max="12" value="4">
-                        <span id="analysisBuildDurationValue">4 weeks</span>
+                        <label for="analysisDuration" class="form-label">Analysis Duration (weeks):</label>
+                        <input type="range" class="form-range" id="analysisDuration" name="analysisDuration" min="1" max="12" value="4">
+                        <span id="analysisDurationValue">4 weeks</span>
                     </div>
 
                     <div class="mb-3">
-                        <label for="analysisBuildEndDate" class="form-label">Analysis & Build End Date:</label>
-                        <input type="date" class="form-control" id="analysisBuildEndDate" name="analysisBuildEndDate">
+                        <label for="analysisEndDate" class="form-label">Analysis End Date:</label>
+                        <input type="date" class="form-control" id="analysisEndDate" name="analysisEndDate">
+                    </div>
+
+                    <!-- Build Phase -->
+                    <div class="mb-4">
+                        <h4>Build Phase</h4>
+                    </div>
+
+                    <div class="mb-3">
+                        <label for="buildStartDate" class="form-label">Build Start Date:</label>
+                        <input type="date" class="form-control" id="buildStartDate" name="buildStartDate">
+                    </div>
+
+                    <div class="mb-3">
+                        <label for="buildDuration" class="form-label">Build Duration (weeks):</label>
+                        <input type="range" class="form-range" id="buildDuration" name="buildDuration" min="1" max="12" value="4">
+                        <span id="buildDurationValue">4 weeks</span>
+                    </div>
+
+                    <div class="mb-3">
+                        <label for="buildEndDate" class="form-label">Build End Date:</label>
+                        <input type="date" class="form-control" id="buildEndDate" name="buildEndDate">
                     </div>
 
                     <!-- Testing Phase -->
@@ -232,11 +253,18 @@
             upgradeStartDateInput.addEventListener('input', updateUpgradeEndDate);
             upgradeDurationInput.addEventListener('input', updateUpgradeEndDate);
 
-            // Update analysis & build duration value
-            const analysisBuildDurationInput = document.getElementById('analysisBuildDuration');
-            const analysisBuildDurationValue = document.getElementById('analysisBuildDurationValue');
-            analysisBuildDurationInput.addEventListener('input', () => {
-                analysisBuildDurationValue.textContent = `${analysisBuildDurationInput.value} weeks`;
+            // Update analysis duration value
+            const analysisDurationInput = document.getElementById('analysisDuration');
+            const analysisDurationValue = document.getElementById('analysisDurationValue');
+            analysisDurationInput.addEventListener('input', () => {
+                analysisDurationValue.textContent = `${analysisDurationInput.value} weeks`;
+            });
+
+            // Update build duration value
+            const buildDurationInput = document.getElementById('buildDuration');
+            const buildDurationValue = document.getElementById('buildDurationValue');
+            buildDurationInput.addEventListener('input', () => {
+                buildDurationValue.textContent = `${buildDurationInput.value} weeks`;
             });
         
             // Update testing duration value
