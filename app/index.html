@@ -419,14 +419,33 @@
             function updateUpgradeEndDate() {
                 setEndDate(upgradeStartDateInput, upgradeDurationInput, upgradeEndDateInput);
             }
+            function getRoundedNumberOfWeeks(startDate, endDate) {
+                return Math.round((endDate - startDate) / (7 * 24 * 60 * 60 * 1000)); // Convert from milliseconds to weeks
+            }
+            function updateDuration(startDateInput, endDateInput, durationInput, durationValue) {
+                // Keep the start date and adapt the duration
+                const startDate = new Date(startDateInput.value);
+                const endDate = new Date(endDateInput.value);
+                const durationInWeeks = getRoundedNumberOfWeeks(startDate, endDate);
+                durationInput.value = durationInWeeks;
+                durationValue.textContent = `${durationInWeeks} weeks`;
+            }
             function updateUpgradeDuration() {
-                // Keep the start date and adapt the duration, and recalculate the default dates
-                const startDate = new Date(upgradeStartDateInput.value);
-                const EndDate = new Date(upgradeEndDateInput.value);
-                const durationInWeeks = Math.round((EndDate - startDate) / (7 * 24 * 60 * 60 * 1000)); // Convert from milliseconds to weeks
-                upgradeDurationInput.value = durationInWeeks;
-                upgradeDurationValue.textContent = `${durationInWeeks} weeks`;
+                updateDuration(upgradeStartDateInput, upgradeEndDateInput, upgradeDurationInput, upgradeDurationValue);
+                // Recalculate the rest of the default dates
                 setDefaultDates(true);
+            }
+            function updateAnalysisDuration() {
+                updateDuration(analysisStartDateInput, analysisEndDateInput, analysisDurationInput, analysisDurationValue);
+            }
+            function updateBuildDuration() {
+                updateDuration(buildStartDateInput, buildEndDateInput, buildDurationInput, buildDurationValue);
+            }
+            function updateTestingDuration() {
+                updateDuration(testingStartDateInput, testingEndDateInput, testingDurationInput, testingDurationValue);
+            }
+            function updateTrainingDuration() {
+                updateDuration(trainingStartDateInput, trainingEndDateInput, trainingDurationInput, trainingDurationValue);
             }
             function updateAnalysisEndDate() {
                 setEndDate(analysisStartDateInput, analysisDurationInput, analysisEndDateInput);
@@ -574,12 +593,16 @@
             upgradeEndDateInput.addEventListener('input', updateUpgradeDuration);
             analysisStartDateInput.addEventListener('input', updateAnalysisEndDate);
             analysisDurationInput.addEventListener('input', updateAnalysisEndDate);
+            analysisEndDateInput.addEventListener('input', updateAnalysisDuration);
             buildStartDateInput.addEventListener('input', updateBuildEndDate);
             buildDurationInput.addEventListener('input', updateBuildEndDate);
+            buildEndDateInput.addEventListener('input', updateBuildDuration);
             testingStartDateInput.addEventListener('input', updateTestingEndDate);
             testingDurationInput.addEventListener('input', updateTestingEndDate);
+            testingEndDateInput.addEventListener('input', updateTestingDuration);
             trainingStartDateInput.addEventListener('input', updateTrainingEndDate);
             trainingDurationInput.addEventListener('input', updateTrainingEndDate);
+            trainingEndDateInput.addEventListener('input', updateTrainingDuration);
 
             // Update analysis duration value
             analysisDurationInput.addEventListener('input', () => {
