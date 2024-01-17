@@ -419,6 +419,15 @@
             function updateUpgradeEndDate() {
                 setEndDate(upgradeStartDateInput, upgradeDurationInput, upgradeEndDateInput);
             }
+            function updateUpgradeDuration() {
+                // Keep the start date and adapt the duration, and recalculate the default dates
+                const startDate = new Date(upgradeStartDateInput.value);
+                const EndDate = new Date(upgradeEndDateInput.value);
+                const durationInWeeks = Math.round((EndDate - startDate) / (7 * 24 * 60 * 60 * 1000)); // Convert from milliseconds to weeks
+                upgradeDurationInput.value = durationInWeeks;
+                upgradeDurationValue.textContent = `${durationInWeeks} weeks`;
+                setDefaultDates(true);
+            }
             function updateAnalysisEndDate() {
                 setEndDate(analysisStartDateInput, analysisDurationInput, analysisEndDateInput);
             }
@@ -497,10 +506,12 @@
                 trainingDurationValue.textContent = `${trainingDurationInput.value} weeks`;
             }
             
-            function setDefaultDates() {
+            function setDefaultDates(skipUpdateUpgradeEndDate=false) {
                 determineDefaultPhaseLengths();
 
-                updateUpgradeEndDate();
+                if (!skipUpdateUpgradeEndDate) {
+                    updateUpgradeEndDate();
+                }
 
                 // Set start date of the Analysis phase is the same as start of the upgrade itself
                 analysisStartDateInput.value = upgradeStartDateInput.value;
@@ -560,6 +571,7 @@
             // Add event listeners to recalculate end dates on input changes
             upgradeStartDateInput.addEventListener('input', updateUpgradeEndDate);
             upgradeDurationInput.addEventListener('input', updateUpgradeEndDate);
+            upgradeEndDateInput.addEventListener('input', updateUpgradeDuration);
             analysisStartDateInput.addEventListener('input', updateAnalysisEndDate);
             analysisDurationInput.addEventListener('input', updateAnalysisEndDate);
             buildStartDateInput.addEventListener('input', updateBuildEndDate);
