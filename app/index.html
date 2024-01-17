@@ -400,6 +400,10 @@
             const PLYUpgradeDateInput = document.getElementById('PLYUpgradeDate');
             const SUPUpgradeDateInput = document.getElementById('SUPUpgradeDate');
             const PRDUpgradeDateInput = document.getElementById('PRDUpgradeDate');
+            const InitialSUDeliveryDateInput = document.getElementById('InitialSUDeliveryDate');
+            const AllFixSUDeliveryDateInput = document.getElementById('AllFixSUDeliveryDate');
+            const PreInstallCriticalSUDeliveryDateInput = document.getElementById('PreInstallCriticalSUDeliveryDate');
+            const PostInstallSUDeliveryDateInput = document.getElementById('PostInstallSUDeliveryDate');
 
             function setEndDate(startDateInput, durationWeeksInput, endDateInput) {
                 const startDate = new Date(startDateInput.value);
@@ -528,9 +532,24 @@
                 // PRD and SUP dates
                 PRDUpgradeDateInput.value = upgradeEndDateInput.value;
                 // SUP 4 days before the PRD upgrade
-                const upgradeEndDate = new Date(upgradeEndDateInput.value);
-                const SUPUpgradeDate = new Date(upgradeEndDate.getTime() - 4 * 24 * 60 * 60 * 1000); // 4 days in milliseconds
+                const PRDUpgradeDate = new Date(PRDUpgradeDateInput.value);
+                const SUPUpgradeDate = new Date(PRDUpgradeDate.getTime() - 4 * 24 * 60 * 60 * 1000); // 4 days in milliseconds
                 SUPUpgradeDateInput.valueAsDate = SUPUpgradeDate;
+
+                // Default dates for the SU deliveries
+                // Initial SU Delivery at the start of the project
+                InitialSUDeliveryDateInput.value = upgradeStartDateInput.value;
+                // All Fix SUs Delivery 2 weeks after the end of the Testing phase
+                const testingEndDate = new Date(testingEndDateInput.value);
+                const AllFixSUDeliveryDate = new Date(testingEndDate.getTime() - 2 * 7 * 24 * 60 * 60 * 1000); // 4 days in milliseconds
+                AllFixSUDeliveryDateInput.valueAsDate = AllFixSUDeliveryDate;
+                // Pre-Install Critical SU 2 weeks before the PRD upgrade
+                const PreInstallCriticalSUDate = new Date(PRDUpgradeDate.getTime() - 2 * 7 * 24 * 60 * 60 * 1000); // 2 weeks in milliseconds
+                PreInstallCriticalSUDeliveryDateInput.valueAsDate = PreInstallCriticalSUDate;
+                // Post-Install SU Delivery 2 weeks after the PRD upgrade
+                // (yeah, you could argue that the PRD upgrade date is thus not the real end of the upgrade...)
+                const PostInstallSUDate = new Date(PRDUpgradeDate.getTime() + 2 * 7 * 24 * 60 * 60 * 1000); // 2 weeks in milliseconds
+                PostInstallSUDeliveryDateInput.valueAsDate = PostInstallSUDate;
             }
             setDefaultDates();
             
