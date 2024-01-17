@@ -392,6 +392,14 @@
             const trainingStartDateInput = document.getElementById('trainingStartDate');
             const trainingDurationInput = document.getElementById('trainingDuration');
             const trainingEndDateInput = document.getElementById('trainingEndDate');
+            const RELUpgradeDateInput = document.getElementById('RELUpgradeDate');
+            const POCUpgradeDateInput = document.getElementById('POCUpgradeDate');
+            const TSTUpgradeDateInput = document.getElementById('TSTUpgradeDate');
+            const MSTUpgradeDateInput = document.getElementById('MSTUpgradeDate');
+            const ACEUpgradeDateInput = document.getElementById('ACEUpgradeDate');
+            const PLYUpgradeDateInput = document.getElementById('PLYUpgradeDate');
+            const SUPUpgradeDateInput = document.getElementById('SUPUpgradeDate');
+            const PRDUpgradeDateInput = document.getElementById('PRDUpgradeDate');
 
             function setEndDate(startDateInput, durationWeeksInput, endDateInput) {
                 const startDate = new Date(startDateInput.value);
@@ -505,6 +513,24 @@
                 // Default start date of the training phase is the end of the build phase
                 trainingStartDateInput.value = testingEndDateInput.value;
                 updateTrainingEndDate();
+
+                // Default dates for the environment upgrades
+                // REL at the start of the project
+                RELUpgradeDateInput.value = upgradeStartDateInput.value;
+                // POC at the start of the build phase
+                POCUpgradeDateInput.value = buildStartDateInput.value;
+                // TST at the start of the testing phase
+                TSTUpgradeDateInput.value = testingStartDateInput.value;
+                // MST, ACEs and PLY at the start of the training phase
+                MSTUpgradeDateInput.value = trainingStartDateInput.value;
+                ACEUpgradeDateInput.value = trainingStartDateInput.value;
+                PLYUpgradeDateInput.value = trainingStartDateInput.value;
+                // PRD and SUP dates
+                PRDUpgradeDateInput.value = upgradeEndDateInput.value;
+                // SUP 4 days before the PRD upgrade
+                const upgradeEndDate = new Date(upgradeEndDateInput.value);
+                const SUPUpgradeDate = new Date(upgradeEndDate.getTime() - 4 * 24 * 60 * 60 * 1000); // 4 days in milliseconds
+                SUPUpgradeDateInput.valueAsDate = SUPUpgradeDate;
             }
             setDefaultDates();
             
