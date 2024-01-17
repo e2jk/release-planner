@@ -25,7 +25,7 @@
         <main class="container">
             <h1>Release Planner</h1>
 
-            <form>
+            <form class="collapse show multi-collapse" id="releaseParameters">
                 <!-- General -->
                 <h2 class="mt-3">
                     General
@@ -289,9 +289,15 @@
                         </div>
                     </div>
                 </div>
-
-                <button type="submit" class="btn btn-primary mt-3">Submit</button>
             </form>
+
+            <button class="btn btn-primary mt-3 collapse show multi-collapse" type="button" data-bs-toggle="collapse" data-bs-target=".multi-collapse" aria-expanded="true">
+                Focus on the timeline
+            </button>
+
+            <button class="btn btn-primary mt-3 collapse multi-collapse" type="button" data-bs-toggle="collapse" data-bs-target=".multi-collapse" aria-expanded="false">
+                Modify the parameters
+            </button>
 
         </main>
 
