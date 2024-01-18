@@ -703,7 +703,8 @@
                 if ("start" === type) {
                     item.start = date;
                 } else if ("end" === type) {
-                    item.end = date;
+                    const endDate = new Date(date).setHours(23,59,59,0);
+                    item.end = endDate;
                 }
                 items.update(item);
             }
