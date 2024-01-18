@@ -435,14 +435,21 @@
             const PostUpgradeSUDeliveryDateInput = document.getElementById('PostUpgradeSUDeliveryDate');
 
             const environments = ["REL", "POC", "TST", "MST", "ACE", "PLY", "SUP","PRD"];
+            const suDeliveries = {
+                "InitialSU": "Initial",
+                "AllFixSU": "All Fix SUs",
+                "PreUpgradeCriticalSU": "Pre-Upgrade Critical",
+                "PostUpgradeSU": "Post-Upgrade"
+            };
             
             // Create DataSets for the visualization (allows two way data-binding)
             const versionName = versionNameSelect.options[versionNameSelect.selectedIndex].text;
             // Groups for the upgrade, the phases and the environments
             const groups = new vis.DataSet([
-                {id: "upgrade", content: versionName, nestedGroups: ["phases", "environments"]},
+                {id: "upgrade", content: versionName, nestedGroups: ["phases", "environments", "su"]},
                 {id: "phases", content: "Phases"},
-                {id: "environments", content: "Environments"}
+                {id: "environments", content: "Environments"},
+                {id: "su", content: "SU Deliveries"}
             ]);
             // Bars for phases
             const items = new vis.DataSet([
@@ -458,6 +465,12 @@
                     {id: `env${environments[i]}`, content: environments[i], group: "environments", type: 'point'}
                 ]);
             };
+            // Points for SU Deliveries
+            Object.keys(suDeliveries).forEach(function(key, index) {
+                items.add([
+                    {id: `su${key}`, content: this[key], group: "su", type: 'point'}
+                ]);
+            }, suDeliveries);
 
             function setEndDate(startDateInput, durationWeeksInput, endDateInput) {
                 const startDate = new Date(startDateInput.value);
@@ -661,10 +674,12 @@
                 updateVisItemDate("testingPhase", testingEndDateInput.value, "end");
                 updateVisItemDate("trainingPhase", trainingStartDateInput.value, "start");
                 updateVisItemDate("trainingPhase", trainingEndDateInput.value, "end");
-
                 for (let i = 0; i < environments.length; i++) {
                     updateVisItemDate(`env${environments[i]}`, document.getElementById(`${environments[i]}UpgradeDate`).value);
-                };
+                };                
+                Object.keys(suDeliveries).forEach(function(key, index) {
+                    updateVisItemDate(`su${key}`, document.getElementById(`${key}DeliveryDate`).value);
+                }, suDeliveries);
             }
             setDefaultDates();
 
@@ -701,6 +716,12 @@
                 const startDate = evt.target.value;
                 updateVisItemDate(`env${envName}`, startDate);
             }
+
+            function updateSUDeliveryDate(evt) {
+                const suName = evt.target.id.substring(0, evt.target.id.length - "DeliveryDate".length);
+                const startDate = evt.target.value;
+                updateVisItemDate(`su${suName}`, startDate);
+            }
             
             upgradeStartDateInput.addEventListener('input', () => {
                 setDefaultDates();
@@ -726,6 +747,9 @@
             for (let i = 0; i < environments.length; i++) {
                 document.getElementById(`${environments[i]}UpgradeDate`).addEventListener('input', updateEnvironmentDate);
             };
+            Object.keys(suDeliveries).forEach(function(key, index) {
+                document.getElementById(`${key}DeliveryDate`).addEventListener('input', updateSUDeliveryDate);
+            }, suDeliveries);
 
             // Update analysis duration value
             analysisDurationInput.addEventListener('input', () => {
