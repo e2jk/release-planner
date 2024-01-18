@@ -519,42 +519,42 @@
             }
             function updateAnalysisDuration() {
                 updateDuration(analysisStartDateInput, analysisEndDateInput, analysisDurationInput, analysisDurationValue);
-                updateVisItemDate("analysisPhase", analysisStartDateInput.value, "start");
+                updateVisItemDate("analysisPhase", analysisStartDateInput.value, "startPhase");
                 updateVisItemDate("analysisPhase", analysisEndDateInput.value, "end");
             }
             function updateBuildDuration() {
                 updateDuration(buildStartDateInput, buildEndDateInput, buildDurationInput, buildDurationValue);
-                updateVisItemDate("buildPhase", buildStartDateInput.value, "start");
+                updateVisItemDate("buildPhase", buildStartDateInput.value, "startPhase");
                 updateVisItemDate("buildPhase", buildEndDateInput.value, "end");
             }
             function updateTestingDuration() {
                 updateDuration(testingStartDateInput, testingEndDateInput, testingDurationInput, testingDurationValue);
-                updateVisItemDate("testingPhase", testingStartDateInput.value, "start");
+                updateVisItemDate("testingPhase", testingStartDateInput.value, "startPhase");
                 updateVisItemDate("testingPhase", testingEndDateInput.value, "end");
             }
             function updateTrainingDuration() {
                 updateDuration(trainingStartDateInput, trainingEndDateInput, trainingDurationInput, trainingDurationValue);
-                updateVisItemDate("trainingPhase", trainingStartDateInput.value, "start");
+                updateVisItemDate("trainingPhase", trainingStartDateInput.value, "startPhase");
                 updateVisItemDate("trainingPhase", trainingEndDateInput.value, "end");
             }
             function updateAnalysisEndDate() {
                 setEndDate(analysisStartDateInput, analysisDurationInput, analysisEndDateInput);
-                updateVisItemDate("analysisPhase", analysisStartDateInput.value, "start");
+                updateVisItemDate("analysisPhase", analysisStartDateInput.value, "startPhase");
                 updateVisItemDate("analysisPhase", analysisEndDateInput.value, "end");
             }
             function updateBuildEndDate() {
                 setEndDate(buildStartDateInput, buildDurationInput, buildEndDateInput);
-                updateVisItemDate("buildPhase", buildStartDateInput.value, "start");
+                updateVisItemDate("buildPhase", buildStartDateInput.value, "startPhase");
                 updateVisItemDate("buildPhase", buildEndDateInput.value, "end");
             }
             function updateTestingEndDate() {
                 setEndDate(testingStartDateInput, testingDurationInput, testingEndDateInput);
-                updateVisItemDate("testingPhase", testingStartDateInput.value, "start");
+                updateVisItemDate("testingPhase", testingStartDateInput.value, "startPhase");
                 updateVisItemDate("testingPhase", testingEndDateInput.value, "end");
             }
             function updateTrainingEndDate() {
                 setEndDate(trainingStartDateInput, trainingDurationInput, trainingEndDateInput);
-                updateVisItemDate("trainingPhase", trainingStartDateInput.value, "start");
+                updateVisItemDate("trainingPhase", trainingStartDateInput.value, "startPhase");
                 updateVisItemDate("trainingPhase", trainingEndDateInput.value, "end");
             }
 
@@ -679,29 +679,32 @@
                 const PostUpgradeSUDate = new Date(PRDUpgradeDate.getTime() + 2 * 7 * 24 * 60 * 60 * 1000); // 2 weeks in milliseconds
                 PostUpgradeSUDeliveryDateInput.valueAsDate = PostUpgradeSUDate;
 
-                updateVisItemDate("upgradePeriod", upgradeStartDateInput.value, "start");
+                updateVisItemDate("upgradePeriod", upgradeStartDateInput.value, "startPhase");
                 updateVisItemDate("upgradePeriod", upgradeEndDateInput.value, "end");
-                updateVisItemDate("analysisPhase", analysisStartDateInput.value, "start");
+                updateVisItemDate("analysisPhase", analysisStartDateInput.value, "startPhase");
                 updateVisItemDate("analysisPhase", analysisEndDateInput.value, "end");
-                updateVisItemDate("buildPhase", buildStartDateInput.value, "start");
+                updateVisItemDate("buildPhase", buildStartDateInput.value, "startPhase");
                 updateVisItemDate("buildPhase", buildEndDateInput.value, "end");
-                updateVisItemDate("testingPhase", testingStartDateInput.value, "start");
+                updateVisItemDate("testingPhase", testingStartDateInput.value, "startPhase");
                 updateVisItemDate("testingPhase", testingEndDateInput.value, "end");
-                updateVisItemDate("trainingPhase", trainingStartDateInput.value, "start");
+                updateVisItemDate("trainingPhase", trainingStartDateInput.value, "startPhase");
                 updateVisItemDate("trainingPhase", trainingEndDateInput.value, "end");
                 for (let i = 0; i < environments.length; i++) {
-                    updateVisItemDate(`env${environments[i]}`, document.getElementById(`${environments[i]}UpgradeDate`).value);
+                    updateVisItemDate(`env${environments[i]}`, document.getElementById(`${environments[i]}UpgradeDate`).value, "startPoint");
                 };                
                 Object.keys(suDeliveries).forEach(function(key, index) {
-                    updateVisItemDate(`su${key}`, document.getElementById(`${key}DeliveryDate`).value);
+                    updateVisItemDate(`su${key}`, document.getElementById(`${key}DeliveryDate`).value, "startPoint");
                 }, suDeliveries);
             }
             setDefaultDates();
 
-            function updateVisItemDate(itemID, date, type="start") {
+            function updateVisItemDate(itemID, date, type) {
                 const item = items.get(itemID);
-                if ("start" === type) {
+                if ("startPhase" === type) {
                     item.start = date;
+                } else if ("startPoint" === type) {
+                    const startDate = new Date(date).setHours(8,0,0,0);
+                    item.start = startDate;
                 } else if ("end" === type) {
                     const endDate = new Date(date).setHours(23,59,59,0);
                     item.end = endDate;
@@ -730,13 +733,13 @@
             function updateEnvironmentDate(evt) {
                 const envName = evt.target.id.substring(0, 3);
                 const startDate = evt.target.value;
-                updateVisItemDate(`env${envName}`, startDate);
+                updateVisItemDate(`env${envName}`, startDate, "startPoint");
             }
 
             function updateSUDeliveryDate(evt) {
                 const suName = evt.target.id.substring(0, evt.target.id.length - "DeliveryDate".length);
                 const startDate = evt.target.value;
-                updateVisItemDate(`su${suName}`, startDate);
+                updateVisItemDate(`su${suName}`, startDate, "startPoint");
             }
             
             upgradeStartDateInput.addEventListener('input', () => {
