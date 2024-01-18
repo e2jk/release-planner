@@ -472,6 +472,9 @@
                 ]);
             }, suDeliveries);
 
+            // Configuration for the Timeline
+            const timelineOptions = {};
+
             function setStartDate(startDate) {
                 // If the start date is on a Friday, Saturday or Sunday, move it up to the next Monday
                 let newStartDate = new Date(startDate);
@@ -623,7 +626,7 @@
                 trainingDurationValue.textContent = `${trainingDurationInput.value} weeks`;
             }
             
-            function setDefaultDates(skipUpdateUpgradeEndDate=false) {
+            function setDefaultDates(skipUpdateUpgradeEndDate=false, skipRedrawTimeline=false) {
                 determineDefaultPhaseLengths();
 
                 if (!skipUpdateUpgradeEndDate) {
@@ -695,8 +698,19 @@
                 Object.keys(suDeliveries).forEach(function(key, index) {
                     updateVisItemDate(`su${key}`, document.getElementById(`${key}DeliveryDate`).value, "startPoint");
                 }, suDeliveries);
+
+                // Define the timeline's begin and end dates
+                timelineOptions.start = upgradeStartDateInput.value;
+                let timelineEndDate = PostUpgradeSUDate;
+                // Shift the timeline's end date by a couple of days, so that the last SU package remains visible
+                const daysToShiftEnd = 3 * parseInt(upgradeDurationInput.value) / 6;
+                timelineEndDate.setDate(PostUpgradeSUDate.getDate() + daysToShiftEnd);
+                timelineOptions.end = timelineEndDate;
+                if (!skipRedrawTimeline) {
+                    timeline.setOptions(timelineOptions);
+                }
             }
-            setDefaultDates();
+            setDefaultDates(false, true);
 
             function updateVisItemDate(itemID, date, type) {
                 const item = items.get(itemID);
@@ -797,11 +811,8 @@
             // Update the values in the DataSet
             updateVersionName();
 
-            // Configuration for the Timeline
-            const options = {};
-
             // Create a Timeline
-            const timeline = new vis.Timeline(visContainer, items, groups, options);
+            const timeline = new vis.Timeline(visContainer, items, groups, timelineOptions);
         </script>
     </body>
 </html>
