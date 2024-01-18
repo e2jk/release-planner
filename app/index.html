@@ -19,6 +19,23 @@
 
         <!-- vis.js CSS -->
         <link href="https://unpkg.com/vis-timeline@latest/styles/vis-timeline-graph2d.min.css" rel="stylesheet" type="text/css" />
+
+        <style>
+            /* alternating column backgrounds */
+            .vis-time-axis .vis-grid.vis-odd {
+              background: #f5f5f5;
+            }
+          
+            /* gray background in weekends, white text color */
+            .vis-time-axis .vis-grid.vis-saturday,
+            .vis-time-axis .vis-grid.vis-sunday {
+              background: gray;
+            }
+            .vis-time-axis .vis-text.vis-saturday,
+            .vis-time-axis .vis-text.vis-sunday {
+              color: white;
+            }
+          </style>
     </head>
 
     <body>
@@ -416,6 +433,12 @@
             const AllFixSUDeliveryDateInput = document.getElementById('AllFixSUDeliveryDate');
             const PreUpgradeCriticalSUDeliveryDateInput = document.getElementById('PreUpgradeCriticalSUDeliveryDate');
             const PostUpgradeSUDeliveryDateInput = document.getElementById('PostUpgradeSUDeliveryDate');
+            
+            // Create a DataSet for the visualization (allows two way data-binding)
+            const items = new vis.DataSet([
+                {id: "upgradePeriod", start: upgradeStartDateInput.value},
+                {id: 6, content: 'item 6', start: '2024-04-27', type: 'point'}
+            ]);
 
             function setEndDate(startDateInput, durationWeeksInput, endDateInput) {
                 const startDate = new Date(startDateInput.value);
@@ -592,8 +615,32 @@
                 // (yeah, you could argue that the PRD upgrade date is thus not the real end of the upgrade...)
                 const PostUpgradeSUDate = new Date(PRDUpgradeDate.getTime() + 2 * 7 * 24 * 60 * 60 * 1000); // 2 weeks in milliseconds
                 PostUpgradeSUDeliveryDateInput.valueAsDate = PostUpgradeSUDate;
+
+                updateVisualizationDate("upgradePeriod", upgradeStartDateInput.value, "start");
+                updateVisualizationDate("upgradePeriod", upgradeEndDateInput.value, "end");
             }
             setDefaultDates();
+
+            function updateVisualizationDate(itemID, date, type="start") {
+                const item = items.get(itemID);
+                if ("start" === type) {
+                    item.start = date;
+                } else if ("end" === type) {
+                    item.end = date;
+                }
+                items.update(item);
+            }
+
+            function updateVisualizationContent(itemID, content) {
+                const item = items.get(itemID);
+                item.content = content;
+                items.update(item);
+            }
+
+            function updateVersionName() {
+                const versionName = versionNameSelect.options[versionNameSelect.selectedIndex].text;
+                updateVisualizationContent("upgradePeriod", `Upgrade to ${versionName}`);
+            }
             
             upgradeStartDateInput.addEventListener('input', () => {
                 setDefaultDates();
@@ -615,6 +662,7 @@
             trainingStartDateInput.addEventListener('input', updateTrainingEndDate);
             trainingDurationInput.addEventListener('input', updateTrainingEndDate);
             trainingEndDateInput.addEventListener('input', updateTrainingDuration);
+            versionNameSelect.addEventListener('input', updateVersionName);
 
             // Update analysis duration value
             analysisDurationInput.addEventListener('input', () => {
@@ -638,23 +686,16 @@
 
             // Handling the Timeline 
             // DOM element where the Timeline will be attached
-            var container = document.getElementById('visualization');
+            const visContainer = document.getElementById('visualization');
 
-            // Create a DataSet (allows two way data-binding)
-            var items = new vis.DataSet([
-                {id: 1, content: 'item 1', start: '2014-04-20'},
-                {id: 2, content: 'item 2', start: '2014-04-14'},
-                {id: 3, content: 'item 3', start: '2014-04-18'},
-                {id: 4, content: 'item 4', start: '2014-04-16', end: '2014-04-19'},
-                {id: 5, content: 'item 5', start: '2014-04-25'},
-                {id: 6, content: 'item 6', start: '2014-04-27', type: 'point'}
-            ]);
+            // Update the values in the DataSet
+            updateVersionName();
 
             // Configuration for the Timeline
-            var options = {};
+            const options = {};
 
             // Create a Timeline
-            var timeline = new vis.Timeline(container, items, options);
+            const timeline = new vis.Timeline(visContainer, items, options);
         </script>
     </body>
 </html>
