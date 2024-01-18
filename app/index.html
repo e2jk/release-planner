@@ -435,8 +435,9 @@
             const PostUpgradeSUDeliveryDateInput = document.getElementById('PostUpgradeSUDeliveryDate');
             
             // Create a DataSet for the visualization (allows two way data-binding)
+            const versionName = versionNameSelect.options[versionNameSelect.selectedIndex].text;
             const groups = new vis.DataSet([
-                {id: "upgrade", content: "Upgrade", nestedGroups: ["phases"]},
+                {id: "upgrade", content: versionName, nestedGroups: ["phases"]},
                 {id: "phases", content: "Phases"}
             ]);
 
@@ -481,43 +482,43 @@
             }
             function updateAnalysisDuration() {
                 updateDuration(analysisStartDateInput, analysisEndDateInput, analysisDurationInput, analysisDurationValue);
-                updateVisualizationDate("analysisPhase", analysisStartDateInput.value, "start");
-                updateVisualizationDate("analysisPhase", analysisEndDateInput.value, "end");
+                updateVisItemDate("analysisPhase", analysisStartDateInput.value, "start");
+                updateVisItemDate("analysisPhase", analysisEndDateInput.value, "end");
             }
             function updateBuildDuration() {
                 updateDuration(buildStartDateInput, buildEndDateInput, buildDurationInput, buildDurationValue);
-                updateVisualizationDate("buildPhase", buildStartDateInput.value, "start");
-                updateVisualizationDate("buildPhase", buildEndDateInput.value, "end");
+                updateVisItemDate("buildPhase", buildStartDateInput.value, "start");
+                updateVisItemDate("buildPhase", buildEndDateInput.value, "end");
             }
             function updateTestingDuration() {
                 updateDuration(testingStartDateInput, testingEndDateInput, testingDurationInput, testingDurationValue);
-                updateVisualizationDate("testingPhase", testingStartDateInput.value, "start");
-                updateVisualizationDate("testingPhase", testingEndDateInput.value, "end");
+                updateVisItemDate("testingPhase", testingStartDateInput.value, "start");
+                updateVisItemDate("testingPhase", testingEndDateInput.value, "end");
             }
             function updateTrainingDuration() {
                 updateDuration(trainingStartDateInput, trainingEndDateInput, trainingDurationInput, trainingDurationValue);
-                updateVisualizationDate("trainingPhase", trainingStartDateInput.value, "start");
-                updateVisualizationDate("trainingPhase", trainingEndDateInput.value, "end");
+                updateVisItemDate("trainingPhase", trainingStartDateInput.value, "start");
+                updateVisItemDate("trainingPhase", trainingEndDateInput.value, "end");
             }
             function updateAnalysisEndDate() {
                 setEndDate(analysisStartDateInput, analysisDurationInput, analysisEndDateInput);
-                updateVisualizationDate("analysisPhase", analysisStartDateInput.value, "start");
-                updateVisualizationDate("analysisPhase", analysisEndDateInput.value, "end");
+                updateVisItemDate("analysisPhase", analysisStartDateInput.value, "start");
+                updateVisItemDate("analysisPhase", analysisEndDateInput.value, "end");
             }
             function updateBuildEndDate() {
                 setEndDate(buildStartDateInput, buildDurationInput, buildEndDateInput);
-                updateVisualizationDate("buildPhase", buildStartDateInput.value, "start");
-                updateVisualizationDate("buildPhase", buildEndDateInput.value, "end");
+                updateVisItemDate("buildPhase", buildStartDateInput.value, "start");
+                updateVisItemDate("buildPhase", buildEndDateInput.value, "end");
             }
             function updateTestingEndDate() {
                 setEndDate(testingStartDateInput, testingDurationInput, testingEndDateInput);
-                updateVisualizationDate("testingPhase", testingStartDateInput.value, "start");
-                updateVisualizationDate("testingPhase", testingEndDateInput.value, "end");
+                updateVisItemDate("testingPhase", testingStartDateInput.value, "start");
+                updateVisItemDate("testingPhase", testingEndDateInput.value, "end");
             }
             function updateTrainingEndDate() {
                 setEndDate(trainingStartDateInput, trainingDurationInput, trainingEndDateInput);
-                updateVisualizationDate("trainingPhase", trainingStartDateInput.value, "start");
-                updateVisualizationDate("trainingPhase", trainingEndDateInput.value, "end");
+                updateVisItemDate("trainingPhase", trainingStartDateInput.value, "start");
+                updateVisItemDate("trainingPhase", trainingEndDateInput.value, "end");
             }
 
             const analysisDurationValue = document.getElementById('analysisDurationValue');
@@ -641,20 +642,20 @@
                 const PostUpgradeSUDate = new Date(PRDUpgradeDate.getTime() + 2 * 7 * 24 * 60 * 60 * 1000); // 2 weeks in milliseconds
                 PostUpgradeSUDeliveryDateInput.valueAsDate = PostUpgradeSUDate;
 
-                updateVisualizationDate("upgradePeriod", upgradeStartDateInput.value, "start");
-                updateVisualizationDate("upgradePeriod", upgradeEndDateInput.value, "end");
-                updateVisualizationDate("analysisPhase", analysisStartDateInput.value, "start");
-                updateVisualizationDate("analysisPhase", analysisEndDateInput.value, "end");
-                updateVisualizationDate("buildPhase", buildStartDateInput.value, "start");
-                updateVisualizationDate("buildPhase", buildEndDateInput.value, "end");
-                updateVisualizationDate("testingPhase", testingStartDateInput.value, "start");
-                updateVisualizationDate("testingPhase", testingEndDateInput.value, "end");
-                updateVisualizationDate("trainingPhase", trainingStartDateInput.value, "start");
-                updateVisualizationDate("trainingPhase", trainingEndDateInput.value, "end");
+                updateVisItemDate("upgradePeriod", upgradeStartDateInput.value, "start");
+                updateVisItemDate("upgradePeriod", upgradeEndDateInput.value, "end");
+                updateVisItemDate("analysisPhase", analysisStartDateInput.value, "start");
+                updateVisItemDate("analysisPhase", analysisEndDateInput.value, "end");
+                updateVisItemDate("buildPhase", buildStartDateInput.value, "start");
+                updateVisItemDate("buildPhase", buildEndDateInput.value, "end");
+                updateVisItemDate("testingPhase", testingStartDateInput.value, "start");
+                updateVisItemDate("testingPhase", testingEndDateInput.value, "end");
+                updateVisItemDate("trainingPhase", trainingStartDateInput.value, "start");
+                updateVisItemDate("trainingPhase", trainingEndDateInput.value, "end");
             }
             setDefaultDates();
 
-            function updateVisualizationDate(itemID, date, type="start") {
+            function updateVisItemDate(itemID, date, type="start") {
                 const item = items.get(itemID);
                 if ("start" === type) {
                     item.start = date;
@@ -664,15 +665,22 @@
                 items.update(item);
             }
 
-            function updateVisualizationContent(itemID, content) {
+            function updateVisItemContent(itemID, content) {
                 const item = items.get(itemID);
                 item.content = content;
                 items.update(item);
             }
 
+            function updateVisGroupContent(groupID, content) {
+                const group = groups.get(groupID);
+                group.content = content;
+                groups.update(group);
+            }
+
             function updateVersionName() {
                 const versionName = versionNameSelect.options[versionNameSelect.selectedIndex].text;
-                updateVisualizationContent("upgradePeriod", `Upgrade to ${versionName}`);
+                updateVisItemContent("upgradePeriod", `Upgrade to ${versionName}`);
+                updateVisGroupContent("upgrade", versionName);
             }
             
             upgradeStartDateInput.addEventListener('input', () => {
