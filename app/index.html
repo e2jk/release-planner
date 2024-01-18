@@ -472,12 +472,27 @@
                 ]);
             }, suDeliveries);
 
+            function setStartDate(startDate) {
+                // If the start date is on a Friday, Saturday or Sunday, move it up to the next Monday
+                let newStartDate = new Date(startDate);
+                const numDaysToAdd = {5: 3, 6: 2, 0: 1, 1: 0, 2: 0, 3: 0, 4: 0}[newStartDate.getDay()];
+                if (numDaysToAdd > 0) {
+                    newStartDate.setDate(newStartDate.getDate() + numDaysToAdd);
+                }
+                return newStartDate;
+            }
+
             function setEndDate(startDateInput, durationWeeksInput, endDateInput) {
                 const startDate = new Date(startDateInput.value);
                 const durationWeeks = parseInt(durationWeeksInput.value);
                 
                 if (!isNaN(startDate.getTime()) && !isNaN(durationWeeks)) {
-                    const endDate = new Date(startDate.getTime() + durationWeeks * 7 * 24 * 60 * 60 * 1000); // Convert weeks to milliseconds
+                    let endDate = new Date(startDate.getTime() + durationWeeks * 7 * 24 * 60 * 60 * 1000); // Convert weeks to milliseconds
+                    // If the end date is on a Saturday, Sunday or Monday, move it back to the prior Friday
+                    const numDaysToSubstract = {6: 1, 0: 2, 1: 3, 3: 0, 4: 0, 5: 0}[endDate.getDay()];
+                    if (numDaysToSubstract > 0) {
+                        endDate = new Date(endDate - numDaysToSubstract * 24 * 60 * 60 * 1000);
+                    }
                     endDateInput.valueAsDate = endDate;
                 } else {
                     endDateInput.value = ''; // Clear the value if inputs are not valid
@@ -616,19 +631,19 @@
                 }
 
                 // Set start date of the Analysis phase is the same as start of the upgrade itself
-                analysisStartDateInput.value = upgradeStartDateInput.value;
+                analysisStartDateInput.valueAsDate = setStartDate(upgradeStartDateInput.value);
                 updateAnalysisEndDate();
 
                 // Default start date of the build phase is the end of the analysis phase
-                buildStartDateInput.value = analysisEndDateInput.value;
+                buildStartDateInput.valueAsDate = setStartDate(analysisEndDateInput.value);
                 updateBuildEndDate();
 
                 // Default start date of the testing phase is the end of the build phase
-                testingStartDateInput.value = buildEndDateInput.value;
+                testingStartDateInput.valueAsDate = setStartDate(buildEndDateInput.value);
                 updateTestingEndDate();
 
                 // Default start date of the training phase is the end of the build phase
-                trainingStartDateInput.value = testingEndDateInput.value;
+                trainingStartDateInput.valueAsDate = setStartDate(testingEndDateInput.value);
                 updateTrainingEndDate();
 
                 // Default dates for the environment upgrades
