@@ -1,0 +1,27 @@
+{
+  "name": "release-planner",
+  "version": "0.0.1",
+  "description": "Plan your environment releases.",
+  "main": "index.html",
+  "scripts": {
+    "test": "<TODO>"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/e2jk/release-planner.git"
+  },
+  "keywords": [
+    "release",
+    "planning",
+    "EMR",
+    "Epic",
+    "version",
+    "upgrade"
+  ],
+  "author": "Emilien Klein <emilien@klein.st>",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/e2jk/release-planner/issues"
+  },
+  "homepage": "https://github.com/e2jk/release-planner#readme"
+}
