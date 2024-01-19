@@ -4,6 +4,8 @@
   "description": "Plan your environment releases.",
   "main": "index.html",
   "scripts": {
+    "build-js": "esbuild ./src/app.js --outfile=./public/bundle.js --bundle",
+    "watch-js": "esbuild ./src/app.js --outfile=./public/bundle.js --bundle --watch",
     "test": "<TODO>"
   },
   "repository": {
@@ -23,5 +25,8 @@
   "bugs": {
     "url": "https://github.com/e2jk/release-planner/issues"
   },
-  "homepage": "https://github.com/e2jk/release-planner#readme"
+  "homepage": "https://github.com/e2jk/release-planner#readme",
+  "devDependencies": {
+    "esbuild": "^0.19.11"
+  }
 }
