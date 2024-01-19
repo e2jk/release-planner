@@ -348,7 +348,7 @@
   
 
         <script>
-            // Definition of variables
+            // Definition of Variables
             // Environments and SU Deliveries
             const environments = ["REL", "POC", "TST", "MST", "ACE", "PLY", "SUP","PRD"];
             const suDeliveries = {
@@ -400,6 +400,48 @@
             const PostUpgradeSUDeliveryDateInput = document.getElementById('PostUpgradeSUDeliveryDate');
             
             const visContainer = document.getElementById('visualization');
+            
+            // Definition of Event listeners
+            numVersionsSelect.addEventListener('change', changeNumVersions);
+            upgradeDurationInput.addEventListener('input', () => {
+                upgradeDurationValue.textContent = `${upgradeDurationInput.value} weeks`;
+                setDefaultDates();
+            });
+            upgradeStartDateInput.addEventListener('input', setDefaultDates);
+            upgradeStartDateInput.addEventListener('input', updateUpgradeEndDate);
+            upgradeDurationInput.addEventListener('input', updateUpgradeEndDate);
+            upgradeEndDateInput.addEventListener('input', updateUpgradeDuration);
+            analysisStartDateInput.addEventListener('input', updateAnalysisEndDate);
+            analysisDurationInput.addEventListener('input', updateAnalysisEndDate);
+            analysisDurationInput.addEventListener('input', () => {
+                analysisDurationValue.textContent = `${analysisDurationInput.value} weeks`;
+            });
+            analysisEndDateInput.addEventListener('input', updateAnalysisDuration);
+            buildStartDateInput.addEventListener('input', updateBuildEndDate);
+            buildDurationInput.addEventListener('input', updateBuildEndDate);
+            buildDurationInput.addEventListener('input', () => {
+                buildDurationValue.textContent = `${buildDurationInput.value} weeks`;
+            });
+            buildEndDateInput.addEventListener('input', updateBuildDuration);
+            testingStartDateInput.addEventListener('input', updateTestingEndDate);
+            testingDurationInput.addEventListener('input', updateTestingEndDate);
+            testingDurationInput.addEventListener('input', () => {
+                testingDurationValue.textContent = `${testingDurationInput.value} weeks`;
+            });
+            testingEndDateInput.addEventListener('input', updateTestingDuration);
+            trainingStartDateInput.addEventListener('input', updateTrainingEndDate);
+            trainingDurationInput.addEventListener('input', updateTrainingEndDate);
+            trainingDurationInput.addEventListener('input', () => {
+                trainingDurationValue.textContent = `${trainingDurationInput.value} weeks`;
+            });
+            trainingEndDateInput.addEventListener('input', updateTrainingDuration);
+            versionNameSelect.addEventListener('input', updateVersionName);            
+            for (let i = 0; i < environments.length; i++) {
+                document.getElementById(`${environments[i]}UpgradeDate`).addEventListener('input', updateEnvironmentDate);
+            };
+            Object.keys(suDeliveries).forEach(function(key, index) {
+                document.getElementById(`${key}DeliveryDate`).addEventListener('input', updateSUDeliveryDate);
+            }, suDeliveries);
 
             // Dynamically generate the list of versions for the 3 years around today
             const currentYear = new Date().getFullYear();
@@ -453,11 +495,6 @@
                 // Changing the number of versions changes the entire planning, so recalculate all default dates
                 setDefaultDates();
             }
-            numVersionsSelect.addEventListener('change', changeNumVersions);
-            upgradeDurationInput.addEventListener('input', () => {
-                upgradeDurationValue.textContent = `${upgradeDurationInput.value} weeks`;
-                setDefaultDates();
-            });
             
             // Create DataSets for the visualization (allows two way data-binding)
             const versionName = versionNameSelect.options[versionNameSelect.selectedIndex].text;
@@ -769,56 +806,8 @@
                 const startDate = evt.target.value;
                 updateVisItemDate(`su${suName}`, startDate, "startPoint");
             }
-            
-            upgradeStartDateInput.addEventListener('input', () => {
-                setDefaultDates();
-            });
 
-            // Add event listeners to recalculate end dates on input changes
-            upgradeStartDateInput.addEventListener('input', updateUpgradeEndDate);
-            upgradeDurationInput.addEventListener('input', updateUpgradeEndDate);
-            upgradeEndDateInput.addEventListener('input', updateUpgradeDuration);
-            analysisStartDateInput.addEventListener('input', updateAnalysisEndDate);
-            analysisDurationInput.addEventListener('input', updateAnalysisEndDate);
-            analysisEndDateInput.addEventListener('input', updateAnalysisDuration);
-            buildStartDateInput.addEventListener('input', updateBuildEndDate);
-            buildDurationInput.addEventListener('input', updateBuildEndDate);
-            buildEndDateInput.addEventListener('input', updateBuildDuration);
-            testingStartDateInput.addEventListener('input', updateTestingEndDate);
-            testingDurationInput.addEventListener('input', updateTestingEndDate);
-            testingEndDateInput.addEventListener('input', updateTestingDuration);
-            trainingStartDateInput.addEventListener('input', updateTrainingEndDate);
-            trainingDurationInput.addEventListener('input', updateTrainingEndDate);
-            trainingEndDateInput.addEventListener('input', updateTrainingDuration);
-            versionNameSelect.addEventListener('input', updateVersionName);            
-            for (let i = 0; i < environments.length; i++) {
-                document.getElementById(`${environments[i]}UpgradeDate`).addEventListener('input', updateEnvironmentDate);
-            };
-            Object.keys(suDeliveries).forEach(function(key, index) {
-                document.getElementById(`${key}DeliveryDate`).addEventListener('input', updateSUDeliveryDate);
-            }, suDeliveries);
-
-            // Update analysis duration value
-            analysisDurationInput.addEventListener('input', () => {
-                analysisDurationValue.textContent = `${analysisDurationInput.value} weeks`;
-            });
-
-            // Update build duration value
-            buildDurationInput.addEventListener('input', () => {
-                buildDurationValue.textContent = `${buildDurationInput.value} weeks`;
-            });
-        
-            // Update testing duration value
-            testingDurationInput.addEventListener('input', () => {
-                testingDurationValue.textContent = `${testingDurationInput.value} weeks`;
-            });
-        
-            // Update training duration value
-            trainingDurationInput.addEventListener('input', () => {
-                trainingDurationValue.textContent = `${trainingDurationInput.value} weeks`;
-            });
-
-            // Create a Timeline
+            // Create the Timeline
             const timeline = new vis.Timeline(visContainer, items, groups, timelineOptions);
         </script>
     </body>
