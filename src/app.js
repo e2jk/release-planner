@@ -1,8 +1,8 @@
-// Import Bootstrap JavaScript and CSS
-import 'bootstrap/dist/js/bootstrap.bundle.js';
+// Import minified Bootstrap JavaScript and CSS
+import 'bootstrap/dist/js/bootstrap.bundle.min.js';
 import "bootstrap/dist/css/bootstrap.min.css";
-// Import vis-timeline JavaScript and CSS
-import { Timeline, DataSet } from "vis-timeline/standalone";
+// Import minified vis-timeline JavaScript and CSS
+import { Timeline, DataSet } from "vis-timeline/standalone/esm/vis-timeline-graph2d.min.js";
 import "vis-timeline/styles/vis-timeline-graph2d.min.css";
 
 // ================================================================
