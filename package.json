@@ -30,6 +30,7 @@
     "esbuild": "^0.19.11"
   },
   "dependencies": {
+    "bootstrap": "^5.3.2",
     "vis-timeline": "^7.7.3"
   }
 }
