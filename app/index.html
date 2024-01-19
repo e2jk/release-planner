@@ -348,8 +348,60 @@
   
 
         <script>
-            // Dynamically generate the list of versions for the 3 years around today
+            // Definition of variables
+            // Environments and SU Deliveries
+            const environments = ["REL", "POC", "TST", "MST", "ACE", "PLY", "SUP","PRD"];
+            const suDeliveries = {
+                "InitialSU": "Initial",
+                "AllFixSU": "All Fix SUs",
+                "PreUpgradeCriticalSU": "Pre-Upgrade Critical",
+                "PostUpgradeSU": "Post-Upgrade"
+            };
+            // UI elements
             const versionNameSelect = document.getElementById('versionName');
+            const numVersionsSelect = document.getElementById('numVersions');
+            const upgradeStartDateInput = document.getElementById('upgradeStartDate');
+            const upgradeEndDateInput = document.getElementById('upgradeEndDate');
+            const upgradeDurationInput = document.getElementById('upgradeDuration');
+            const upgradeDurationValue = document.getElementById('upgradeDurationValue');
+
+            const analysisStartDateInput = document.getElementById('analysisStartDate');
+            const analysisEndDateInput = document.getElementById('analysisEndDate');
+            const analysisDurationInput = document.getElementById('analysisDuration');
+            const analysisDurationValue = document.getElementById('analysisDurationValue');
+
+            const buildStartDateInput = document.getElementById('buildStartDate');
+            const buildEndDateInput = document.getElementById('buildEndDate');
+            const buildDurationInput = document.getElementById('buildDuration');
+            const buildDurationValue = document.getElementById('buildDurationValue');
+
+            const testingStartDateInput = document.getElementById('testingStartDate');
+            const testingEndDateInput = document.getElementById('testingEndDate');
+            const testingDurationInput = document.getElementById('testingDuration');
+            const testingDurationValue = document.getElementById('testingDurationValue');
+
+            const trainingStartDateInput = document.getElementById('trainingStartDate');
+            const trainingEndDateInput = document.getElementById('trainingEndDate');
+            const trainingDurationInput = document.getElementById('trainingDuration');
+            const trainingDurationValue = document.getElementById('trainingDurationValue');
+
+            const RELUpgradeDateInput = document.getElementById('RELUpgradeDate');
+            const POCUpgradeDateInput = document.getElementById('POCUpgradeDate');
+            const TSTUpgradeDateInput = document.getElementById('TSTUpgradeDate');
+            const MSTUpgradeDateInput = document.getElementById('MSTUpgradeDate');
+            const ACEUpgradeDateInput = document.getElementById('ACEUpgradeDate');
+            const PLYUpgradeDateInput = document.getElementById('PLYUpgradeDate');
+            const SUPUpgradeDateInput = document.getElementById('SUPUpgradeDate');
+            const PRDUpgradeDateInput = document.getElementById('PRDUpgradeDate');
+
+            const InitialSUDeliveryDateInput = document.getElementById('InitialSUDeliveryDate');
+            const AllFixSUDeliveryDateInput = document.getElementById('AllFixSUDeliveryDate');
+            const PreUpgradeCriticalSUDeliveryDateInput = document.getElementById('PreUpgradeCriticalSUDeliveryDate');
+            const PostUpgradeSUDeliveryDateInput = document.getElementById('PostUpgradeSUDeliveryDate');
+            
+            const visContainer = document.getElementById('visualization');
+
+            // Dynamically generate the list of versions for the 3 years around today
             const currentYear = new Date().getFullYear();
             const nextYear = currentYear + 1;
             const months = ['February', 'May', 'August', 'November'];
@@ -377,7 +429,6 @@
             }
             
             // Set the default upgradeStartDate to be the Monday in 4 weeks
-            const upgradeStartDateInput = document.getElementById('upgradeStartDate');
             const today = new Date();
             // 3 weeks * 7 days * 24 hours * 60 minutes * 60 seconds * 1000 milliseconds
             const mondayInFourWeeks = new Date(today.getTime() + 3 * 7 * 24 * 60 * 60 * 1000);
@@ -388,9 +439,6 @@
             upgradeStartDateInput.value = formattedDate;
 
             // Update upgrade duration value
-            const upgradeDurationInput = document.getElementById('upgradeDuration');
-            const upgradeDurationValue = document.getElementById('upgradeDurationValue');
-            const numVersionsSelect = document.getElementById('numVersions');
 
             // Set the default values when the page is initialized (the other General settings are explicitly calculated and set elsewhere)
             upgradeDurationInput.value = 14;
@@ -410,41 +458,6 @@
                 upgradeDurationValue.textContent = `${upgradeDurationInput.value} weeks`;
                 setDefaultDates();
             });
-
-            // Set end dates based on the related start dates and duration, and update when one of these change
-            const upgradeEndDateInput = document.getElementById('upgradeEndDate');
-            const analysisStartDateInput = document.getElementById('analysisStartDate');
-            const analysisDurationInput = document.getElementById('analysisDuration');
-            const analysisEndDateInput = document.getElementById('analysisEndDate');
-            const buildStartDateInput = document.getElementById('buildStartDate');
-            const buildDurationInput = document.getElementById('buildDuration');
-            const buildEndDateInput = document.getElementById('buildEndDate');
-            const testingStartDateInput = document.getElementById('testingStartDate');
-            const testingDurationInput = document.getElementById('testingDuration');
-            const testingEndDateInput = document.getElementById('testingEndDate');
-            const trainingStartDateInput = document.getElementById('trainingStartDate');
-            const trainingDurationInput = document.getElementById('trainingDuration');
-            const trainingEndDateInput = document.getElementById('trainingEndDate');
-            const RELUpgradeDateInput = document.getElementById('RELUpgradeDate');
-            const POCUpgradeDateInput = document.getElementById('POCUpgradeDate');
-            const TSTUpgradeDateInput = document.getElementById('TSTUpgradeDate');
-            const MSTUpgradeDateInput = document.getElementById('MSTUpgradeDate');
-            const ACEUpgradeDateInput = document.getElementById('ACEUpgradeDate');
-            const PLYUpgradeDateInput = document.getElementById('PLYUpgradeDate');
-            const SUPUpgradeDateInput = document.getElementById('SUPUpgradeDate');
-            const PRDUpgradeDateInput = document.getElementById('PRDUpgradeDate');
-            const InitialSUDeliveryDateInput = document.getElementById('InitialSUDeliveryDate');
-            const AllFixSUDeliveryDateInput = document.getElementById('AllFixSUDeliveryDate');
-            const PreUpgradeCriticalSUDeliveryDateInput = document.getElementById('PreUpgradeCriticalSUDeliveryDate');
-            const PostUpgradeSUDeliveryDateInput = document.getElementById('PostUpgradeSUDeliveryDate');
-
-            const environments = ["REL", "POC", "TST", "MST", "ACE", "PLY", "SUP","PRD"];
-            const suDeliveries = {
-                "InitialSU": "Initial",
-                "AllFixSU": "All Fix SUs",
-                "PreUpgradeCriticalSU": "Pre-Upgrade Critical",
-                "PostUpgradeSU": "Post-Upgrade"
-            };
             
             // Create DataSets for the visualization (allows two way data-binding)
             const versionName = versionNameSelect.options[versionNameSelect.selectedIndex].text;
@@ -565,10 +578,6 @@
                 updateVisItemDate("trainingPhase", trainingEndDateInput.value, "end");
             }
 
-            const analysisDurationValue = document.getElementById('analysisDurationValue');
-            const buildDurationValue = document.getElementById('buildDurationValue');
-            const testingDurationValue = document.getElementById('testingDurationValue');
-            const trainingDurationValue = document.getElementById('trainingDurationValue');
             function determineDefaultPhaseLengths() {
                 //The length of phases depends on the number of weeks alloted for the entire upgrade
                 const upgradeDuration = parseInt(upgradeDurationInput.value);
@@ -714,7 +723,8 @@
                     timeline.setOptions(timelineOptions);
                 }
             }
-            setDefaultDates(false, true);
+            setDefaultDates(false, true);            
+            updateVersionName();
 
             function updateVisItemDate(itemID, date, type) {
                 const item = items.get(itemID);
@@ -807,13 +817,6 @@
             trainingDurationInput.addEventListener('input', () => {
                 trainingDurationValue.textContent = `${trainingDurationInput.value} weeks`;
             });
-
-            // Handling the Timeline 
-            // DOM element where the Timeline will be attached
-            const visContainer = document.getElementById('visualization');
-
-            // Update the values in the DataSet
-            updateVersionName();
 
             // Create a Timeline
             const timeline = new vis.Timeline(visContainer, items, groups, timelineOptions);
