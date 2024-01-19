@@ -391,6 +391,10 @@
             const upgradeDurationInput = document.getElementById('upgradeDuration');
             const upgradeDurationValue = document.getElementById('upgradeDurationValue');
             const numVersionsSelect = document.getElementById('numVersions');
+
+            // Set the default values when the page is initialized (the other General settings are explicitly calculated and set elsewhere)
+            upgradeDurationInput.value = 14;
+            numVersionsSelect.options[1].selected = true;
             
             function changeNumVersions() {
                 const numVersions = parseInt(numVersionsSelect.value);
