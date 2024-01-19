@@ -18,10 +18,10 @@ run `npm install` in the root of the project.
 
 Then, the project can be build running:
 
-    $ npm run build-js
+    $ npm run build
 
 Alternatively, to automatically recompile the bundled Javascript and CSS as you save modifications, run:
 
-    $ npm run watch-js
+    $ npm run watch
 
 Start up a local webserver (have a look at the Live Server extension for Visual Studio Code, if you use that IDE) and open the `public/index.html` file in your browser.
