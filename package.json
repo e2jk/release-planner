@@ -28,5 +28,8 @@
   "homepage": "https://github.com/e2jk/release-planner#readme",
   "devDependencies": {
     "esbuild": "^0.19.11"
+  },
+  "dependencies": {
+    "vis-timeline": "^7.7.3"
   }
 }

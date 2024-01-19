@@ -1,3 +1,6 @@
+import { Timeline, DataSet } from "vis-timeline/standalone";
+import "vis-timeline/styles/vis-timeline-graph2d.min.css";
+
 // ================================================================
 // Definition of Variables
 // Environments and SU Deliveries
@@ -56,14 +59,14 @@ const visContainer = document.getElementById('visualization');
 // Timeline configuration and setup
 // Create DataSets for the visualization (allows two way data-binding)
 // Groups for the upgrade, the phases and the environments
-const groups = new vis.DataSet([
+const groups = new DataSet([
     {id: "upgrade", content: "Upgrade", nestedGroups: ["phases", "environments", "su"]},
     {id: "phases", content: "Phases"},
     {id: "environments", content: "Environments"},
     {id: "su", content: "SU Deliveries"}
 ]);
 // Bars for phases
-const items = new vis.DataSet([
+const items = new DataSet([
     {id: "upgradePeriod", group: "upgrade"},
     {id: "analysisPhase", group: "phases", content: "Analysis"},
     {id: "buildPhase", group: "phases", content: "Build"},
@@ -90,7 +93,7 @@ const timelineOptions = {};
 initialUISetup();
 setupEventListeners();
 // Create the Timeline
-const timeline = new vis.Timeline(visContainer, items, groups, timelineOptions);
+const timeline = new Timeline(visContainer, items, groups, timelineOptions);
 
 // ================================================================
 // Functions  
