@@ -446,48 +446,11 @@
             }, suDeliveries);
 
             // ================================================================
-            // Initial setup of the UI
-            // Dynamically generate the list of versions for the 3 years around today
-            const currentYear = new Date().getFullYear();
-            const nextYear = currentYear + 1;
-            const months = ['February', 'May', 'August', 'November'];
-            for (let year = currentYear - 1; year <= nextYear; year++) {
-                for (const month of months) {
-                    const monthID = `${2 + months.indexOf(month) * 3}`.padStart(2, '0');
-                    const optionValue = `${year}-${monthID}`;
-                    const optionText = `${month} ${year}`;
-                    const option = new Option(optionText, optionValue);
-                    versionNameSelect.add(option);
-                }
-            }
-
-            // Set the default selected upgrade version to the closest month in the future
-            const currentMonth = new Date().getMonth();
-            let year = currentYear;
-            if (currentMonth + 2 > 11) {
-                year = nextYear;
-            }
-            const nextReleaseMonth = `${Math.floor(((currentMonth + 2) % 12) / 3) * 3 + 2}`.padStart(2, '0');
-            const nextReleaseversion = `${year}-${nextReleaseMonth}`;
-            const defaultOption = versionNameSelect.querySelector(`[value="${nextReleaseversion}"]`);
-            if (defaultOption) {
-                defaultOption.selected = true;
-            }
-            
-            // Set the default upgradeStartDate to be the Monday in 4 weeks
-            const today = new Date();
-            // 3 weeks * 7 days * 24 hours * 60 minutes * 60 seconds * 1000 milliseconds
-            const mondayInFourWeeks = new Date(today.getTime() + 3 * 7 * 24 * 60 * 60 * 1000);
-            // Find the next Monday
-            mondayInFourWeeks.setDate(mondayInFourWeeks.getDate() + (1 + 7 - mondayInFourWeeks.getDay()) % 7);
-            // Format the date as 'YYYY-MM-DD' for the input field
-            const formattedDate = `${mondayInFourWeeks.getFullYear()}-${(mondayInFourWeeks.getMonth() + 1).toString().padStart(2, '0')}-${mondayInFourWeeks.getDate().toString().padStart(2, '0')}`;
-            upgradeStartDateInput.value = formattedDate;
-            
+            // Timeline configuration and setup
             // Create DataSets for the visualization (allows two way data-binding)
             // Groups for the upgrade, the phases and the environments
             const groups = new vis.DataSet([
-                {id: "upgrade", content: versionNameSelect.options[versionNameSelect.selectedIndex].text, nestedGroups: ["phases", "environments", "su"]},
+                {id: "upgrade", content: "Upgrade", nestedGroups: ["phases", "environments", "su"]},
                 {id: "phases", content: "Phases"},
                 {id: "environments", content: "Environments"},
                 {id: "su", content: "SU Deliveries"}
@@ -515,16 +478,59 @@
             // Configuration for the Timeline
             const timelineOptions = {};
 
-            // Set the default values when the page is initialized (the other General settings are explicitly calculated and set elsewhere)
-            upgradeDurationInput.value = 14;
-            numVersionsSelect.options[1].selected = true;
-            setDefaultDates(false, true);            
-            updateVersionName();
+            // ================================================================
+            // Initial setup of the UI
+            initialUISetup();
             // Create the Timeline
             const timeline = new vis.Timeline(visContainer, items, groups, timelineOptions);
 
             // ================================================================
-            // Functions            
+            // Functions  
+            function initialUISetup() {
+                // Dynamically generate the list of versions for the 3 years around today
+                const currentYear = new Date().getFullYear();
+                const nextYear = currentYear + 1;
+                const months = ['February', 'May', 'August', 'November'];
+                for (let year = currentYear - 1; year <= nextYear; year++) {
+                    for (const month of months) {
+                        const monthID = `${2 + months.indexOf(month) * 3}`.padStart(2, '0');
+                        const optionValue = `${year}-${monthID}`;
+                        const optionText = `${month} ${year}`;
+                        const option = new Option(optionText, optionValue);
+                        versionNameSelect.add(option);
+                    }
+                }
+
+                // Set the default selected upgrade version to the closest month in the future
+                const currentMonth = new Date().getMonth();
+                let year = currentYear;
+                if (currentMonth + 2 > 11) {
+                    year = nextYear;
+                }
+                const nextReleaseMonth = `${Math.floor(((currentMonth + 2) % 12) / 3) * 3 + 2}`.padStart(2, '0');
+                const nextReleaseversion = `${year}-${nextReleaseMonth}`;
+                const defaultOption = versionNameSelect.querySelector(`[value="${nextReleaseversion}"]`);
+                if (defaultOption) {
+                    defaultOption.selected = true;
+                }
+                
+                // Set the default upgradeStartDate to be the Monday in 4 weeks
+                const today = new Date();
+                // 3 weeks * 7 days * 24 hours * 60 minutes * 60 seconds * 1000 milliseconds
+                const mondayInFourWeeks = new Date(today.getTime() + 3 * 7 * 24 * 60 * 60 * 1000);
+                // Find the next Monday
+                mondayInFourWeeks.setDate(mondayInFourWeeks.getDate() + (1 + 7 - mondayInFourWeeks.getDay()) % 7);
+                // Format the date as 'YYYY-MM-DD' for the input field
+                const formattedDate = `${mondayInFourWeeks.getFullYear()}-${(mondayInFourWeeks.getMonth() + 1).toString().padStart(2, '0')}-${mondayInFourWeeks.getDate().toString().padStart(2, '0')}`;
+                upgradeStartDateInput.value = formattedDate;
+
+                // Set the default values when the page is initialized (the other General settings are explicitly calculated and set elsewhere)
+                upgradeDurationInput.value = 14;
+                numVersionsSelect.options[1].selected = true;
+                setDefaultDates(false, true);            
+                updateVersionName();
+            }
+
             function changeNumVersions() {
                 const numVersions = parseInt(numVersionsSelect.value);
                 const calculatedDuration = 7 * numVersions;
