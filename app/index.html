@@ -348,6 +348,7 @@
   
 
         <script>
+            // ================================================================
             // Definition of Variables
             // Environments and SU Deliveries
             const environments = ["REL", "POC", "TST", "MST", "ACE", "PLY", "SUP","PRD"];
@@ -401,6 +402,7 @@
             
             const visContainer = document.getElementById('visualization');
             
+            // ================================================================
             // Definition of Event listeners
             numVersionsSelect.addEventListener('change', changeNumVersions);
             upgradeDurationInput.addEventListener('input', () => {
@@ -443,6 +445,8 @@
                 document.getElementById(`${key}DeliveryDate`).addEventListener('input', updateSUDeliveryDate);
             }, suDeliveries);
 
+            // ================================================================
+            // Initial setup of the UI
             // Dynamically generate the list of versions for the 3 years around today
             const currentYear = new Date().getFullYear();
             const nextYear = currentYear + 1;
@@ -479,28 +483,11 @@
             // Format the date as 'YYYY-MM-DD' for the input field
             const formattedDate = `${mondayInFourWeeks.getFullYear()}-${(mondayInFourWeeks.getMonth() + 1).toString().padStart(2, '0')}-${mondayInFourWeeks.getDate().toString().padStart(2, '0')}`;
             upgradeStartDateInput.value = formattedDate;
-
-            // Update upgrade duration value
-
-            // Set the default values when the page is initialized (the other General settings are explicitly calculated and set elsewhere)
-            upgradeDurationInput.value = 14;
-            numVersionsSelect.options[1].selected = true;
-            
-            function changeNumVersions() {
-                const numVersions = parseInt(numVersionsSelect.value);
-                const calculatedDuration = 7 * numVersions;
-                
-                upgradeDurationInput.value = calculatedDuration;
-                upgradeDurationValue.textContent = `${calculatedDuration} weeks`;
-                // Changing the number of versions changes the entire planning, so recalculate all default dates
-                setDefaultDates();
-            }
             
             // Create DataSets for the visualization (allows two way data-binding)
-            const versionName = versionNameSelect.options[versionNameSelect.selectedIndex].text;
             // Groups for the upgrade, the phases and the environments
             const groups = new vis.DataSet([
-                {id: "upgrade", content: versionName, nestedGroups: ["phases", "environments", "su"]},
+                {id: "upgrade", content: versionNameSelect.options[versionNameSelect.selectedIndex].text, nestedGroups: ["phases", "environments", "su"]},
                 {id: "phases", content: "Phases"},
                 {id: "environments", content: "Environments"},
                 {id: "su", content: "SU Deliveries"}
@@ -525,9 +512,28 @@
                     {id: `su${key}`, content: this[key], group: "su", type: 'point'}
                 ]);
             }, suDeliveries);
-
             // Configuration for the Timeline
             const timelineOptions = {};
+
+            // Set the default values when the page is initialized (the other General settings are explicitly calculated and set elsewhere)
+            upgradeDurationInput.value = 14;
+            numVersionsSelect.options[1].selected = true;
+            setDefaultDates(false, true);            
+            updateVersionName();
+            // Create the Timeline
+            const timeline = new vis.Timeline(visContainer, items, groups, timelineOptions);
+
+            // ================================================================
+            // Functions            
+            function changeNumVersions() {
+                const numVersions = parseInt(numVersionsSelect.value);
+                const calculatedDuration = 7 * numVersions;
+                
+                upgradeDurationInput.value = calculatedDuration;
+                upgradeDurationValue.textContent = `${calculatedDuration} weeks`;
+                // Changing the number of versions changes the entire planning, so recalculate all default dates
+                setDefaultDates();
+            }
 
             function setStartDate(startDate) {
                 // If the start date is on a Friday, Saturday or Sunday, move it up to the next Monday
@@ -760,8 +766,6 @@
                     timeline.setOptions(timelineOptions);
                 }
             }
-            setDefaultDates(false, true);            
-            updateVersionName();
 
             function updateVisItemDate(itemID, date, type) {
                 const item = items.get(itemID);
@@ -806,9 +810,6 @@
                 const startDate = evt.target.value;
                 updateVisItemDate(`su${suName}`, startDate, "startPoint");
             }
-
-            // Create the Timeline
-            const timeline = new vis.Timeline(visContainer, items, groups, timelineOptions);
         </script>
     </body>
 </html>
