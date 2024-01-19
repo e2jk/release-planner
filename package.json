@@ -5,6 +5,7 @@
   "main": "index.html",
   "scripts": {
     "build-js": "esbuild ./src/app.js --outfile=./public/bundle.js --bundle",
+    "build-js-prod": "esbuild ./src/app.js --outfile=./public/bundle.js --bundle --minify",
     "watch-js": "esbuild ./src/app.js --outfile=./public/bundle.js --bundle --watch",
     "test": "<TODO>"
   },
