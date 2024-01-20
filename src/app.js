@@ -16,29 +16,9 @@ const suDeliveries = {
     "PreUpgradeCriticalSU": "Pre-Upgrade Critical",
     "PostUpgradeSU": "Post-Upgrade"
 };
-// UI elements
-const versionNameSelect = document.getElementById('versionName');
-const numVersionsSelect = document.getElementById('numVersions');
-const startDateInput = {"upgrade": document.getElementById('upgradeStartDate')};
-const endDateInput = {"upgrade": document.getElementById('upgradeEndDate')};
-const durationInput = {"upgrade": document.getElementById('upgradeDuration')};
-const durationValue = {"upgrade": document.getElementById('upgradeDurationValue')};
-for (let i = 0; i < phases.length; i++) {
-    startDateInput[phases[i]] = document.getElementById(`${phases[i]}StartDate`);
-    endDateInput[phases[i]] = document.getElementById(`${phases[i]}EndDate`);
-    durationInput[phases[i]] = document.getElementById(`${phases[i]}Duration`);
-    durationValue[phases[i]] = document.getElementById(`${phases[i]}DurationValue`);
-};
-const upgradeDateInput = {};
-for (let i = 0; i < environments.length; i++) {
-    upgradeDateInput[environments[i]] = document.getElementById(`${environments[i]}UpgradeDate`);
-};
-const deliveryDateInput = {};
-Object.keys(suDeliveries).forEach(function(key, index) {
-    deliveryDateInput[key] = document.getElementById(`${key}DeliveryDate`);
-}, suDeliveries);
 
-const visContainer = document.getElementById('visualization');
+// Keep references to the UI elements
+const ui = {};
 
 // ================================================================
 // Timeline configuration and setup
@@ -74,14 +54,33 @@ Object.keys(suDeliveries).forEach(function(key, index) {
 const timelineOptions = {};
 
 // ================================================================
-// Initial setup of the UI
-initialUISetup();
-setupEventListeners();
-// Create the Timeline
-const timeline = new Timeline(visContainer, items, groups, timelineOptions);
+// Functions
+function getUI() {
+    ui.versionNameSelect = document.getElementById('versionName');
+    ui.versionNameSelect = document.getElementById('versionName');
+    ui.numVersionsSelect = document.getElementById('numVersions');
+    ui.startDateInput = {"upgrade": document.getElementById('upgradeStartDate')};
+    ui.endDateInput = {"upgrade": document.getElementById('upgradeEndDate')};
+    ui.durationInput = {"upgrade": document.getElementById('upgradeDuration')};
+    ui.durationValue = {"upgrade": document.getElementById('upgradeDurationValue')};
+    for (let i = 0; i < phases.length; i++) {
+        ui.startDateInput[phases[i]] = document.getElementById(`${phases[i]}StartDate`);
+        ui.endDateInput[phases[i]] = document.getElementById(`${phases[i]}EndDate`);
+        ui.durationInput[phases[i]] = document.getElementById(`${phases[i]}Duration`);
+        ui.durationValue[phases[i]] = document.getElementById(`${phases[i]}DurationValue`);
+    };
+    ui.upgradeDateInput = {};
+    for (let i = 0; i < environments.length; i++) {
+        ui.upgradeDateInput[environments[i]] = document.getElementById(`${environments[i]}UpgradeDate`);
+    };
+    ui.deliveryDateInput = {};
+    Object.keys(suDeliveries).forEach(function(key, index) {
+        ui.deliveryDateInput[key] = document.getElementById(`${key}DeliveryDate`);
+    }, suDeliveries);
 
-// ================================================================
-// Functions  
+    ui.visContainer = document.getElementById('visualization');
+}
+
 function initialUISetup() {
     // Dynamically generate the list of versions for the 3 years around today
     const currentYear = new Date().getFullYear();
@@ -93,7 +92,7 @@ function initialUISetup() {
             const optionValue = `${year}-${monthID}`;
             const optionText = `${month} ${year}`;
             const option = new Option(optionText, optionValue);
-            versionNameSelect.add(option);
+            ui.versionNameSelect.add(option);
         }
     }
 
@@ -105,7 +104,7 @@ function initialUISetup() {
     }
     const nextReleaseMonth = `${Math.floor(((currentMonth + 2) % 12) / 3) * 3 + 2}`.padStart(2, '0');
     const nextReleaseversion = `${year}-${nextReleaseMonth}`;
-    const defaultOption = versionNameSelect.querySelector(`[value="${nextReleaseversion}"]`);
+    const defaultOption = ui.versionNameSelect.querySelector(`[value="${nextReleaseversion}"]`);
     if (defaultOption) {
         defaultOption.selected = true;
     }
@@ -118,50 +117,50 @@ function initialUISetup() {
     mondayInFourWeeks.setDate(mondayInFourWeeks.getDate() + (1 + 7 - mondayInFourWeeks.getDay()) % 7);
     // Format the date as 'YYYY-MM-DD' for the input field
     const formattedDate = `${mondayInFourWeeks.getFullYear()}-${(mondayInFourWeeks.getMonth() + 1).toString().padStart(2, '0')}-${mondayInFourWeeks.getDate().toString().padStart(2, '0')}`;
-    startDateInput["upgrade"].value = formattedDate;
+    ui.startDateInput["upgrade"].value = formattedDate;
 
     // Set the default values when the page is initialized (the other General settings are explicitly calculated and set elsewhere)
-    durationInput["upgrade"].value = 14;
-    numVersionsSelect.options[1].selected = true;
+    ui.durationInput["upgrade"].value = 14;
+    ui.numVersionsSelect.options[1].selected = true;
     setDefaultDates(false, true);            
     updateVersionName();
 }
 
 function setupEventListeners() {
-    numVersionsSelect.addEventListener('change', changeNumVersions);
-    durationInput["upgrade"].addEventListener('input', () => {
-        durationValue["upgrade"].textContent = `${durationInput["upgrade"].value} weeks`;
+    ui.numVersionsSelect.addEventListener('change', changeNumVersions);
+    ui.durationInput["upgrade"].addEventListener('input', () => {
+        ui.durationValue["upgrade"].textContent = `${ui.durationInput["upgrade"].value} weeks`;
         setDefaultDates();
     });
-    startDateInput["upgrade"].addEventListener('input', setDefaultDates);
-    startDateInput["upgrade"].addEventListener('input', updateUpgradeEndDate);
-    durationInput["upgrade"].addEventListener('input', updateUpgradeEndDate);
-    endDateInput["upgrade"].addEventListener('input', updateUpgradeDuration);
-    startDateInput["analysis"].addEventListener('input', updateAnalysisEndDate);
-    durationInput["analysis"].addEventListener('input', updateAnalysisEndDate);
-    durationInput["analysis"].addEventListener('input', () => {
-        durationValue["analysis"].textContent = `${durationInput["analysis"].value} weeks`;
+    ui.startDateInput["upgrade"].addEventListener('input', setDefaultDates);
+    ui.startDateInput["upgrade"].addEventListener('input', updateUpgradeEndDate);
+    ui.durationInput["upgrade"].addEventListener('input', updateUpgradeEndDate);
+    ui.endDateInput["upgrade"].addEventListener('input', updateUpgradeDuration);
+    ui.startDateInput["analysis"].addEventListener('input', updateAnalysisEndDate);
+    ui.durationInput["analysis"].addEventListener('input', updateAnalysisEndDate);
+    ui.durationInput["analysis"].addEventListener('input', () => {
+        ui.durationValue["analysis"].textContent = `${ui.durationInput["analysis"].value} weeks`;
     });
-    endDateInput["analysis"].addEventListener('input', updateAnalysisDuration);
-    startDateInput["build"].addEventListener('input', updateBuildEndDate);
-    durationInput["build"].addEventListener('input', updateBuildEndDate);
-    durationInput["build"].addEventListener('input', () => {
-        durationValue["build"].textContent = `${durationInput["build"].value} weeks`;
+    ui.endDateInput["analysis"].addEventListener('input', updateAnalysisDuration);
+    ui.startDateInput["build"].addEventListener('input', updateBuildEndDate);
+    ui.durationInput["build"].addEventListener('input', updateBuildEndDate);
+    ui.durationInput["build"].addEventListener('input', () => {
+        ui.durationValue["build"].textContent = `${ui.durationInput["build"].value} weeks`;
     });
-    endDateInput["build"].addEventListener('input', updateBuildDuration);
-    startDateInput["testing"].addEventListener('input', updateTestingEndDate);
-    durationInput["testing"].addEventListener('input', updateTestingEndDate);
-    durationInput["testing"].addEventListener('input', () => {
-        durationValue["testing"].textContent = `${durationInput["testing"].value} weeks`;
+    ui.endDateInput["build"].addEventListener('input', updateBuildDuration);
+    ui.startDateInput["testing"].addEventListener('input', updateTestingEndDate);
+    ui.durationInput["testing"].addEventListener('input', updateTestingEndDate);
+    ui.durationInput["testing"].addEventListener('input', () => {
+        ui.durationValue["testing"].textContent = `${ui.durationInput["testing"].value} weeks`;
     });
-    endDateInput["testing"].addEventListener('input', updateTestingDuration);
-    startDateInput["training"].addEventListener('input', updateTrainingEndDate);
-    durationInput["training"].addEventListener('input', updateTrainingEndDate);
-    durationInput["training"].addEventListener('input', () => {
-        durationValue["training"].textContent = `${durationInput["training"].value} weeks`;
+    ui.endDateInput["testing"].addEventListener('input', updateTestingDuration);
+    ui.startDateInput["training"].addEventListener('input', updateTrainingEndDate);
+    ui.durationInput["training"].addEventListener('input', updateTrainingEndDate);
+    ui.durationInput["training"].addEventListener('input', () => {
+        ui.durationValue["training"].textContent = `${ui.durationInput["training"].value} weeks`;
     });
-    endDateInput["training"].addEventListener('input', updateTrainingDuration);
-    versionNameSelect.addEventListener('input', updateVersionName);            
+    ui.endDateInput["training"].addEventListener('input', updateTrainingDuration);
+    ui.versionNameSelect.addEventListener('input', updateVersionName);            
     for (let i = 0; i < environments.length; i++) {
         document.getElementById(`${environments[i]}UpgradeDate`).addEventListener('input', updateEnvironmentDate);
     };
@@ -171,11 +170,11 @@ function setupEventListeners() {
 }
 
 function changeNumVersions() {
-    const numVersions = parseInt(numVersionsSelect.value);
+    const numVersions = parseInt(ui.numVersionsSelect.value);
     const calculatedDuration = 7 * numVersions;
     
-    durationInput["upgrade"].value = calculatedDuration;
-    durationValue["upgrade"].textContent = `${calculatedDuration} weeks`;
+    ui.durationInput["upgrade"].value = calculatedDuration;
+    ui.durationValue["upgrade"].textContent = `${calculatedDuration} weeks`;
     // Changing the number of versions changes the entire planning, so recalculate all default dates
     setDefaultDates();
 }
@@ -207,7 +206,7 @@ function setEndDate(startDateInput, durationWeeksInput, endDateInput) {
     }
 }
 function updateUpgradeEndDate() {
-    setEndDate(startDateInput["upgrade"], durationInput["upgrade"], endDateInput["upgrade"]);
+    setEndDate(ui.startDateInput["upgrade"], ui.durationInput["upgrade"], ui.endDateInput["upgrade"]);
 }
 function getRoundedNumberOfWeeks(startDate, endDate) {
     return Math.round((endDate - startDate) / (7 * 24 * 60 * 60 * 1000)); // Convert from milliseconds to weeks
@@ -221,54 +220,54 @@ function updateDuration(startDateInput, endDateInput, durationInput, durationVal
     durationValue.textContent = `${durationInWeeks} weeks`;
 }
 function updateUpgradeDuration() {
-    updateDuration(startDateInput["upgrade"], endDateInput["upgrade"], durationInput["upgrade"], durationValue["upgrade"]);
+    updateDuration(ui.startDateInput["upgrade"], ui.endDateInput["upgrade"], ui.durationInput["upgrade"], ui.durationValue["upgrade"]);
     // Recalculate the rest of the default dates
     setDefaultDates(true);
 }
 function updateAnalysisDuration() {
-    updateDuration(startDateInput["analysis"], endDateInput["analysis"], durationInput["analysis"], durationValue["analysis"]);
-    updateVisItemDate("analysisPhase", startDateInput["analysis"].value, "startPhase");
-    updateVisItemDate("analysisPhase", endDateInput["analysis"].value, "end");
+    updateDuration(ui.startDateInput["analysis"], ui.endDateInput["analysis"], ui.durationInput["analysis"], ui.durationValue["analysis"]);
+    updateVisItemDate("analysisPhase", ui.startDateInput["analysis"].value, "startPhase");
+    updateVisItemDate("analysisPhase", ui.endDateInput["analysis"].value, "end");
 }
 function updateBuildDuration() {
-    updateDuration(startDateInput["build"], endDateInput["build"], durationInput["build"], durationValue["build"]);
-    updateVisItemDate("buildPhase", startDateInput["build"].value, "startPhase");
-    updateVisItemDate("buildPhase", endDateInput["build"].value, "end");
+    updateDuration(ui.startDateInput["build"], ui.endDateInput["build"], ui.durationInput["build"], ui.durationValue["build"]);
+    updateVisItemDate("buildPhase", ui.startDateInput["build"].value, "startPhase");
+    updateVisItemDate("buildPhase", ui.endDateInput["build"].value, "end");
 }
 function updateTestingDuration() {
-    updateDuration(startDateInput["testing"], endDateInput["testing"], durationInput["testing"], durationValue["testing"]);
-    updateVisItemDate("testingPhase", startDateInput["testing"].value, "startPhase");
-    updateVisItemDate("testingPhase", endDateInput["testing"].value, "end");
+    updateDuration(ui.startDateInput["testing"], ui.endDateInput["testing"], ui.durationInput["testing"], ui.durationValue["testing"]);
+    updateVisItemDate("testingPhase", ui.startDateInput["testing"].value, "startPhase");
+    updateVisItemDate("testingPhase", ui.endDateInput["testing"].value, "end");
 }
 function updateTrainingDuration() {
-    updateDuration(startDateInput["training"], endDateInput["training"], durationInput["training"], durationValue["training"]);
-    updateVisItemDate("trainingPhase", startDateInput["training"].value, "startPhase");
-    updateVisItemDate("trainingPhase", endDateInput["training"].value, "end");
+    updateDuration(ui.startDateInput["training"], ui.endDateInput["training"], ui.durationInput["training"], ui.durationValue["training"]);
+    updateVisItemDate("trainingPhase", ui.startDateInput["training"].value, "startPhase");
+    updateVisItemDate("trainingPhase", ui.endDateInput["training"].value, "end");
 }
 function updateAnalysisEndDate() {
-    setEndDate(startDateInput["analysis"], durationInput["analysis"], endDateInput["analysis"]);
-    updateVisItemDate("analysisPhase", startDateInput["analysis"].value, "startPhase");
-    updateVisItemDate("analysisPhase", endDateInput["analysis"].value, "end");
+    setEndDate(ui.startDateInput["analysis"], ui.durationInput["analysis"], ui.endDateInput["analysis"]);
+    updateVisItemDate("analysisPhase", ui.startDateInput["analysis"].value, "startPhase");
+    updateVisItemDate("analysisPhase", ui.endDateInput["analysis"].value, "end");
 }
 function updateBuildEndDate() {
-    setEndDate(startDateInput["build"], durationInput["build"], endDateInput["build"]);
-    updateVisItemDate("buildPhase", startDateInput["build"].value, "startPhase");
-    updateVisItemDate("buildPhase", endDateInput["build"].value, "end");
+    setEndDate(ui.startDateInput["build"], ui.durationInput["build"], ui.endDateInput["build"]);
+    updateVisItemDate("buildPhase", ui.startDateInput["build"].value, "startPhase");
+    updateVisItemDate("buildPhase", ui.endDateInput["build"].value, "end");
 }
 function updateTestingEndDate() {
-    setEndDate(startDateInput["testing"], durationInput["testing"], endDateInput["testing"]);
-    updateVisItemDate("testingPhase", startDateInput["testing"].value, "startPhase");
-    updateVisItemDate("testingPhase", endDateInput["testing"].value, "end");
+    setEndDate(ui.startDateInput["testing"], ui.durationInput["testing"], ui.endDateInput["testing"]);
+    updateVisItemDate("testingPhase", ui.startDateInput["testing"].value, "startPhase");
+    updateVisItemDate("testingPhase", ui.endDateInput["testing"].value, "end");
 }
 function updateTrainingEndDate() {
-    setEndDate(startDateInput["training"], durationInput["training"], endDateInput["training"]);
-    updateVisItemDate("trainingPhase", startDateInput["training"].value, "startPhase");
-    updateVisItemDate("trainingPhase", endDateInput["training"].value, "end");
+    setEndDate(ui.startDateInput["training"], ui.durationInput["training"], ui.endDateInput["training"]);
+    updateVisItemDate("trainingPhase", ui.startDateInput["training"].value, "startPhase");
+    updateVisItemDate("trainingPhase", ui.endDateInput["training"].value, "end");
 }
 
 function determineDefaultPhaseLengths() {
     //The length of phases depends on the number of weeks alloted for the entire upgrade
-    const upgradeDuration = parseInt(durationInput["upgrade"].value);
+    const upgradeDuration = parseInt(ui.durationInput["upgrade"].value);
     let durationToAllocate = upgradeDuration;
 
     // Minimum phase durations
@@ -313,18 +312,18 @@ function determineDefaultPhaseLengths() {
         durationToAllocate--;
     }
 
-    durationInput["analysis"].value = analysisDuration;
-    durationInput["analysis"].max = upgradeDuration;
-    durationValue["analysis"].textContent = `${durationInput["analysis"].value} weeks`;
-    durationInput["build"].value = buildDuration;
-    durationInput["build"].max = upgradeDuration;
-    durationValue["build"].textContent = `${durationInput["build"].value} weeks`;
-    durationInput["testing"].value = testingDuration;
-    durationInput["testing"].max = upgradeDuration;
-    durationValue["testing"].textContent = `${durationInput["testing"].value} weeks`;
-    durationInput["training"].value = trainingDuration;
-    durationInput["training"].max = upgradeDuration;
-    durationValue["training"].textContent = `${durationInput["training"].value} weeks`;
+    ui.durationInput["analysis"].value = analysisDuration;
+    ui.durationInput["analysis"].max = upgradeDuration;
+    ui.durationValue["analysis"].textContent = `${ui.durationInput["analysis"].value} weeks`;
+    ui.durationInput["build"].value = buildDuration;
+    ui.durationInput["build"].max = upgradeDuration;
+    ui.durationValue["build"].textContent = `${ui.durationInput["build"].value} weeks`;
+    ui.durationInput["testing"].value = testingDuration;
+    ui.durationInput["testing"].max = upgradeDuration;
+    ui.durationValue["testing"].textContent = `${ui.durationInput["testing"].value} weeks`;
+    ui.durationInput["training"].value = trainingDuration;
+    ui.durationInput["training"].max = upgradeDuration;
+    ui.durationValue["training"].textContent = `${ui.durationInput["training"].value} weeks`;
 }
 
 function setDefaultDates(skipUpdateUpgradeEndDate=false, skipRedrawTimeline=false) {
@@ -335,64 +334,64 @@ function setDefaultDates(skipUpdateUpgradeEndDate=false, skipRedrawTimeline=fals
     }
 
     // Set start date of the Analysis phase is the same as start of the upgrade itself
-    startDateInput["analysis"].valueAsDate = setStartDate(startDateInput["upgrade"].value);
+    ui.startDateInput["analysis"].valueAsDate = setStartDate(ui.startDateInput["upgrade"].value);
     updateAnalysisEndDate();
 
     // Default start date of the build phase is the end of the analysis phase
-    startDateInput["build"].valueAsDate = setStartDate(endDateInput["analysis"].value);
+    ui.startDateInput["build"].valueAsDate = setStartDate(ui.endDateInput["analysis"].value);
     updateBuildEndDate();
 
     // Default start date of the testing phase is the end of the build phase
-    startDateInput["testing"].valueAsDate = setStartDate(endDateInput["build"].value);
+    ui.startDateInput["testing"].valueAsDate = setStartDate(ui.endDateInput["build"].value);
     updateTestingEndDate();
 
     // Default start date of the training phase is the end of the build phase
-    startDateInput["training"].valueAsDate = setStartDate(endDateInput["testing"].value);
+    ui.startDateInput["training"].valueAsDate = setStartDate(ui.endDateInput["testing"].value);
     updateTrainingEndDate();
 
     // Default dates for the environment upgrades
     // REL at the start of the project
-    upgradeDateInput["REL"].value = startDateInput["upgrade"].value;
+    ui.upgradeDateInput["REL"].value = ui.startDateInput["upgrade"].value;
     // POC at the start of the build phase
-    upgradeDateInput["POC"].value = startDateInput["build"].value;
+    ui.upgradeDateInput["POC"].value = ui.startDateInput["build"].value;
     // TST at the start of the testing phase
-    upgradeDateInput["TST"].value = startDateInput["testing"].value;
+    ui.upgradeDateInput["TST"].value = ui.startDateInput["testing"].value;
     // MST, ACEs and PLY at the start of the training phase
-    upgradeDateInput["MST"].value = startDateInput["training"].value;
-    upgradeDateInput["ACE"].value = startDateInput["training"].value;
-    upgradeDateInput["PLY"].value = startDateInput["training"].value;
+    ui.upgradeDateInput["MST"].value = ui.startDateInput["training"].value;
+    ui.upgradeDateInput["ACE"].value = ui.startDateInput["training"].value;
+    ui.upgradeDateInput["PLY"].value = ui.startDateInput["training"].value;
     // PRD and SUP dates
-    upgradeDateInput["PRD"].value = endDateInput["upgrade"].value;
+    ui.upgradeDateInput["PRD"].value = ui.endDateInput["upgrade"].value;
     // SUP 4 days before the PRD upgrade
-    const PRDUpgradeDate = new Date(upgradeDateInput["PRD"].value);
+    const PRDUpgradeDate = new Date(ui.upgradeDateInput["PRD"].value);
     const SUPUpgradeDate = new Date(PRDUpgradeDate.getTime() - 4 * 24 * 60 * 60 * 1000); // 4 days in milliseconds
-    upgradeDateInput["SUP"].valueAsDate = SUPUpgradeDate;
+    ui.upgradeDateInput["SUP"].valueAsDate = SUPUpgradeDate;
 
     // Default dates for the SU deliveries
     // Initial SU Delivery at the start of the project
-    deliveryDateInput["InitialSU"].value = startDateInput["upgrade"].value;
+    ui.deliveryDateInput["InitialSU"].value = ui.startDateInput["upgrade"].value;
     // All Fix SUs Delivery 2 weeks after the end of the Testing phase
-    const testingEndDate = new Date(endDateInput["testing"].value);
+    const testingEndDate = new Date(ui.endDateInput["testing"].value);
     const AllFixSUDeliveryDate = new Date(testingEndDate.getTime() - 2 * 7 * 24 * 60 * 60 * 1000); // 4 days in milliseconds
-    deliveryDateInput["AllFixSU"].valueAsDate = AllFixSUDeliveryDate;
+    ui.deliveryDateInput["AllFixSU"].valueAsDate = AllFixSUDeliveryDate;
     // Pre-Upgrade Critical SU 2 weeks before the PRD upgrade
     const PreUpgradeCriticalSUDate = new Date(PRDUpgradeDate.getTime() - 2 * 7 * 24 * 60 * 60 * 1000); // 2 weeks in milliseconds
-    deliveryDateInput["PreUpgradeCriticalSU"].valueAsDate = PreUpgradeCriticalSUDate;
+    ui.deliveryDateInput["PreUpgradeCriticalSU"].valueAsDate = PreUpgradeCriticalSUDate;
     // Post-Upgrade SU Delivery 2 weeks after the PRD upgrade
     // (yeah, you could argue that the PRD upgrade date is thus not the real end of the upgrade...)
     const PostUpgradeSUDate = new Date(PRDUpgradeDate.getTime() + 2 * 7 * 24 * 60 * 60 * 1000); // 2 weeks in milliseconds
-    deliveryDateInput["PostUpgradeSU"].valueAsDate = PostUpgradeSUDate;
+    ui.deliveryDateInput["PostUpgradeSU"].valueAsDate = PostUpgradeSUDate;
 
-    updateVisItemDate("upgradePeriod", startDateInput["upgrade"].value, "startPhase");
-    updateVisItemDate("upgradePeriod", endDateInput["upgrade"].value, "end");
-    updateVisItemDate("analysisPhase", startDateInput["analysis"].value, "startPhase");
-    updateVisItemDate("analysisPhase", endDateInput["analysis"].value, "end");
-    updateVisItemDate("buildPhase", startDateInput["build"].value, "startPhase");
-    updateVisItemDate("buildPhase", endDateInput["build"].value, "end");
-    updateVisItemDate("testingPhase", startDateInput["testing"].value, "startPhase");
-    updateVisItemDate("testingPhase", endDateInput["testing"].value, "end");
-    updateVisItemDate("trainingPhase", startDateInput["training"].value, "startPhase");
-    updateVisItemDate("trainingPhase", endDateInput["training"].value, "end");
+    updateVisItemDate("upgradePeriod", ui.startDateInput["upgrade"].value, "startPhase");
+    updateVisItemDate("upgradePeriod", ui.endDateInput["upgrade"].value, "end");
+    updateVisItemDate("analysisPhase", ui.startDateInput["analysis"].value, "startPhase");
+    updateVisItemDate("analysisPhase", ui.endDateInput["analysis"].value, "end");
+    updateVisItemDate("buildPhase", ui.startDateInput["build"].value, "startPhase");
+    updateVisItemDate("buildPhase", ui.endDateInput["build"].value, "end");
+    updateVisItemDate("testingPhase", ui.startDateInput["testing"].value, "startPhase");
+    updateVisItemDate("testingPhase", ui.endDateInput["testing"].value, "end");
+    updateVisItemDate("trainingPhase", ui.startDateInput["training"].value, "startPhase");
+    updateVisItemDate("trainingPhase", ui.endDateInput["training"].value, "end");
     for (let i = 0; i < environments.length; i++) {
         updateVisItemDate(`env${environments[i]}`, document.getElementById(`${environments[i]}UpgradeDate`).value, "startPoint");
     };                
@@ -401,14 +400,14 @@ function setDefaultDates(skipUpdateUpgradeEndDate=false, skipRedrawTimeline=fals
     }, suDeliveries);
 
     // Define the timeline's begin and end dates
-    timelineOptions.start = startDateInput["upgrade"].value;
+    timelineOptions.start = ui.startDateInput["upgrade"].value;
     let timelineEndDate = PostUpgradeSUDate;
     // Shift the timeline's end date by a couple of days, so that the last SU package remains visible
-    const daysToShiftEnd = 3 * parseInt(durationInput["upgrade"].value) / 6;
+    const daysToShiftEnd = 3 * parseInt(ui.durationInput["upgrade"].value) / 6;
     timelineEndDate.setDate(PostUpgradeSUDate.getDate() + daysToShiftEnd);
     timelineOptions.end = timelineEndDate;
     if (!skipRedrawTimeline) {
-        timeline.setOptions(timelineOptions);
+        ui.timeline.setOptions(timelineOptions);
     }
 }
 
@@ -439,7 +438,7 @@ function updateVisGroupContent(groupID, content) {
 }
 
 function updateVersionName() {
-    const versionName = versionNameSelect.options[versionNameSelect.selectedIndex].text;
+    const versionName = ui.versionNameSelect.options[ui.versionNameSelect.selectedIndex].text;
     updateVisItemContent("upgradePeriod", `Upgrade to ${versionName}`);
     updateVisGroupContent("upgrade", versionName);
 }
@@ -455,3 +454,12 @@ function updateSUDeliveryDate(evt) {
     const startDate = evt.target.value;
     updateVisItemDate(`su${suName}`, startDate, "startPoint");
 }
+
+document.addEventListener('DOMContentLoaded', () => {
+    // Initial setup of the UI
+    getUI();
+    initialUISetup();
+    setupEventListeners();
+    // Create the Timeline
+    ui.timeline = new Timeline(ui.visContainer, items, groups, timelineOptions);
+});
