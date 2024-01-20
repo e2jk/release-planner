@@ -463,3 +463,8 @@ document.addEventListener('DOMContentLoaded', () => {
     // Create the Timeline
     ui.timeline = new Timeline(ui.visContainer, items, groups, timelineOptions);
 });
+
+function sum(a, b) {
+    return a + b;
+}
+module.exports = sum;

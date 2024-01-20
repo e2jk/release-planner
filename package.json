@@ -7,7 +7,7 @@
     "build": "esbuild ./src/app.js --outfile=./public/bundle.js --bundle",
     "build-prod": "esbuild ./src/app.js --outfile=./public/bundle.js --bundle --minify",
     "watch": "esbuild ./src/app.js --outfile=./public/bundle.js --bundle --watch",
-    "test": "<TODO>"
+    "test": "jest"
   },
   "repository": {
     "type": "git",
@@ -28,7 +28,12 @@
   },
   "homepage": "https://github.com/e2jk/release-planner#readme",
   "devDependencies": {
-    "esbuild": "^0.19.11"
+    "@babel/core": "^7.23.7",
+    "@babel/preset-env": "^7.23.8",
+    "babel-jest": "^29.7.0",
+    "esbuild": "^0.19.11",
+    "jest": "^29.7.0",
+    "jest-environment-jsdom": "^29.7.0"
   },
   "dependencies": {
     "bootstrap": "^5.3.2",
