@@ -189,7 +189,7 @@ export function setStartDate(startDate) {
     return newStartDate;
 }
 
-function setEndDate(startDateInput, durationWeeksInput, endDateInput) {
+export function setEndDate(startDateInput, durationWeeksInput, endDateInput) {
     const startDate = new Date(startDateInput.value);
     const durationWeeks = parseInt(durationWeeksInput.value);
     

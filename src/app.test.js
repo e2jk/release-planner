@@ -11,6 +11,7 @@ const {
   items,
   timelineOptions,
   setStartDate,
+  setEndDate,
 } = require("./app");
 
 describe("Test default variables", () => {
@@ -100,7 +101,7 @@ describe("Test default variables", () => {
   });
 });
 
-describe('If the start date is on a ', () => {
+describe("If the start date is on a", () => {
   test("Monday, Tuesday, Wednesday or Thursday, it remains the same day", () => {
     expect(setStartDate("2024-01-17")).toStrictEqual(new Date("2024-01-17"));
     expect(setStartDate("2024-01-18")).toStrictEqual(new Date("2024-01-18"));
@@ -112,5 +113,47 @@ describe('If the start date is on a ', () => {
     expect(setStartDate("2024-01-19")).toStrictEqual(new Date("2024-01-22"));
     expect(setStartDate("2024-01-20")).toStrictEqual(new Date("2024-01-22"));
     expect(setStartDate("2024-01-21")).toStrictEqual(new Date("2024-01-22"));
+  });
+});
+
+describe("If the end date is on a", () => {
+  document.body.innerHTML =
+    '<input type="date" class="form-control" id="upgradeStartDate" name="upgradeStartDate">' +
+    '<input type="date" class="form-control" id="upgradeEndDate" name="upgradeEndDate">' +
+    '<input type="range" class="form-range" id="upgradeDuration" name="upgradeDuration" min="7" max="40" value="14">';
+  const startDateInput = document.getElementById("upgradeStartDate");
+  const durationWeeksInput = document.getElementById("upgradeDuration");
+  const endDateInput = document.getElementById("upgradeEndDate");
+  test("Tuesday, Wednesday, Thursday or Friday, it remains the same day", () => {
+    // Tuesday
+    startDateInput.value = "2024-01-23";
+    setEndDate(startDateInput, durationWeeksInput, endDateInput);
+    expect(endDateInput.value).toBe("2024-04-30");
+    // Wednesday
+    startDateInput.value = "2024-01-24";
+    setEndDate(startDateInput, durationWeeksInput, endDateInput);
+    expect(endDateInput.value).toBe("2024-05-01");
+    // Thursday
+    startDateInput.value = "2024-01-25";
+    setEndDate(startDateInput, durationWeeksInput, endDateInput);
+    expect(endDateInput.value).toBe("2024-05-02");
+    // Friday
+    startDateInput.value = "2024-01-26";
+    setEndDate(startDateInput, durationWeeksInput, endDateInput);
+    expect(endDateInput.value).toBe("2024-05-03");
+  });
+  test("Saturday, Sunday or Monday, it moves back to the prior Friday", () => {
+    // Saturday
+    startDateInput.value = "2024-01-27";
+    setEndDate(startDateInput, durationWeeksInput, endDateInput);
+    expect(endDateInput.value).toBe("2024-05-03");
+    // Sunday
+    startDateInput.value = "2024-01-28";
+    setEndDate(startDateInput, durationWeeksInput, endDateInput);
+    expect(endDateInput.value).toBe("2024-05-03");
+    // Monday
+    startDateInput.value = "2024-01-29";
+    setEndDate(startDateInput, durationWeeksInput, endDateInput);
+    expect(endDateInput.value).toBe("2024-05-03");
   });
 });
