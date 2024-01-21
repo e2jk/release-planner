@@ -53,7 +53,6 @@ test("There are 4 default groups for the timeline", () => {
 });
 
 test("There are 17 default bars and points for the timeline", () => {
-  console.log(items.get("buildPhase"));
   expect(items.length).toEqual(17);
   expect(items.getIds()).toEqual([
     'upgradePeriod',
