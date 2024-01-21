@@ -30,7 +30,8 @@ jobs:
     runs-on: ubuntu-latest
     if: ${{ github.event.workflow_run.conclusion == 'success' }}
     steps:
-      - run: echo 'The test suite passed, deploying to GitHub Pages.'
+      - name: The test suite passed, deploying to GitHub Pages.
+        run: echo "The test suite passed, deploying to GitHub Pages."
       - name: Checkout
         uses: actions/checkout@v4
       - name: Setup Node
@@ -56,4 +57,4 @@ jobs:
     runs-on: ubuntu-latest
     if: ${{ github.event.workflow_run.conclusion == 'failure' }}
     steps:
-      - run: echo 'The test suite didn't pass, NOT deploying to GitHub Pages.'
+      - run: echo "The test suite didn't pass, NOT deploying to GitHub Pages."
