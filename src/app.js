@@ -8,9 +8,9 @@ import "vis-timeline/styles/vis-timeline-graph2d.min.css";
 // ================================================================
 // Definition of Variables
 // Environments and SU Deliveries
-const phases = ["analysis", "build", "testing", "training"];
-const environments = ["REL", "POC", "TST", "MST", "ACE", "PLY", "SUP","PRD"];
-const suDeliveries = {
+export const phases = ["analysis", "build", "testing", "training"];
+export const environments = ["REL", "POC", "TST", "MST", "ACE", "PLY", "SUP","PRD"];
+export const suDeliveries = {
     "InitialSU": "Initial",
     "AllFixSU": "All Fix SUs",
     "PreUpgradeCriticalSU": "Pre-Upgrade Critical",
@@ -18,20 +18,20 @@ const suDeliveries = {
 };
 
 // Keep references to the UI elements
-const ui = {};
+export const ui = {};
 
 // ================================================================
 // Timeline configuration and setup
 // Create DataSets for the visualization (allows two way data-binding)
 // Groups for the upgrade, the phases and the environments
-const groups = new DataSet([
+export const groups = new DataSet([
     {id: "upgrade", content: "Upgrade", nestedGroups: ["phases", "environments", "su"]},
     {id: "phases", content: "Phases"},
     {id: "environments", content: "Environments"},
     {id: "su", content: "SU Deliveries"}
 ]);
 // Bars for phases
-const items = new DataSet([
+export const items = new DataSet([
     {id: "upgradePeriod", group: "upgrade"},
     {id: "analysisPhase", group: "phases", content: "Analysis"},
     {id: "buildPhase", group: "phases", content: "Build"},
@@ -51,7 +51,7 @@ Object.keys(suDeliveries).forEach(function(key, index) {
     ]);
 }, suDeliveries);
 // Configuration for the Timeline
-const timelineOptions = {};
+export const timelineOptions = {};
 
 // ================================================================
 // Functions
@@ -463,8 +463,3 @@ document.addEventListener('DOMContentLoaded', () => {
     // Create the Timeline
     ui.timeline = new Timeline(ui.visContainer, items, groups, timelineOptions);
 });
-
-function sum(a, b) {
-    return a + b;
-}
-module.exports = sum;
