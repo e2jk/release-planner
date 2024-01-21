@@ -103,15 +103,21 @@ describe("Test default variables", () => {
 
 describe("If the start date is on a", () => {
   test("Monday, Tuesday, Wednesday or Thursday, it remains the same day", () => {
+    // Wednesday
     expect(setStartDate("2024-01-17")).toStrictEqual(new Date("2024-01-17"));
+    // Thursday
     expect(setStartDate("2024-01-18")).toStrictEqual(new Date("2024-01-18"));
+    // Monday
     expect(setStartDate("2024-01-22")).toStrictEqual(new Date("2024-01-22"));
+    // Tuesday
     expect(setStartDate("2024-01-23")).toStrictEqual(new Date("2024-01-23"));
   });
   test("Friday, Saturday or Sunday, it moves up to the next Monday", () => {
-    expect(setStartDate("2024-01-18")).toStrictEqual(new Date("2024-01-18"));
+    // Friday
     expect(setStartDate("2024-01-19")).toStrictEqual(new Date("2024-01-22"));
+    // Saturday
     expect(setStartDate("2024-01-20")).toStrictEqual(new Date("2024-01-22"));
+    // Sunday
     expect(setStartDate("2024-01-21")).toStrictEqual(new Date("2024-01-22"));
   });
 });
