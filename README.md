@@ -5,7 +5,7 @@ Head over to https://e2jk.github.io/release-planner/ to give it a spin!
 
 ## Build
 
-To build the web application from source, clone the project from github
+To build the web application from source, clone the project from GitHub
 
     $ git clone https://github.com/e2jk/release-planner.git
 
@@ -25,3 +25,13 @@ Alternatively, to automatically recompile the bundled Javascript and CSS as you 
     $ npm run watch
 
 Start up a local webserver (have a look at the Live Server extension for Visual Studio Code, if you use that IDE) and open the `public/index.html` file in your browser.
+
+## Test
+
+To run the test suite:
+
+    $ npm test
+
+If you want to automatically run the test suite every time you save modifications, run:
+
+    $ npm test -- --watchAll
