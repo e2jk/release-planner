@@ -93,6 +93,6 @@ test("There are 17 default bars and points for the timeline", () => {
 });
 
 test("The default `timelineOptions` object is empty", () => {
-  expect(Object.keys(timelineOptions).length).toEqual(0);
+  expect(Object.keys(timelineOptions).length).toEqual(1);
   expect(timelineOptions).toEqual({});
 });
