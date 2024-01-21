@@ -12,6 +12,7 @@ const {
   timelineOptions,
   setStartDate,
   setEndDate,
+  getRoundedNumberOfWeeks,
 } = require("./app");
 
 describe("Test default variables", () => {
@@ -162,4 +163,16 @@ describe("If the end date is on a", () => {
     setEndDate(startDateInput, durationWeeksInput, endDateInput);
     expect(endDateInput.value).toBe("2024-05-03");
   });
+});
+
+test("Duration between two dates is a rounded number of weeks", () => {
+  expect(getRoundedNumberOfWeeks(new Date("2024-01-21"), new Date("2024-01-28"))).toBe(1);
+  expect(getRoundedNumberOfWeeks(new Date("2024-01-21"), new Date("2024-01-29"))).toBe(1);
+  expect(getRoundedNumberOfWeeks(new Date("2024-01-21"), new Date("2024-01-30"))).toBe(1);
+  expect(getRoundedNumberOfWeeks(new Date("2024-01-21"), new Date("2024-01-31"))).toBe(1);
+  expect(getRoundedNumberOfWeeks(new Date("2024-01-21"), new Date("2024-02-01"))).toBe(2);
+  expect(getRoundedNumberOfWeeks(new Date("2024-01-21"), new Date("2024-02-02"))).toBe(2);
+  expect(getRoundedNumberOfWeeks(new Date("2024-01-21"), new Date("2024-02-03"))).toBe(2);
+  expect(getRoundedNumberOfWeeks(new Date("2024-01-21"), new Date("2024-02-04"))).toBe(2);
+  expect(getRoundedNumberOfWeeks(new Date("2024-01-21"), new Date("2024-02-05"))).toBe(2);
 });

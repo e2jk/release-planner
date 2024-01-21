@@ -208,7 +208,7 @@ export function setEndDate(startDateInput, durationWeeksInput, endDateInput) {
 function updateUpgradeEndDate() {
     setEndDate(ui.startDateInput["upgrade"], ui.durationInput["upgrade"], ui.endDateInput["upgrade"]);
 }
-function getRoundedNumberOfWeeks(startDate, endDate) {
+export function getRoundedNumberOfWeeks(startDate, endDate) {
     return Math.round((endDate - startDate) / (7 * 24 * 60 * 60 * 1000)); // Convert from milliseconds to weeks
 }
 function updateDuration(startDateInput, endDateInput, durationInput, durationValue) {
