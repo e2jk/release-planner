@@ -179,7 +179,7 @@ function changeNumVersions() {
     setDefaultDates();
 }
 
-function setStartDate(startDate) {
+export function setStartDate(startDate) {
     // If the start date is on a Friday, Saturday or Sunday, move it up to the next Monday
     let newStartDate = new Date(startDate);
     const numDaysToAdd = {5: 3, 6: 2, 0: 1, 1: 0, 2: 0, 3: 0, 4: 0}[newStartDate.getDay()];
