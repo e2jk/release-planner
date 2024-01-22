@@ -15,6 +15,7 @@ const {
   setEndDate,
   getRoundedNumberOfWeeks,
   calculateDefaultPhaseLengths,
+  determineDefaultPhaseLengths,
 } = require("../app");
 
 describe("Test default variables", () => {
@@ -262,4 +263,32 @@ test("Default phase lengths are calculated", () => {
   expect(calculateDefaultPhaseLengths(26)).toStrictEqual([7, 8, 7, 4]);
   expect(calculateDefaultPhaseLengths(28)).toStrictEqual([8, 8, 8, 4]);
   expect(calculateDefaultPhaseLengths(40)).toStrictEqual([12, 12, 12, 4]);
+});
+
+test("Duration fields are updated with default phase lengths", () => {
+  document.body.innerHTML =
+    '<input type="range" class="form-range" id="upgradeDuration" name="upgradeDuration" value="26">'+
+    '<input type="range" class="form-range" id="upgradeDuration" name="upgradeDuration">' +
+    '<small class="text-body-secondary" id="analysisDurationValue">4 weeks</small>' +
+    '<input type="range" class="form-range" id="analysisDuration" name="analysisDuration" min="1">' +
+    '<small class="text-body-secondary" id="buildDurationValue">4 weeks</small>' +
+    '<input type="range" class="form-range" id="buildDuration" name="buildDuration" min="1">' +
+    '<small class="text-body-secondary" id="testingDurationValue">4 weeks</small>' +
+    '<input type="range" class="form-range" id="testingDuration" name="testingDuration" min="1">' +
+    '<small class="text-body-secondary" id="trainingDurationValue">4 weeks</small>' +
+    '<input type="range" class="form-range" id="trainingDuration" name="trainingDuration" min="1">';
+    getUI();
+    determineDefaultPhaseLengths();
+    expect(ui.durationInput["analysis"].value).toBe("7");
+    expect(ui.durationInput["build"].value).toBe("8");
+    expect(ui.durationInput["testing"].value).toBe("7");
+    expect(ui.durationInput["training"].value).toBe("4");
+    expect(ui.durationInput["analysis"].max).toBe("26");
+    expect(ui.durationInput["build"].max).toBe("26");
+    expect(ui.durationInput["testing"].max).toBe("26");
+    expect(ui.durationInput["training"].max).toBe("26");
+    expect(ui.durationValue["analysis"].textContent).toBe("7 weeks");
+    expect(ui.durationValue["build"].textContent).toBe("8 weeks");
+    expect(ui.durationValue["testing"].textContent).toBe("7 weeks");
+    expect(ui.durationValue["training"].textContent).toBe("4 weeks");
 });

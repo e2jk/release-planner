@@ -314,7 +314,7 @@ export function calculateDefaultPhaseLengths(upgradeDuration) {
 
     return [analysisDuration, buildDuration, testingDuration, trainingDuration];
 }
-function determineDefaultPhaseLengths() {
+export function determineDefaultPhaseLengths() {
     //The length of phases depends on the number of weeks alloted for the entire upgrade
     const upgradeDuration = parseInt(ui.durationInput["upgrade"].value);
 
