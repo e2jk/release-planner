@@ -57,7 +57,7 @@ export const timelineOptions = {};
 
 // ================================================================
 // Functions
-function getUI() {
+export function getUI() {
     ui.versionNameSelect = document.getElementById('versionName');
     ui.versionNameSelect = document.getElementById('versionName');
     ui.numVersionsSelect = document.getElementById('numVersions');
@@ -207,7 +207,7 @@ export function setEndDate(startDateInput, durationWeeksInput, endDateInput) {
         endDateInput.value = ''; // Clear the value if inputs are not valid
     }
 }
-function updateUpgradeEndDate() {
+function updateUpgradeEndDate() { 
     setEndDate(ui.startDateInput["upgrade"], ui.durationInput["upgrade"], ui.endDateInput["upgrade"]);
 }
 export function getRoundedNumberOfWeeks(startDate, endDate) {
