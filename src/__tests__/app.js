@@ -14,7 +14,7 @@ const {
   setStartDate,
   setEndDate,
   getRoundedNumberOfWeeks,
-} = require("./app");
+} = require("../app");
 
 describe("Test default variables", () => {
   test("There are 4 default Phases", () => {
