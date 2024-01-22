@@ -128,7 +128,7 @@ function initialUISetup() {
     updateVersionName();
 }
 
-function setupEventListeners() {
+export function setupEventListeners() {
     ui.numVersionsSelect.addEventListener('change', changeNumVersions);
     ui.durationInput["upgrade"].addEventListener('input', () => {
         ui.durationValue["upgrade"].textContent = `${ui.durationInput["upgrade"].value} weeks`;
@@ -162,7 +162,7 @@ function setupEventListeners() {
         ui.durationValue["training"].textContent = `${ui.durationInput["training"].value} weeks`;
     });
     ui.endDateInput["training"].addEventListener('input', updateTrainingDuration);
-    ui.versionNameSelect.addEventListener('input', updateVersionName);            
+    ui.versionNameSelect.addEventListener('input', updateVersionName);
     for (let i = 0; i < environments.length; i++) {
         document.getElementById(`${environments[i]}UpgradeDate`).addEventListener('input', updateEnvironmentDate);
     };
