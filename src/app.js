@@ -1,3 +1,5 @@
+// Import itself (needed to mock nested calls during testing)
+import * as app from './app';
 // Import minified Bootstrap JavaScript and CSS
 import 'bootstrap/dist/js/bootstrap.bundle.min.js';
 import "bootstrap/dist/css/bootstrap.min.css";
@@ -169,14 +171,14 @@ function setupEventListeners() {
     }, suDeliveries);
 }
 
-function changeNumVersions() {
+export function changeNumVersions() {
     const numVersions = parseInt(ui.numVersionsSelect.value);
     const calculatedDuration = 7 * numVersions;
     
     ui.durationInput["upgrade"].value = calculatedDuration;
     ui.durationValue["upgrade"].textContent = `${calculatedDuration} weeks`;
     // Changing the number of versions changes the entire planning, so recalculate all default dates
-    setDefaultDates();
+    app.setDefaultDates();
 }
 
 export function setStartDate(startDate) {
@@ -326,7 +328,7 @@ function determineDefaultPhaseLengths() {
     ui.durationValue["training"].textContent = `${ui.durationInput["training"].value} weeks`;
 }
 
-function setDefaultDates(skipUpdateUpgradeEndDate=false, skipRedrawTimeline=false) {
+export function setDefaultDates(skipUpdateUpgradeEndDate=false, skipRedrawTimeline=false) {
     determineDefaultPhaseLengths();
 
     if (!skipUpdateUpgradeEndDate) {

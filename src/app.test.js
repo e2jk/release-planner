@@ -10,6 +10,7 @@ const {
   groups,
   items,
   timelineOptions,
+  changeNumVersions,
   setStartDate,
   setEndDate,
   getRoundedNumberOfWeeks,
