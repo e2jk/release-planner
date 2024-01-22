@@ -17,4 +17,4 @@ jobs:
       - name: Install Node dependencies
         run: npm clean-install
       - name: Run test suite
-        run: npm test
+        run: npm test -- --coverage
