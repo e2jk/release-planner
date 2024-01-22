@@ -267,9 +267,7 @@ function updateTrainingEndDate() {
     updateVisItemDate("trainingPhase", ui.endDateInput["training"].value, "end");
 }
 
-function determineDefaultPhaseLengths() {
-    //The length of phases depends on the number of weeks alloted for the entire upgrade
-    const upgradeDuration = parseInt(ui.durationInput["upgrade"].value);
+export function calculateDefaultPhaseLengths(upgradeDuration) {
     let durationToAllocate = upgradeDuration;
 
     // Minimum phase durations
@@ -313,6 +311,18 @@ function determineDefaultPhaseLengths() {
         buildDuration += 1;
         durationToAllocate--;
     }
+
+    return [analysisDuration, buildDuration, testingDuration, trainingDuration];
+}
+function determineDefaultPhaseLengths() {
+    //The length of phases depends on the number of weeks alloted for the entire upgrade
+    const upgradeDuration = parseInt(ui.durationInput["upgrade"].value);
+
+    const durations = calculateDefaultPhaseLengths(upgradeDuration);
+    let analysisDuration = durations[0];
+    let buildDuration = durations[1];
+    let testingDuration = durations[2];
+    let trainingDuration = durations[3];
 
     ui.durationInput["analysis"].value = analysisDuration;
     ui.durationInput["analysis"].max = upgradeDuration;

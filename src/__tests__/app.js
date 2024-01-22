@@ -14,6 +14,7 @@ const {
   setStartDate,
   setEndDate,
   getRoundedNumberOfWeeks,
+  calculateDefaultPhaseLengths,
 } = require("../app");
 
 describe("Test default variables", () => {
@@ -250,4 +251,15 @@ test("The UI gets parsed as expected", () => {
   expect(Object.keys(ui.durationValue).length).toBe(5);
   expect(Object.keys(ui.upgradeDateInput).length).toBe(8);
   expect(Object.keys(ui.deliveryDateInput).length).toBe(4);
+});
+
+test("Default phase lengths are calculated", () => {
+  expect(calculateDefaultPhaseLengths(7)).toStrictEqual([2, 2, 1, 2]);
+  expect(calculateDefaultPhaseLengths(10)).toStrictEqual([3, 3, 2, 2]);
+  expect(calculateDefaultPhaseLengths(14)).toStrictEqual([4, 4, 3, 3]);
+  expect(calculateDefaultPhaseLengths(18)).toStrictEqual([5, 5, 4, 4]);
+  expect(calculateDefaultPhaseLengths(21)).toStrictEqual([6, 6, 5, 4]);
+  expect(calculateDefaultPhaseLengths(26)).toStrictEqual([7, 8, 7, 4]);
+  expect(calculateDefaultPhaseLengths(28)).toStrictEqual([8, 8, 8, 4]);
+  expect(calculateDefaultPhaseLengths(40)).toStrictEqual([12, 12, 12, 4]);
 });
