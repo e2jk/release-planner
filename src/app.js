@@ -145,26 +145,26 @@ export function setupEventListeners() {
     ui.startDateInput["upgrade"].addEventListener('input', updateUpgradeEndDate);
     ui.durationInput["upgrade"].addEventListener('input', updateUpgradeEndDate);
     ui.endDateInput["upgrade"].addEventListener('input', updateUpgradeDuration);
-    ui.startDateInput["analysis"].addEventListener('input', updateAnalysisEndDate);
-    ui.durationInput["analysis"].addEventListener('input', updateAnalysisEndDate);
+    ui.startDateInput["analysis"].addEventListener('input', updateEndDate);
+    ui.durationInput["analysis"].addEventListener('input', updateEndDate);
     ui.durationInput["analysis"].addEventListener('input', () => {
         ui.durationValue["analysis"].textContent = `${ui.durationInput["analysis"].value} weeks`;
     });
     ui.endDateInput["analysis"].addEventListener('input', updateAnalysisDuration);
-    ui.startDateInput["build"].addEventListener('input', updateBuildEndDate);
-    ui.durationInput["build"].addEventListener('input', updateBuildEndDate);
+    ui.startDateInput["build"].addEventListener('input', updateEndDate);
+    ui.durationInput["build"].addEventListener('input', updateEndDate);
     ui.durationInput["build"].addEventListener('input', () => {
         ui.durationValue["build"].textContent = `${ui.durationInput["build"].value} weeks`;
     });
     ui.endDateInput["build"].addEventListener('input', updateBuildDuration);
-    ui.startDateInput["testing"].addEventListener('input', updateTestingEndDate);
-    ui.durationInput["testing"].addEventListener('input', updateTestingEndDate);
+    ui.startDateInput["testing"].addEventListener('input', updateEndDate);
+    ui.durationInput["testing"].addEventListener('input', updateEndDate);
     ui.durationInput["testing"].addEventListener('input', () => {
         ui.durationValue["testing"].textContent = `${ui.durationInput["testing"].value} weeks`;
     });
     ui.endDateInput["testing"].addEventListener('input', updateTestingDuration);
-    ui.startDateInput["training"].addEventListener('input', updateTrainingEndDate);
-    ui.durationInput["training"].addEventListener('input', updateTrainingEndDate);
+    ui.startDateInput["training"].addEventListener('input', updateEndDate);
+    ui.durationInput["training"].addEventListener('input', updateEndDate);
     ui.durationInput["training"].addEventListener('input', () => {
         ui.durationValue["training"].textContent = `${ui.durationInput["training"].value} weeks`;
     });
@@ -253,25 +253,22 @@ function updateTrainingDuration() {
     updateVisItemDate("trainingPhase", ui.startDateInput["training"].value, "startPhase");
     updateVisItemDate("trainingPhase", ui.endDateInput["training"].value, "end");
 }
-function updateAnalysisEndDate() {
-    setEndDate(ui.startDateInput["analysis"], ui.durationInput["analysis"], ui.endDateInput["analysis"]);
-    updateVisItemDate("analysisPhase", ui.startDateInput["analysis"].value, "startPhase");
-    updateVisItemDate("analysisPhase", ui.endDateInput["analysis"].value, "end");
+export function getPhaseTypeFromEventTarget(evt) {
+    if ("object" === typeof evt) {
+        for (let i = 0; i < phases.length; i++) {
+            if (evt.target.id.startsWith(phases[i])) {
+                evt = phases[i];
+                break;
+            }
+        };
+    }
+    return evt;
 }
-function updateBuildEndDate() {
-    setEndDate(ui.startDateInput["build"], ui.durationInput["build"], ui.endDateInput["build"]);
-    updateVisItemDate("buildPhase", ui.startDateInput["build"].value, "startPhase");
-    updateVisItemDate("buildPhase", ui.endDateInput["build"].value, "end");
-}
-function updateTestingEndDate() {
-    setEndDate(ui.startDateInput["testing"], ui.durationInput["testing"], ui.endDateInput["testing"]);
-    updateVisItemDate("testingPhase", ui.startDateInput["testing"].value, "startPhase");
-    updateVisItemDate("testingPhase", ui.endDateInput["testing"].value, "end");
-}
-function updateTrainingEndDate() {
-    setEndDate(ui.startDateInput["training"], ui.durationInput["training"], ui.endDateInput["training"]);
-    updateVisItemDate("trainingPhase", ui.startDateInput["training"].value, "startPhase");
-    updateVisItemDate("trainingPhase", ui.endDateInput["training"].value, "end");
+export function updateEndDate(evt) {
+    const phase = getPhaseTypeFromEventTarget(evt);
+    app.setEndDate(ui.startDateInput[phase], ui.durationInput[phase], ui.endDateInput[phase]);
+    app.updateVisItemDate(`${phase}Phase`, ui.startDateInput[phase].value, "startPhase");
+    app.updateVisItemDate(`${phase}Phase`, ui.endDateInput[phase].value, "end");
 }
 
 export function calculateDefaultPhaseLengths(upgradeDuration) {
@@ -354,19 +351,19 @@ export function setDefaultDates(skipUpdateUpgradeEndDate=false, skipRedrawTimeli
 
     // Set start date of the Analysis phase is the same as start of the upgrade itself
     ui.startDateInput["analysis"].valueAsDate = setStartDate(ui.startDateInput["upgrade"].value);
-    updateAnalysisEndDate();
+    updateEndDate("analysis");
 
     // Default start date of the build phase is the end of the analysis phase
     ui.startDateInput["build"].valueAsDate = setStartDate(ui.endDateInput["analysis"].value);
-    updateBuildEndDate();
+    updateEndDate("build");
 
     // Default start date of the testing phase is the end of the build phase
     ui.startDateInput["testing"].valueAsDate = setStartDate(ui.endDateInput["build"].value);
-    updateTestingEndDate();
+    updateEndDate("testing");
 
     // Default start date of the training phase is the end of the build phase
     ui.startDateInput["training"].valueAsDate = setStartDate(ui.endDateInput["testing"].value);
-    updateTrainingEndDate();
+    updateEndDate("training");
 
     // Default dates for the environment upgrades
     // REL at the start of the project
@@ -430,7 +427,7 @@ export function setDefaultDates(skipUpdateUpgradeEndDate=false, skipRedrawTimeli
     }
 }
 
-function updateVisItemDate(itemID, date, type) {
+export function updateVisItemDate(itemID, date, type) {
     const item = items.get(itemID);
     if ("startPhase" === type) {
         item.start = date;
