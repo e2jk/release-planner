@@ -83,12 +83,32 @@ export function getUI() {
     ui.visContainer = document.getElementById('visualization');
 }
 
-function initialUISetup() {
+export function getClosestNextUpgradeVersion(currentYear, currentMonth) {
+    let year = currentYear;
+    if (currentMonth + 2 > 11) {
+        year = currentYear + 1;
+    }
+    const nextReleaseMonth = `${Math.floor(((currentMonth + 2) % 12) / 3) * 3 + 2}`.padStart(2, '0');
+    const nextReleaseversion = `${year}-${nextReleaseMonth}`;
+
+    return nextReleaseversion;
+}
+
+export function getMondayIn4Weeks(today) {
+    // 3 weeks * 7 days * 24 hours * 60 minutes * 60 seconds * 1000 milliseconds
+    const mondayInFourWeeks = new Date(today.getTime() + 3 * 7 * 24 * 60 * 60 * 1000);
+    // Find the next Monday
+    mondayInFourWeeks.setDate(mondayInFourWeeks.getDate() + (1 + 7 - mondayInFourWeeks.getDay()) % 7);
+    // Format the date as 'YYYY-MM-DD' for the input field
+    const formattedDate = `${mondayInFourWeeks.getFullYear()}-${(mondayInFourWeeks.getMonth() + 1).toString().padStart(2, '0')}-${mondayInFourWeeks.getDate().toString().padStart(2, '0')}`;
+    return formattedDate;
+}
+
+export function initialUISetup() {
     // Dynamically generate the list of versions for the 3 years around today
     const currentYear = new Date().getFullYear();
-    const nextYear = currentYear + 1;
     const months = ['February', 'May', 'August', 'November'];
-    for (let year = currentYear - 1; year <= nextYear; year++) {
+    for (let year = currentYear - 1; year <= currentYear + 1; year++) {
         for (const month of months) {
             const monthID = `${2 + months.indexOf(month) * 3}`.padStart(2, '0');
             const optionValue = `${year}-${monthID}`;
@@ -99,33 +119,20 @@ function initialUISetup() {
     }
 
     // Set the default selected upgrade version to the closest month in the future
-    const currentMonth = new Date().getMonth();
-    let year = currentYear;
-    if (currentMonth + 2 > 11) {
-        year = nextYear;
-    }
-    const nextReleaseMonth = `${Math.floor(((currentMonth + 2) % 12) / 3) * 3 + 2}`.padStart(2, '0');
-    const nextReleaseversion = `${year}-${nextReleaseMonth}`;
+    const nextReleaseversion = getClosestNextUpgradeVersion(currentYear, new Date().getMonth());
     const defaultOption = ui.versionNameSelect.querySelector(`[value="${nextReleaseversion}"]`);
     if (defaultOption) {
         defaultOption.selected = true;
     }
     
     // Set the default upgradeStartDate to be the Monday in 4 weeks
-    const today = new Date();
-    // 3 weeks * 7 days * 24 hours * 60 minutes * 60 seconds * 1000 milliseconds
-    const mondayInFourWeeks = new Date(today.getTime() + 3 * 7 * 24 * 60 * 60 * 1000);
-    // Find the next Monday
-    mondayInFourWeeks.setDate(mondayInFourWeeks.getDate() + (1 + 7 - mondayInFourWeeks.getDay()) % 7);
-    // Format the date as 'YYYY-MM-DD' for the input field
-    const formattedDate = `${mondayInFourWeeks.getFullYear()}-${(mondayInFourWeeks.getMonth() + 1).toString().padStart(2, '0')}-${mondayInFourWeeks.getDate().toString().padStart(2, '0')}`;
-    ui.startDateInput["upgrade"].value = formattedDate;
+    ui.startDateInput["upgrade"].value = getMondayIn4Weeks(new Date());
 
     // Set the default values when the page is initialized (the other General settings are explicitly calculated and set elsewhere)
     ui.durationInput["upgrade"].value = 14;
     ui.numVersionsSelect.options[1].selected = true;
-    setDefaultDates(false, true);            
-    updateVersionName();
+    app.setDefaultDates(false, true);            
+    app.updateVersionName();
 }
 
 export function setupEventListeners() {
@@ -449,7 +456,7 @@ function updateVisGroupContent(groupID, content) {
     groups.update(group);
 }
 
-function updateVersionName() {
+export function updateVersionName() {
     const versionName = ui.versionNameSelect.options[ui.versionNameSelect.selectedIndex].text;
     updateVisItemContent("upgradePeriod", `Upgrade to ${versionName}`);
     updateVisGroupContent("upgrade", versionName);
