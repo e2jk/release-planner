@@ -48,7 +48,7 @@ test("Update end date when triggered from an event", () => {
     );
 });
 
-test("Update end date when triggered from an event", () => {
+test("Update end date when triggered inline as a function", () => {
     document.body.innerHTML =
         '<input type="range" class="form-range" id="analysisDuration" name="analysisDuration" min="1">' +
         '<input type="date" class="form-control" id="analysisStartDate" name="analysisStartDate" aria-label="Analysis Start Date" aria-describedby="basic-addon-asd" value="2024-01-23">' +
