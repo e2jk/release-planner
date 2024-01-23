@@ -144,31 +144,31 @@ export function setupEventListeners() {
     ui.startDateInput["upgrade"].addEventListener('input', setDefaultDates);
     ui.startDateInput["upgrade"].addEventListener('input', updateUpgradeEndDate);
     ui.durationInput["upgrade"].addEventListener('input', updateUpgradeEndDate);
-    ui.endDateInput["upgrade"].addEventListener('input', updateUpgradeDuration);
+    ui.endDateInput["upgrade"].addEventListener('input', updateDuration);
     ui.startDateInput["analysis"].addEventListener('input', updateEndDate);
     ui.durationInput["analysis"].addEventListener('input', updateEndDate);
     ui.durationInput["analysis"].addEventListener('input', () => {
         ui.durationValue["analysis"].textContent = `${ui.durationInput["analysis"].value} weeks`;
     });
-    ui.endDateInput["analysis"].addEventListener('input', updateAnalysisDuration);
+    ui.endDateInput["analysis"].addEventListener('input', updateDuration);
     ui.startDateInput["build"].addEventListener('input', updateEndDate);
     ui.durationInput["build"].addEventListener('input', updateEndDate);
     ui.durationInput["build"].addEventListener('input', () => {
         ui.durationValue["build"].textContent = `${ui.durationInput["build"].value} weeks`;
     });
-    ui.endDateInput["build"].addEventListener('input', updateBuildDuration);
+    ui.endDateInput["build"].addEventListener('input', updateDuration);
     ui.startDateInput["testing"].addEventListener('input', updateEndDate);
     ui.durationInput["testing"].addEventListener('input', updateEndDate);
     ui.durationInput["testing"].addEventListener('input', () => {
         ui.durationValue["testing"].textContent = `${ui.durationInput["testing"].value} weeks`;
     });
-    ui.endDateInput["testing"].addEventListener('input', updateTestingDuration);
+    ui.endDateInput["testing"].addEventListener('input', updateDuration);
     ui.startDateInput["training"].addEventListener('input', updateEndDate);
     ui.durationInput["training"].addEventListener('input', updateEndDate);
     ui.durationInput["training"].addEventListener('input', () => {
         ui.durationValue["training"].textContent = `${ui.durationInput["training"].value} weeks`;
     });
-    ui.endDateInput["training"].addEventListener('input', updateTrainingDuration);
+    ui.endDateInput["training"].addEventListener('input', updateDuration);
     ui.versionNameSelect.addEventListener('input', updateVersionName);
     for (let i = 0; i < environments.length; i++) {
         document.getElementById(`${environments[i]}UpgradeDate`).addEventListener('input', updateEnvironmentDate);
@@ -220,49 +220,39 @@ function updateUpgradeEndDate() {
 export function getRoundedNumberOfWeeks(startDate, endDate) {
     return Math.round((endDate - startDate) / (7 * 24 * 60 * 60 * 1000)); // Convert from milliseconds to weeks
 }
-function updateDuration(startDateInput, endDateInput, durationInput, durationValue) {
-    // Keep the start date and adapt the duration
-    const startDate = new Date(startDateInput.value);
-    const endDate = new Date(endDateInput.value);
-    const durationInWeeks = getRoundedNumberOfWeeks(startDate, endDate);
-    durationInput.value = durationInWeeks;
-    durationValue.textContent = `${durationInWeeks} weeks`;
-}
-function updateUpgradeDuration() {
-    updateDuration(ui.startDateInput["upgrade"], ui.endDateInput["upgrade"], ui.durationInput["upgrade"], ui.durationValue["upgrade"]);
-    // Recalculate the rest of the default dates
-    setDefaultDates(true);
-}
-function updateAnalysisDuration() {
-    updateDuration(ui.startDateInput["analysis"], ui.endDateInput["analysis"], ui.durationInput["analysis"], ui.durationValue["analysis"]);
-    updateVisItemDate("analysisPhase", ui.startDateInput["analysis"].value, "startPhase");
-    updateVisItemDate("analysisPhase", ui.endDateInput["analysis"].value, "end");
-}
-function updateBuildDuration() {
-    updateDuration(ui.startDateInput["build"], ui.endDateInput["build"], ui.durationInput["build"], ui.durationValue["build"]);
-    updateVisItemDate("buildPhase", ui.startDateInput["build"].value, "startPhase");
-    updateVisItemDate("buildPhase", ui.endDateInput["build"].value, "end");
-}
-function updateTestingDuration() {
-    updateDuration(ui.startDateInput["testing"], ui.endDateInput["testing"], ui.durationInput["testing"], ui.durationValue["testing"]);
-    updateVisItemDate("testingPhase", ui.startDateInput["testing"].value, "startPhase");
-    updateVisItemDate("testingPhase", ui.endDateInput["testing"].value, "end");
-}
-function updateTrainingDuration() {
-    updateDuration(ui.startDateInput["training"], ui.endDateInput["training"], ui.durationInput["training"], ui.durationValue["training"]);
-    updateVisItemDate("trainingPhase", ui.startDateInput["training"].value, "startPhase");
-    updateVisItemDate("trainingPhase", ui.endDateInput["training"].value, "end");
-}
 export function getPhaseTypeFromEventTarget(evt) {
+    let phase = "";
     if ("object" === typeof evt) {
         for (let i = 0; i < phases.length; i++) {
             if (evt.target.id.startsWith(phases[i])) {
-                evt = phases[i];
+                phase = phases[i];
                 break;
             }
         };
+        if (!phase && evt.target.id.startsWith("upgrade")) {
+            phase = "upgrade";
+        }
     }
-    return evt;
+    if (!phase) {
+        phase = evt;
+    }
+    return phase;
+}
+export function updateDuration(evt) {
+    const phase = getPhaseTypeFromEventTarget(evt);
+    
+    // Keep the start date and adapt the duration
+    const startDate = new Date(ui.startDateInput[phase].value);
+    const endDate = new Date(ui.endDateInput[phase].value);
+    const durationInWeeks = getRoundedNumberOfWeeks(startDate, endDate);
+    ui.durationInput[phase].value = durationInWeeks;
+    ui.durationValue[phase].textContent = `${durationInWeeks} weeks`;
+    if ("upgrade" === phase) {
+        app.setDefaultDates(true);
+    } else {
+        app.updateVisItemDate(`${phase}Phase`, ui.startDateInput[phase].value, "startPhase");
+        app.updateVisItemDate(`${phase}Phase`, ui.endDateInput[phase].value, "end");
+    }
 }
 export function updateEndDate(evt) {
     const phase = getPhaseTypeFromEventTarget(evt);
