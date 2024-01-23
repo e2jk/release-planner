@@ -136,23 +136,16 @@ export function initialUISetup() {
 }
 
 export function setupEventListeners() {
+    ui.versionNameSelect.addEventListener('input', updateVersionName);
     ui.numVersionsSelect.addEventListener('change', changeNumVersions);
     ui.startDateInput["upgrade"].addEventListener('input', setDefaultDates);
     ui.durationInput["upgrade"].addEventListener('input', updateEndDate);
     ui.endDateInput["upgrade"].addEventListener('input', updateDuration);
-    ui.startDateInput["analysis"].addEventListener('input', updateEndDate);
-    ui.durationInput["analysis"].addEventListener('input', updateEndDate);
-    ui.endDateInput["analysis"].addEventListener('input', updateDuration);
-    ui.startDateInput["build"].addEventListener('input', updateEndDate);
-    ui.durationInput["build"].addEventListener('input', updateEndDate);
-    ui.endDateInput["build"].addEventListener('input', updateDuration);
-    ui.startDateInput["testing"].addEventListener('input', updateEndDate);
-    ui.durationInput["testing"].addEventListener('input', updateEndDate);
-    ui.endDateInput["testing"].addEventListener('input', updateDuration);
-    ui.startDateInput["training"].addEventListener('input', updateEndDate);
-    ui.durationInput["training"].addEventListener('input', updateEndDate);
-    ui.endDateInput["training"].addEventListener('input', updateDuration);
-    ui.versionNameSelect.addEventListener('input', updateVersionName);
+    for (let i = 0; i < phases.length; i++) {
+        ui.startDateInput[phases[i]].addEventListener('input', updateEndDate);
+        ui.durationInput[phases[i]].addEventListener('input', updateEndDate);
+        ui.endDateInput[phases[i]].addEventListener('input', updateDuration);
+    };
     for (let i = 0; i < environments.length; i++) {
         document.getElementById(`${environments[i]}UpgradeDate`).addEventListener('input', updateEnvironmentDate);
     };
