@@ -56,7 +56,7 @@ test("Update upgrade duration when triggered from an event", () => {
     const event = new Event("input");
     app.ui.endDateInput["upgrade"].dispatchEvent(event);
 
-    expect(app.setDefaultDates).toBeCalledWith(true);
+    expect(app.setDefaultDates).toBeCalledWith(false);
 
     expect(app.ui.durationInput["upgrade"].value).toBe("9");
     expect(app.ui.durationValue["upgrade"].textContent).toBe("9 weeks");

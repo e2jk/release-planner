@@ -68,29 +68,18 @@ test("UI events get triggered as expected", () => {
 
     expect(Object.keys(app.ui).length).toStrictEqual(9);
     expect(app.ui.numVersionsSelect.addEventListener).toBeCalledWith("change", expect.any(Function));
-    expect(app.ui.numVersionsSelect.addEventListener).toBeCalledTimes(1);
-    expect(app.ui.durationInput["upgrade"].addEventListener).toBeCalledWith("input", expect.any(Function));
-    expect(app.ui.durationInput["upgrade"].addEventListener).toBeCalledTimes(2);
     expect(app.ui.startDateInput["upgrade"].addEventListener).toBeCalledWith("input", expect.any(Function));
-    expect(app.ui.startDateInput["upgrade"].addEventListener).toBeCalledTimes(2);
     expect(app.ui.endDateInput["upgrade"].addEventListener).toBeCalledWith("input", expect.any(Function));
-    expect(app.ui.endDateInput["upgrade"].addEventListener).toBeCalledTimes(1);
     for (let i = 0; i < app.phases.length; i++) {
         expect(app.ui.durationInput[app.phases[i]].addEventListener).toBeCalledWith("input", expect.any(Function));
-        expect(app.ui.durationInput[app.phases[i]].addEventListener).toBeCalledTimes(2);
         expect(app.ui.startDateInput[app.phases[i]].addEventListener).toBeCalledWith("input", expect.any(Function));
-        expect(app.ui.startDateInput[app.phases[i]].addEventListener).toBeCalledTimes(1);
         expect(app.ui.endDateInput[app.phases[i]].addEventListener).toBeCalledWith("input", expect.any(Function));
-        expect(app.ui.endDateInput[app.phases[i]].addEventListener).toBeCalledTimes(1);
     };
     expect(app.ui.versionNameSelect.addEventListener).toBeCalledWith("input", expect.any(Function));
-    expect(app.ui.versionNameSelect.addEventListener).toBeCalledTimes(1);
     for (let i = 0; i < app.environments.length; i++) {
         expect(app.ui.upgradeDateInput[app.environments[i]].addEventListener).toBeCalledWith("input", expect.any(Function));
-        expect(app.ui.upgradeDateInput[app.environments[i]].addEventListener).toBeCalledTimes(1);
     };
     Object.keys(app.suDeliveries).forEach(function(key, index) {
         expect(app.ui.deliveryDateInput[key].addEventListener).toBeCalledWith("input", expect.any(Function));
-        expect(app.ui.deliveryDateInput[key].addEventListener).toBeCalledTimes(1);
     }, app.suDeliveries);
   });

@@ -131,43 +131,26 @@ export function initialUISetup() {
     // Set the default values when the page is initialized (the other General settings are explicitly calculated and set elsewhere)
     ui.durationInput["upgrade"].value = 14;
     ui.numVersionsSelect.options[1].selected = true;
-    app.setDefaultDates(false, true);            
+    app.setDefaultDates(true);            
     app.updateVersionName();
 }
 
 export function setupEventListeners() {
     ui.numVersionsSelect.addEventListener('change', changeNumVersions);
-    ui.durationInput["upgrade"].addEventListener('input', () => {
-        ui.durationValue["upgrade"].textContent = `${ui.durationInput["upgrade"].value} weeks`;
-        setDefaultDates();
-    });
     ui.startDateInput["upgrade"].addEventListener('input', setDefaultDates);
-    ui.startDateInput["upgrade"].addEventListener('input', updateUpgradeEndDate);
-    ui.durationInput["upgrade"].addEventListener('input', updateUpgradeEndDate);
+    ui.durationInput["upgrade"].addEventListener('input', updateEndDate);
     ui.endDateInput["upgrade"].addEventListener('input', updateDuration);
     ui.startDateInput["analysis"].addEventListener('input', updateEndDate);
     ui.durationInput["analysis"].addEventListener('input', updateEndDate);
-    ui.durationInput["analysis"].addEventListener('input', () => {
-        ui.durationValue["analysis"].textContent = `${ui.durationInput["analysis"].value} weeks`;
-    });
     ui.endDateInput["analysis"].addEventListener('input', updateDuration);
     ui.startDateInput["build"].addEventListener('input', updateEndDate);
     ui.durationInput["build"].addEventListener('input', updateEndDate);
-    ui.durationInput["build"].addEventListener('input', () => {
-        ui.durationValue["build"].textContent = `${ui.durationInput["build"].value} weeks`;
-    });
     ui.endDateInput["build"].addEventListener('input', updateDuration);
     ui.startDateInput["testing"].addEventListener('input', updateEndDate);
     ui.durationInput["testing"].addEventListener('input', updateEndDate);
-    ui.durationInput["testing"].addEventListener('input', () => {
-        ui.durationValue["testing"].textContent = `${ui.durationInput["testing"].value} weeks`;
-    });
     ui.endDateInput["testing"].addEventListener('input', updateDuration);
     ui.startDateInput["training"].addEventListener('input', updateEndDate);
     ui.durationInput["training"].addEventListener('input', updateEndDate);
-    ui.durationInput["training"].addEventListener('input', () => {
-        ui.durationValue["training"].textContent = `${ui.durationInput["training"].value} weeks`;
-    });
     ui.endDateInput["training"].addEventListener('input', updateDuration);
     ui.versionNameSelect.addEventListener('input', updateVersionName);
     for (let i = 0; i < environments.length; i++) {
@@ -185,7 +168,7 @@ export function changeNumVersions() {
     ui.durationInput["upgrade"].value = calculatedDuration;
     ui.durationValue["upgrade"].textContent = `${calculatedDuration} weeks`;
     // Changing the number of versions changes the entire planning, so recalculate all default dates
-    app.setDefaultDates();
+    app.setDefaultDates(false);
 }
 
 export function setStartDate(startDate) {
@@ -214,14 +197,12 @@ export function setEndDate(startDateInput, durationWeeksInput, endDateInput) {
         endDateInput.value = ''; // Clear the value if inputs are not valid
     }
 }
-function updateUpgradeEndDate() { 
-    setEndDate(ui.startDateInput["upgrade"], ui.durationInput["upgrade"], ui.endDateInput["upgrade"]);
-}
 export function getRoundedNumberOfWeeks(startDate, endDate) {
     return Math.round((endDate - startDate) / (7 * 24 * 60 * 60 * 1000)); // Convert from milliseconds to weeks
 }
 export function getPhaseTypeFromEventTarget(evt) {
     let phase = "";
+    let mode = "event";
     if ("object" === typeof evt) {
         for (let i = 0; i < phases.length; i++) {
             if (evt.target.id.startsWith(phases[i])) {
@@ -235,11 +216,12 @@ export function getPhaseTypeFromEventTarget(evt) {
     }
     if (!phase) {
         phase = evt;
+        mode = "inline";
     }
-    return phase;
+    return [phase, mode];
 }
 export function updateDuration(evt) {
-    const phase = getPhaseTypeFromEventTarget(evt);
+    const [phase, mode] = getPhaseTypeFromEventTarget(evt);
     
     // Keep the start date and adapt the duration
     const startDate = new Date(ui.startDateInput[phase].value);
@@ -248,17 +230,24 @@ export function updateDuration(evt) {
     ui.durationInput[phase].value = durationInWeeks;
     ui.durationValue[phase].textContent = `${durationInWeeks} weeks`;
     if ("upgrade" === phase) {
-        app.setDefaultDates(true);
+        app.setDefaultDates(false);
     } else {
         app.updateVisItemDate(`${phase}Phase`, ui.startDateInput[phase].value, "startPhase");
         app.updateVisItemDate(`${phase}Phase`, ui.endDateInput[phase].value, "end");
     }
 }
 export function updateEndDate(evt) {
-    const phase = getPhaseTypeFromEventTarget(evt);
+    const [phase, mode] = getPhaseTypeFromEventTarget(evt);
     app.setEndDate(ui.startDateInput[phase], ui.durationInput[phase], ui.endDateInput[phase]);
-    app.updateVisItemDate(`${phase}Phase`, ui.startDateInput[phase].value, "startPhase");
-    app.updateVisItemDate(`${phase}Phase`, ui.endDateInput[phase].value, "end");
+    ui.durationValue[phase].textContent = `${ui.durationInput[phase].value} weeks`;
+    if ("upgrade" === phase) {
+        if ("event" === mode) {
+            app.setDefaultDates(false);
+        }
+    } else {
+        app.updateVisItemDate(`${phase}Phase`, ui.startDateInput[phase].value, "startPhase");
+        app.updateVisItemDate(`${phase}Phase`, ui.endDateInput[phase].value, "end");
+    }
 }
 
 export function calculateDefaultPhaseLengths(upgradeDuration) {
@@ -332,13 +321,10 @@ export function determineDefaultPhaseLengths() {
     ui.durationValue["training"].textContent = `${ui.durationInput["training"].value} weeks`;
 }
 
-export function setDefaultDates(skipUpdateUpgradeEndDate=false, skipRedrawTimeline=false) {
+export function setDefaultDates(skipRedrawTimeline) {
     determineDefaultPhaseLengths();
-
-    if (!skipUpdateUpgradeEndDate) {
-        updateUpgradeEndDate();
-    }
-
+    updateEndDate("upgrade");
+    
     // Set start date of the Analysis phase is the same as start of the upgrade itself
     ui.startDateInput["analysis"].valueAsDate = setStartDate(ui.startDateInput["upgrade"].value);
     updateEndDate("analysis");
