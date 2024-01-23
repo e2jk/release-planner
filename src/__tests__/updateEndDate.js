@@ -13,9 +13,9 @@ test("Get phase type when not an event", () => {
 
 test("Update end date when triggered from an event", () => {
     document.body.innerHTML =
-    '<input type="range" class="form-range" id="analysisDuration" name="analysisDuration" min="1">' +
-    '<input type="date" class="form-control" id="analysisStartDate" name="analysisStartDate" aria-label="Analysis Start Date" aria-describedby="basic-addon-asd" value="2024-01-23">' +
-    '<input type="date" class="form-control" id="analysisEndDate" name="analysisEndDate" aria-label="Analysis End Date" aria-describedby="basic-addon-aed" value="2024-01-23">';
+        '<input type="range" class="form-range" id="analysisDuration" name="analysisDuration" min="1">' +
+        '<input type="date" class="form-control" id="analysisStartDate" name="analysisStartDate" aria-label="Analysis Start Date" aria-describedby="basic-addon-asd" value="2024-01-23">' +
+        '<input type="date" class="form-control" id="analysisEndDate" name="analysisEndDate" aria-label="Analysis End Date" aria-describedby="basic-addon-aed" value="2024-01-23">';
     app.getUI();
     
     // Testing when triggered from an event
@@ -50,9 +50,9 @@ test("Update end date when triggered from an event", () => {
 
 test("Update end date when triggered from an event", () => {
     document.body.innerHTML =
-    '<input type="range" class="form-range" id="analysisDuration" name="analysisDuration" min="1">' +
-    '<input type="date" class="form-control" id="analysisStartDate" name="analysisStartDate" aria-label="Analysis Start Date" aria-describedby="basic-addon-asd" value="2024-01-23">' +
-    '<input type="date" class="form-control" id="analysisEndDate" name="analysisEndDate" aria-label="Analysis End Date" aria-describedby="basic-addon-aed" value="2024-01-23">';
+        '<input type="range" class="form-range" id="analysisDuration" name="analysisDuration" min="1">' +
+        '<input type="date" class="form-control" id="analysisStartDate" name="analysisStartDate" aria-label="Analysis Start Date" aria-describedby="basic-addon-asd" value="2024-01-23">' +
+        '<input type="date" class="form-control" id="analysisEndDate" name="analysisEndDate" aria-label="Analysis End Date" aria-describedby="basic-addon-aed" value="2024-01-23">';
     app.getUI();
     
     app.setEndDate = jest.fn();
