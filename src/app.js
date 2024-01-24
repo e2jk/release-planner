@@ -446,8 +446,6 @@ export function startUp() {
     app.initialUISetup();
     app.setupEventListeners();
     // Create the Timeline
-    console.log("DD");
-    console.log(Timeline);
     ui.timeline = new Timeline(ui.visContainer, items, groups, timelineOptions);
 }
 

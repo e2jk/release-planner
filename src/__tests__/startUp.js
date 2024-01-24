@@ -18,7 +18,6 @@ test("Application starts up at DOMContentLoaded", () => {
     expect(app.getUI).toHaveBeenCalled();
     expect(app.initialUISetup).toHaveBeenCalled();
     expect(app.setupEventListeners).toHaveBeenCalled();
-    console.log(Timeline);
     //TODO: confirm the constructor has been called (currently returns `undefined`)
     // expect(Timeline).toHaveBeenCalled();
 });
