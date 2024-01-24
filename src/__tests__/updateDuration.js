@@ -2,8 +2,6 @@
  * @jest-environment jsdom
  */
 
-// import userEvent from '@testing-library/user-event'
-
 const app = require('../app');
 
 test("Update phase duration when triggered from an event", () => {

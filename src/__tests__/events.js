@@ -82,4 +82,4 @@ test("UI events get triggered as expected", () => {
     Object.keys(app.suDeliveries).forEach(function(key, index) {
         expect(app.ui.deliveryDateInput[key].addEventListener).toBeCalledWith("input", expect.any(Function));
     }, app.suDeliveries);
-  });
+});
