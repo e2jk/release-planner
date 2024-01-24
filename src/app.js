@@ -440,11 +440,15 @@ export function updateSUDeliveryDate(evt) {
     app.updateVisItemDate(`su${suName}`, startDate, "startPoint");
 }
 
-document.addEventListener('DOMContentLoaded', () => {
+export function startUp() {
     // Initial setup of the UI
-    getUI();
-    initialUISetup();
-    setupEventListeners();
+    app.getUI();
+    app.initialUISetup();
+    app.setupEventListeners();
     // Create the Timeline
+    console.log("DD");
+    console.log(Timeline);
     ui.timeline = new Timeline(ui.visContainer, items, groups, timelineOptions);
-});
+}
+
+document.addEventListener('DOMContentLoaded', startUp);
