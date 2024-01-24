@@ -317,7 +317,7 @@ export function determineDefaultPhaseLengths() {
 export function setDefaultDates(skipRedrawTimeline) {
     determineDefaultPhaseLengths();
     updateEndDate("upgrade");
-    
+
     // Set start date of the Analysis phase is the same as start of the upgrade itself
     ui.startDateInput["analysis"].valueAsDate = setStartDate(ui.startDateInput["upgrade"].value);
     updateEndDate("analysis");
@@ -428,16 +428,16 @@ export function updateVersionName() {
     updateVisGroupContent("upgrade", versionName);
 }
 
-function updateEnvironmentDate(evt) {
+export function updateEnvironmentDate(evt) {
     const envName = evt.target.id.substring(0, 3);
     const startDate = evt.target.value;
-    updateVisItemDate(`env${envName}`, startDate, "startPoint");
+    app.updateVisItemDate(`env${envName}`, startDate, "startPoint");
 }
 
-function updateSUDeliveryDate(evt) {
+export function updateSUDeliveryDate(evt) {
     const suName = evt.target.id.substring(0, evt.target.id.length - "DeliveryDate".length);
     const startDate = evt.target.value;
-    updateVisItemDate(`su${suName}`, startDate, "startPoint");
+    app.updateVisItemDate(`su${suName}`, startDate, "startPoint");
 }
 
 document.addEventListener('DOMContentLoaded', () => {
