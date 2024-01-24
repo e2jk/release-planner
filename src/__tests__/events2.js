@@ -41,3 +41,39 @@ test("updateSUDeliveryDate when an SU dDelivery date is changed", () => {
         "startPoint"
     );
 });
+
+test("updateVersionName when triggered from an event", () => {
+    document.body.innerHTML =
+        '<select class="form-select" id="versionName" name="versionName">' +
+        '<option value="2023-02">February 2023</option>' +
+        '<option value="2023-05">May 2023</option>' +
+        '<option value="2023-08">August 2023</option>' +
+        '<option value="2023-11">November 2023</option>' +
+        '<option value="2024-02">February 2024</option>' +
+        '<option value="2024-05" selected>May 2024</option>' +
+        '<option value="2024-08">August 2024</option>' +
+        '<option value="2024-11">November 2024</option>' +
+        '<option value="2025-02">February 2025</option>' +
+        '<option value="2025-05">May 2025</option>' +
+        '<option value="2025-08">August 2025</option>' +
+        '<option value="2025-11">November 2025</option>' +
+        '</select>';
+    app.getUI();
+    // Testing when triggered from an event
+    app.ui.versionNameSelect.addEventListener('input', app.updateVersionName);
+    
+    app.updateVisItemContent = jest.fn();
+    app.updateVisGroupContent = jest.fn();
+    
+    const event = new Event("input");
+    app.ui.versionNameSelect.dispatchEvent(event);
+
+    expect(app.updateVisItemContent).toHaveBeenCalledWith(
+        "upgradePeriod",
+        "Upgrade to May 2024"
+    );
+    expect(app.updateVisGroupContent).toHaveBeenCalledWith(
+        "upgrade",
+        "May 2024"
+    );
+});

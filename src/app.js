@@ -410,13 +410,13 @@ export function updateVisItemDate(itemID, date, type) {
     items.update(item);
 }
 
-function updateVisItemContent(itemID, content) {
+export function updateVisItemContent(itemID, content) {
     const item = items.get(itemID);
     item.content = content;
     items.update(item);
 }
 
-function updateVisGroupContent(groupID, content) {
+export function updateVisGroupContent(groupID, content) {
     const group = groups.get(groupID);
     group.content = content;
     groups.update(group);
@@ -424,8 +424,8 @@ function updateVisGroupContent(groupID, content) {
 
 export function updateVersionName() {
     const versionName = ui.versionNameSelect.options[ui.versionNameSelect.selectedIndex].text;
-    updateVisItemContent("upgradePeriod", `Upgrade to ${versionName}`);
-    updateVisGroupContent("upgrade", versionName);
+    app.updateVisItemContent("upgradePeriod", `Upgrade to ${versionName}`);
+    app.updateVisGroupContent("upgrade", versionName);
 }
 
 export function updateEnvironmentDate(evt) {
