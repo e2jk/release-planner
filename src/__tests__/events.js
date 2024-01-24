@@ -6,7 +6,20 @@ const app = require('../app');
 
 test("UI events get triggered as expected", () => {
     document.body.innerHTML =
-        '<select class="form-select" id="versionName" name="versionName"></select>' +
+        '<select class="form-select" id="versionName" name="versionName">' +
+        '<option value="2023-02">February 2023</option>' +
+        '<option value="2023-05">May 2023</option>' +
+        '<option value="2023-08">August 2023</option>' +
+        '<option value="2023-11">November 2023</option>' +
+        '<option value="2024-02">February 2024</option>' +
+        '<option value="2024-05">May 2024</option>' +
+        '<option value="2024-08">August 2024</option>' +
+        '<option value="2024-11">November 2024</option>' +
+        '<option value="2025-02">February 2025</option>' +
+        '<option value="2025-05">May 2025</option>' +
+        '<option value="2025-08">August 2025</option>' +
+        '<option value="2025-11">November 2025</option>' +
+        '</select>' +
         '<select class="form-select" id="numVersions" name="numVersions">' + 
         '<option value="1">1 version</option>' + 
         '<option value="2" selected>2 versions</option>' + 
