@@ -16,6 +16,9 @@ const {
   getRoundedNumberOfWeeks,
   calculateDefaultPhaseLengths,
   determineDefaultPhaseLengths,
+  updateVisItemDate,
+  updateVisItemContent,
+  updateVisGroupContent,
 } = require("../app");
 
 describe("Test default variables", () => {
@@ -291,4 +294,34 @@ test("Duration fields are updated with default phase lengths", () => {
     expect(ui.durationValue["build"].textContent).toBe("8 weeks");
     expect(ui.durationValue["testing"].textContent).toBe("7 weeks");
     expect(ui.durationValue["training"].textContent).toBe("4 weeks");
+});
+
+test("Visualization point date update sets its start time at 08:00", () => {
+  expect(items.get("envPOC").start).toBe(undefined);
+  updateVisItemDate("envPOC", "2024-01-24", "startPoint");
+  expect(items.get("envPOC").start).toBe(new Date("2024-01-24").setHours(8,0,0,0));
+});
+
+test("Visualization phase date update sets its start time", () => {
+  expect(items.get("trainingPhase").start).toBe(undefined);
+  updateVisItemDate("trainingPhase", "2024-01-15", "startPhase");
+  expect(items.get("trainingPhase").start).toBe("2024-01-15");
+});
+
+test("Visualization phase date update sets its end time at 23:59:59", () => {
+  expect(items.get("testingPhase").end).toBe(undefined);
+  updateVisItemDate("testingPhase", "2024-01-25", "end");
+  expect(items.get("testingPhase").end).toBe(new Date("2024-01-25").setHours(23,59,59,0));
+});
+
+test("Visualization items content gets updated", () => {
+  expect(items.get("upgradePeriod").content).toBe(undefined);
+  updateVisItemContent("upgradePeriod", "This is the new item name");
+  expect(items.get("upgradePeriod").content).toBe("This is the new item name");
+});
+
+test("Visualization group content gets updated", () => {
+  expect(groups.get("upgrade").content).toBe("Upgrade");
+  updateVisGroupContent("upgrade", "This is the new group name");
+  expect(groups.get("upgrade").content).toBe("This is the new group name");
 });
