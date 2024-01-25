@@ -367,21 +367,21 @@ export function setDefaultDates(skipRedrawTimeline) {
     const PostUpgradeSUDate = new Date(PRDUpgradeDate.getTime() + 2 * 7 * 24 * 60 * 60 * 1000); // 2 weeks in milliseconds
     ui.deliveryDateInput["PostUpgradeSU"].valueAsDate = PostUpgradeSUDate;
 
-    updateVisItemDate("upgradePeriod", ui.startDateInput["upgrade"].value, "startPhase");
-    updateVisItemDate("upgradePeriod", ui.endDateInput["upgrade"].value, "end");
-    updateVisItemDate("analysisPhase", ui.startDateInput["analysis"].value, "startPhase");
-    updateVisItemDate("analysisPhase", ui.endDateInput["analysis"].value, "end");
-    updateVisItemDate("buildPhase", ui.startDateInput["build"].value, "startPhase");
-    updateVisItemDate("buildPhase", ui.endDateInput["build"].value, "end");
-    updateVisItemDate("testingPhase", ui.startDateInput["testing"].value, "startPhase");
-    updateVisItemDate("testingPhase", ui.endDateInput["testing"].value, "end");
-    updateVisItemDate("trainingPhase", ui.startDateInput["training"].value, "startPhase");
-    updateVisItemDate("trainingPhase", ui.endDateInput["training"].value, "end");
+    app.updateVisItemDate("upgradePeriod", ui.startDateInput["upgrade"].value, "startPhase");
+    app.updateVisItemDate("upgradePeriod", ui.endDateInput["upgrade"].value, "end");
+    app.updateVisItemDate("analysisPhase", ui.startDateInput["analysis"].value, "startPhase");
+    app.updateVisItemDate("analysisPhase", ui.endDateInput["analysis"].value, "end");
+    app.updateVisItemDate("buildPhase", ui.startDateInput["build"].value, "startPhase");
+    app.updateVisItemDate("buildPhase", ui.endDateInput["build"].value, "end");
+    app.updateVisItemDate("testingPhase", ui.startDateInput["testing"].value, "startPhase");
+    app.updateVisItemDate("testingPhase", ui.endDateInput["testing"].value, "end");
+    app.updateVisItemDate("trainingPhase", ui.startDateInput["training"].value, "startPhase");
+    app.updateVisItemDate("trainingPhase", ui.endDateInput["training"].value, "end");
     for (let i = 0; i < environments.length; i++) {
-        updateVisItemDate(`env${environments[i]}`, document.getElementById(`${environments[i]}UpgradeDate`).value, "startPoint");
+        app.updateVisItemDate(`env${environments[i]}`, document.getElementById(`${environments[i]}UpgradeDate`).value, "startPoint");
     };                
     Object.keys(suDeliveries).forEach(function(key, index) {
-        updateVisItemDate(`su${key}`, document.getElementById(`${key}DeliveryDate`).value, "startPoint");
+        app.updateVisItemDate(`su${key}`, document.getElementById(`${key}DeliveryDate`).value, "startPoint");
     }, suDeliveries);
 
     // Define the timeline's begin and end dates
