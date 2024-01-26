@@ -7,6 +7,7 @@
     "build": "esbuild ./src/app.js --outfile=./public/bundle.js --bundle",
     "build-prod": "esbuild ./src/app.js --outfile=./public/bundle.js --bundle --minify",
     "lint": "eslint .",
+    "prepare": "husky",
     "prepush": "npm run lint && npm test",
     "test": "jest",
     "watch": "esbuild ./src/app.js --outfile=./public/bundle.js --bundle --watch"
