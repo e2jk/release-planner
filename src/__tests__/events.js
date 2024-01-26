@@ -72,8 +72,8 @@ test("UI events get triggered as expected", () => {
     app.ui.versionNameSelect.addEventListener = jest.fn();
     for (let i = 0; i < app.environments.length; i++) {
         app.ui.upgradeDateInput[app.environments[i]].addEventListener = jest.fn();
-    };
-    Object.keys(app.suDeliveries).forEach(function(key, index) {
+    }
+    Object.keys(app.suDeliveries).forEach(function(key) {
         app.ui.deliveryDateInput[key].addEventListener = jest.fn();
     }, app.suDeliveries);
 
@@ -87,12 +87,12 @@ test("UI events get triggered as expected", () => {
         expect(app.ui.durationInput[app.phases[i]].addEventListener).toBeCalledWith("input", expect.any(Function));
         expect(app.ui.startDateInput[app.phases[i]].addEventListener).toBeCalledWith("input", expect.any(Function));
         expect(app.ui.endDateInput[app.phases[i]].addEventListener).toBeCalledWith("input", expect.any(Function));
-    };
+    }
     expect(app.ui.versionNameSelect.addEventListener).toBeCalledWith("input", expect.any(Function));
     for (let i = 0; i < app.environments.length; i++) {
         expect(app.ui.upgradeDateInput[app.environments[i]].addEventListener).toBeCalledWith("input", expect.any(Function));
-    };
-    Object.keys(app.suDeliveries).forEach(function(key, index) {
+    }
+    Object.keys(app.suDeliveries).forEach(function(key) {
         expect(app.ui.deliveryDateInput[key].addEventListener).toBeCalledWith("input", expect.any(Function));
     }, app.suDeliveries);
 });

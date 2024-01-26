@@ -17,7 +17,7 @@ module.exports = {
     coveragePathIgnorePatterns: [
         "<rootDir>/jest/",
         "<rootDir>/coverage/",
-        "<rootDir>/.*\.config.js",
+        "<rootDir>/.*.config.js",
         "<rootDir>/public/",
     ],
     transformIgnorePatterns: ['node_modules/(?!(vis-timeline)/)'],
