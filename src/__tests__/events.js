@@ -2,10 +2,10 @@
  * @jest-environment jsdom
  */
 
-const app = require('../app');
+const app = require('../app')
 
-test("UI events get triggered as expected", () => {
-    document.body.innerHTML =
+test('UI events get triggered as expected', () => {
+  document.body.innerHTML =
         '<select class="form-select" id="versionName" name="versionName">' +
         '<option value="2023-02">February 2023</option>' +
         '<option value="2023-05">May 2023</option>' +
@@ -20,12 +20,12 @@ test("UI events get triggered as expected", () => {
         '<option value="2025-08">August 2025</option>' +
         '<option value="2025-11">November 2025</option>' +
         '</select>' +
-        '<select class="form-select" id="numVersions" name="numVersions">' + 
-        '<option value="1">1 version</option>' + 
-        '<option value="2" selected>2 versions</option>' + 
-        '<option value="3">3 versions</option>' + 
-        '<option value="4">4 versions</option>' + 
-        '</select>' + 
+        '<select class="form-select" id="numVersions" name="numVersions">' +
+        '<option value="1">1 version</option>' +
+        '<option value="2" selected>2 versions</option>' +
+        '<option value="3">3 versions</option>' +
+        '<option value="4">4 versions</option>' +
+        '</select>' +
         '<small class="text-body-secondary">Upgrade Duration: <span id="upgradeDurationValue">14 weeks</span></small>' +
         '<input type="date" class="form-control" id="upgradeStartDate" name="upgradeStartDate" value="XX">' +
         '<input type="date" class="form-control" id="upgradeEndDate" name="upgradeEndDate">' +
@@ -58,41 +58,41 @@ test("UI events get triggered as expected", () => {
         '<input type="date" class="form-control" id="AllFixSUDeliveryDate" name="AllFixSUDeliveryDate" aria-label="All Fix SUs Delivery Date" aria-describedby="basic-addon-SUAllFix">' +
         '<input type="date" class="form-control" id="PreUpgradeCriticalSUDeliveryDate" name="PreUpgradeCriticalSUDeliveryDate" aria-label="Pre-Upgrade Critical SU Delivery Date" aria-describedby="basic-addon-SUPreUpgradeCritical">' +
         '<input type="date" class="form-control" id="PostUpgradeSUDeliveryDate" name="PostUpgradeSUDeliveryDate" aria-label="Post-Upgrade SU Delivery Date" aria-describedby="basic-addon-SUPostUpgrade">' +
-        '<div id="visualization" class="mt-3"></div>';
-    app.getUI();
-    app.ui.numVersionsSelect.addEventListener = jest.fn();
-    app.ui.durationInput["upgrade"].addEventListener = jest.fn();
-    app.ui.startDateInput["upgrade"].addEventListener = jest.fn();
-    app.ui.endDateInput["upgrade"].addEventListener = jest.fn();
-    for (let i = 0; i < app.phases.length; i++) {
-        app.ui.durationInput[app.phases[i]].addEventListener = jest.fn();
-        app.ui.startDateInput[app.phases[i]].addEventListener = jest.fn();
-        app.ui.endDateInput[app.phases[i]].addEventListener = jest.fn();
-    }
-    app.ui.versionNameSelect.addEventListener = jest.fn();
-    for (let i = 0; i < app.environments.length; i++) {
-        app.ui.upgradeDateInput[app.environments[i]].addEventListener = jest.fn();
-    }
-    Object.keys(app.suDeliveries).forEach(function(key) {
-        app.ui.deliveryDateInput[key].addEventListener = jest.fn();
-    }, app.suDeliveries);
+        '<div id="visualization" class="mt-3"></div>'
+  app.getUI()
+  app.ui.numVersionsSelect.addEventListener = jest.fn()
+  app.ui.durationInput.upgrade.addEventListener = jest.fn()
+  app.ui.startDateInput.upgrade.addEventListener = jest.fn()
+  app.ui.endDateInput.upgrade.addEventListener = jest.fn()
+  for (let i = 0; i < app.phases.length; i++) {
+    app.ui.durationInput[app.phases[i]].addEventListener = jest.fn()
+    app.ui.startDateInput[app.phases[i]].addEventListener = jest.fn()
+    app.ui.endDateInput[app.phases[i]].addEventListener = jest.fn()
+  }
+  app.ui.versionNameSelect.addEventListener = jest.fn()
+  for (let i = 0; i < app.environments.length; i++) {
+    app.ui.upgradeDateInput[app.environments[i]].addEventListener = jest.fn()
+  }
+  Object.keys(app.suDeliveries).forEach(function (key) {
+    app.ui.deliveryDateInput[key].addEventListener = jest.fn()
+  }, app.suDeliveries)
 
-    app.setupEventListeners();
+  app.setupEventListeners()
 
-    expect(Object.keys(app.ui).length).toStrictEqual(9);
-    expect(app.ui.numVersionsSelect.addEventListener).toBeCalledWith("change", expect.any(Function));
-    expect(app.ui.startDateInput["upgrade"].addEventListener).toBeCalledWith("input", expect.any(Function));
-    expect(app.ui.endDateInput["upgrade"].addEventListener).toBeCalledWith("input", expect.any(Function));
-    for (let i = 0; i < app.phases.length; i++) {
-        expect(app.ui.durationInput[app.phases[i]].addEventListener).toBeCalledWith("input", expect.any(Function));
-        expect(app.ui.startDateInput[app.phases[i]].addEventListener).toBeCalledWith("input", expect.any(Function));
-        expect(app.ui.endDateInput[app.phases[i]].addEventListener).toBeCalledWith("input", expect.any(Function));
-    }
-    expect(app.ui.versionNameSelect.addEventListener).toBeCalledWith("input", expect.any(Function));
-    for (let i = 0; i < app.environments.length; i++) {
-        expect(app.ui.upgradeDateInput[app.environments[i]].addEventListener).toBeCalledWith("input", expect.any(Function));
-    }
-    Object.keys(app.suDeliveries).forEach(function(key) {
-        expect(app.ui.deliveryDateInput[key].addEventListener).toBeCalledWith("input", expect.any(Function));
-    }, app.suDeliveries);
-});
+  expect(Object.keys(app.ui).length).toStrictEqual(9)
+  expect(app.ui.numVersionsSelect.addEventListener).toBeCalledWith('change', expect.any(Function))
+  expect(app.ui.startDateInput.upgrade.addEventListener).toBeCalledWith('input', expect.any(Function))
+  expect(app.ui.endDateInput.upgrade.addEventListener).toBeCalledWith('input', expect.any(Function))
+  for (let i = 0; i < app.phases.length; i++) {
+    expect(app.ui.durationInput[app.phases[i]].addEventListener).toBeCalledWith('input', expect.any(Function))
+    expect(app.ui.startDateInput[app.phases[i]].addEventListener).toBeCalledWith('input', expect.any(Function))
+    expect(app.ui.endDateInput[app.phases[i]].addEventListener).toBeCalledWith('input', expect.any(Function))
+  }
+  expect(app.ui.versionNameSelect.addEventListener).toBeCalledWith('input', expect.any(Function))
+  for (let i = 0; i < app.environments.length; i++) {
+    expect(app.ui.upgradeDateInput[app.environments[i]].addEventListener).toBeCalledWith('input', expect.any(Function))
+  }
+  Object.keys(app.suDeliveries).forEach(function (key) {
+    expect(app.ui.deliveryDateInput[key].addEventListener).toBeCalledWith('input', expect.any(Function))
+  }, app.suDeliveries)
+})
