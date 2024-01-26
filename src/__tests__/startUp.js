@@ -3,7 +3,7 @@
  */
 
 const app = require('../app');
-import Timeline from "vis-timeline/standalone/esm/vis-timeline-graph2d.min.js";
+// import Timeline from "vis-timeline/standalone/esm/vis-timeline-graph2d.min.js";
 jest.mock('vis-timeline/standalone/esm/vis-timeline-graph2d.min.js');
 
 test("Application starts up at DOMContentLoaded", () => {

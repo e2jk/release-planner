@@ -45,9 +45,9 @@ for (let i = 0; i < environments.length; i++) {
     items.add([
         {id: `env${environments[i]}`, content: environments[i], group: "environments", type: 'point'}
     ]);
-};
+}
 // Points for SU Deliveries
-Object.keys(suDeliveries).forEach(function(key, index) {
+Object.keys(suDeliveries).forEach(function(key) {
     items.add([
         {id: `su${key}`, content: this[key], group: "su", type: 'point'}
     ]);
@@ -70,13 +70,13 @@ export function getUI() {
         ui.endDateInput[phases[i]] = document.getElementById(`${phases[i]}EndDate`);
         ui.durationInput[phases[i]] = document.getElementById(`${phases[i]}Duration`);
         ui.durationValue[phases[i]] = document.getElementById(`${phases[i]}DurationValue`);
-    };
+    }
     ui.upgradeDateInput = {};
     for (let i = 0; i < environments.length; i++) {
         ui.upgradeDateInput[environments[i]] = document.getElementById(`${environments[i]}UpgradeDate`);
-    };
+    }
     ui.deliveryDateInput = {};
-    Object.keys(suDeliveries).forEach(function(key, index) {
+    Object.keys(suDeliveries).forEach(function(key) {
         ui.deliveryDateInput[key] = document.getElementById(`${key}DeliveryDate`);
     }, suDeliveries);
 
@@ -145,11 +145,11 @@ export function setupEventListeners() {
         ui.startDateInput[phases[i]].addEventListener('input', updateEndDate);
         ui.durationInput[phases[i]].addEventListener('input', updateEndDate);
         ui.endDateInput[phases[i]].addEventListener('input', updateDuration);
-    };
+    }
     for (let i = 0; i < environments.length; i++) {
         document.getElementById(`${environments[i]}UpgradeDate`).addEventListener('input', updateEnvironmentDate);
-    };
-    Object.keys(suDeliveries).forEach(function(key, index) {
+    }
+    Object.keys(suDeliveries).forEach(function(key) {
         document.getElementById(`${key}DeliveryDate`).addEventListener('input', updateSUDeliveryDate);
     }, suDeliveries);
 }
@@ -202,7 +202,7 @@ export function getPhaseTypeFromEventTarget(evt) {
                 phase = phases[i];
                 break;
             }
-        };
+        }
         if (!phase && evt.target.id.startsWith("upgrade")) {
             phase = "upgrade";
         }
@@ -214,7 +214,7 @@ export function getPhaseTypeFromEventTarget(evt) {
     return [phase, mode];
 }
 export function updateDuration(evt) {
-    const [phase, mode] = getPhaseTypeFromEventTarget(evt);
+    const [phase, ] = getPhaseTypeFromEventTarget(evt);
     
     // Keep the start date and adapt the duration
     const startDate = new Date(ui.startDateInput[phase].value);
@@ -379,8 +379,8 @@ export function setDefaultDates(skipRedrawTimeline) {
     app.updateVisItemDate("trainingPhase", ui.endDateInput["training"].value, "end");
     for (let i = 0; i < environments.length; i++) {
         app.updateVisItemDate(`env${environments[i]}`, document.getElementById(`${environments[i]}UpgradeDate`).value, "startPoint");
-    };                
-    Object.keys(suDeliveries).forEach(function(key, index) {
+    }                
+    Object.keys(suDeliveries).forEach(function(key) {
         app.updateVisItemDate(`su${key}`, document.getElementById(`${key}DeliveryDate`).value, "startPoint");
     }, suDeliveries);
 

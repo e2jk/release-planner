@@ -2,7 +2,6 @@
  * @jest-environment jsdom
  */
 
-import { Timeline, DataSet } from "vis-timeline/standalone/esm/vis-timeline-graph2d.min.js";
 const app = require('../app');
 
 test("Confirm that dates are set by default", () => {
@@ -49,11 +48,11 @@ test("Confirm that dates are set by default", () => {
         expect(app.ui.endDateInput[app.phases[i]].value).toBe("");
         // Invalid/unset values show up as a value of 50
         expect(app.ui.durationInput[app.phases[i]].value).toBe("50");
-    };
+    }
     for (let i = 0; i < app.environments.length; i++) {
         expect(app.ui.upgradeDateInput[app.environments[i]].value).toBe("");
-    };
-    Object.keys(app.suDeliveries).forEach(function(key, index) {
+    }
+    Object.keys(app.suDeliveries).forEach(function(key) {
         expect(app.ui.deliveryDateInput[key].value).toBe("");
     }, app.suDeliveries);
 
