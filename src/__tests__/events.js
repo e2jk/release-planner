@@ -46,13 +46,21 @@ test('UI events get triggered as expected', () => {
         '<input type="range" class="form-range" id="trainingDuration" name="trainingDuration" min="1">' +
         '<input type="date" class="form-control" id="trainingStartDate" name="trainingStartDate" aria-label="Training Start Date" aria-describedby="basic-addon-trsd">' +
         '<input type="date" class="form-control" id="trainingEndDate" name="trainingEndDate" aria-label="Training End Date" aria-describedby="basic-addon-tred">' +
+        '<input class="form-check-input mt-0" type="checkbox" value="" id="envCheckREL" aria-label="Checkbox to include REL upgrade" checked>' +
         '<input type="date" class="form-control" id="RELUpgradeDate" name="RELUpgradeDate" aria-label="REL Upgrade Date" aria-describedby="basic-addon-udREL">' +
+        '<input class="form-check-input mt-0" type="checkbox" value="" id="envCheckPOC" aria-label="Checkbox to include POC upgrade" checked>' +
         '<input type="date" class="form-control" id="POCUpgradeDate" name="POCUpgradeDate" aria-label="POC Upgrade Date" aria-describedby="basic-addon-udPOC">' +
+        '<input class="form-check-input mt-0" type="checkbox" value="" id="envCheckTST" aria-label="Checkbox to include TST upgrade" checked>' +
         '<input type="date" class="form-control" id="TSTUpgradeDate" name="TSTUpgradeDate" aria-label="TST Upgrade Date" aria-describedby="basic-addon-udTST">' +
+        '<input class="form-check-input mt-0" type="checkbox" value="" id="envCheckPLY" aria-label="Checkbox to include PLY upgrade" checked>' +
         '<input type="date" class="form-control" id="PLYUpgradeDate" name="PLYUpgradeDate" aria-label="PLY Upgrade Date" aria-describedby="basic-addon-udPLY">' +
+        '<input class="form-check-input mt-0" type="checkbox" value="" id="envCheckMST" aria-label="Checkbox to include MST upgrade" checked>' +
         '<input type="date" class="form-control" id="MSTUpgradeDate" name="MSTUpgradeDate" aria-label="MST Upgrade Date" aria-describedby="basic-addon-udMST">' +
+        '<input class="form-check-input mt-0" type="checkbox" value="" id="envCheckACE" aria-label="Checkbox to include ACE upgrade" checked>' +
         '<input type="date" class="form-control" id="ACEUpgradeDate" name="ACEUpgradeDate" aria-label="ACE Upgrade Date" aria-describedby="basic-addon-udACE">' +
+        '<input class="form-check-input mt-0" type="checkbox" value="" id="envCheckSUP" aria-label="Checkbox to include SUP upgrade" checked>' +
         '<input type="date" class="form-control" id="SUPUpgradeDate" name="SUPUpgradeDate" aria-label="SUP Upgrade Date" aria-describedby="basic-addon-udSUP">' +
+        '<input class="form-check-input mt-0" type="checkbox" value="" id="envCheckPRD" aria-label="Checkbox to include PRD upgrade" checked>' +
         '<input type="date" class="form-control" id="PRDUpgradeDate" name="PRDUpgradeDate" aria-label="PRD Upgrade Date" aria-describedby="basic-addon-udPRD">' +
         '<input type="date" class="form-control" id="InitialSUDeliveryDate" name="InitialSUDeliveryDate" aria-label="Initial SU Delivery Date" aria-describedby="basic-addon-SUInitial">' +
         '<input type="date" class="form-control" id="AllFixSUDeliveryDate" name="AllFixSUDeliveryDate" aria-label="All Fix SUs Delivery Date" aria-describedby="basic-addon-SUAllFix">' +
@@ -72,6 +80,7 @@ test('UI events get triggered as expected', () => {
   app.ui.versionNameSelect.addEventListener = jest.fn()
   for (let i = 0; i < app.environments.length; i++) {
     app.ui.upgradeDateInput[app.environments[i]].addEventListener = jest.fn()
+    app.ui.envCheck[app.environments[i]].addEventListener = jest.fn()
   }
   Object.keys(app.suDeliveries).forEach(function (key) {
     app.ui.deliveryDateInput[key].addEventListener = jest.fn()
@@ -79,7 +88,7 @@ test('UI events get triggered as expected', () => {
 
   app.setupEventListeners()
 
-  expect(Object.keys(app.ui).length).toStrictEqual(9)
+  expect(Object.keys(app.ui).length).toStrictEqual(10)
   expect(app.ui.numVersionsSelect.addEventListener).toBeCalledWith('change', expect.any(Function))
   expect(app.ui.startDateInput.upgrade.addEventListener).toBeCalledWith('input', expect.any(Function))
   expect(app.ui.endDateInput.upgrade.addEventListener).toBeCalledWith('input', expect.any(Function))
@@ -95,4 +104,44 @@ test('UI events get triggered as expected', () => {
   Object.keys(app.suDeliveries).forEach(function (key) {
     expect(app.ui.deliveryDateInput[key].addEventListener).toBeCalledWith('input', expect.any(Function))
   }, app.suDeliveries)
+})
+
+test('Exclude an environment from the planning', () => {
+  document.body.innerHTML =
+    '<input class="form-check-input mt-0" type="checkbox" value="" id="envCheckPLY" aria-label="Checkbox to include PLY upgrade" checked>' +
+    '<input type="date" class="form-control" id="PLYUpgradeDate" name="PLYUpgradeDate" aria-label="PLY Upgrade Date" aria-describedby="basic-addon-udPLY">'
+  app.getUI()
+
+  expect(app.ui.envCheck.PLY.checked).toBe(true)
+  expect(app.ui.upgradeDateInput.PLY.disabled).toBe(false)
+  expect(app.items.get('envPLY')).toStrictEqual({ id: 'envPLY', content: 'PLY', group: 'environments', type: 'point' })
+
+  // Testing when triggered from an event
+  app.ui.envCheck.PLY.addEventListener('input', app.includeEnvironment)
+
+  app.ui.envCheck.PLY.click()
+
+  expect(app.ui.envCheck.PLY.checked).toBe(false)
+  expect(app.ui.upgradeDateInput.PLY.disabled).toBe(true)
+  expect(app.items.get('envPLY')).toBe(null)
+})
+
+test('Include an environment in the planning', () => {
+  document.body.innerHTML =
+    '<input class="form-check-input mt-0" type="checkbox" value="" id="envCheckPLY" aria-label="Checkbox to include PLY upgrade">' +
+    '<input type="date" class="form-control" id="PLYUpgradeDate" name="PLYUpgradeDate" aria-label="PLY Upgrade Date" aria-describedby="basic-addon-udPLY" value="2024-01-27" disabled>'
+  app.getUI()
+
+  expect(app.ui.envCheck.PLY.checked).toBe(false)
+  expect(app.ui.upgradeDateInput.PLY.disabled).toBe(true)
+  expect(app.items.get('envPLY')).toBe(null)
+
+  // Testing when triggered from an event
+  app.ui.envCheck.PLY.addEventListener('input', app.includeEnvironment)
+
+  app.ui.envCheck.PLY.click()
+
+  expect(app.ui.envCheck.PLY.checked).toBe(true)
+  expect(app.ui.upgradeDateInput.PLY.disabled).toBe(false)
+  expect(app.items.get('envPLY')).toStrictEqual({ id: 'envPLY', content: 'PLY', group: 'environments', type: 'point', start: new Date('2024-01-27').setHours(8, 0, 0, 0) })
 })

@@ -228,13 +228,21 @@ test('The UI gets parsed as expected', () => {
   '<input type="range" class="form-range" id="trainingDuration" name="trainingDuration" min="1">' +
   '<input type="date" class="form-control" id="trainingStartDate" name="trainingStartDate" aria-label="Training Start Date" aria-describedby="basic-addon-trsd">' +
   '<input type="date" class="form-control" id="trainingEndDate" name="trainingEndDate" aria-label="Training End Date" aria-describedby="basic-addon-tred">' +
+  '<input class="form-check-input mt-0" type="checkbox" value="" id="envCheckREL" aria-label="Checkbox to include REL upgrade" checked>' +
   '<input type="date" class="form-control" id="RELUpgradeDate" name="RELUpgradeDate" aria-label="REL Upgrade Date" aria-describedby="basic-addon-udREL">' +
+  '<input class="form-check-input mt-0" type="checkbox" value="" id="envCheckPOC" aria-label="Checkbox to include POC upgrade" checked>' +
   '<input type="date" class="form-control" id="POCUpgradeDate" name="POCUpgradeDate" aria-label="POC Upgrade Date" aria-describedby="basic-addon-udPOC">' +
+  '<input class="form-check-input mt-0" type="checkbox" value="" id="envCheckTST" aria-label="Checkbox to include TST upgrade" checked>' +
   '<input type="date" class="form-control" id="TSTUpgradeDate" name="TSTUpgradeDate" aria-label="TST Upgrade Date" aria-describedby="basic-addon-udTST">' +
+  '<input class="form-check-input mt-0" type="checkbox" value="" id="envCheckPLY" aria-label="Checkbox to include PLY upgrade" checked>' +
   '<input type="date" class="form-control" id="PLYUpgradeDate" name="PLYUpgradeDate" aria-label="PLY Upgrade Date" aria-describedby="basic-addon-udPLY">' +
+  '<input class="form-check-input mt-0" type="checkbox" value="" id="envCheckMST" aria-label="Checkbox to include MST upgrade" checked>' +
   '<input type="date" class="form-control" id="MSTUpgradeDate" name="MSTUpgradeDate" aria-label="MST Upgrade Date" aria-describedby="basic-addon-udMST">' +
+  '<input class="form-check-input mt-0" type="checkbox" value="" id="envCheckACE" aria-label="Checkbox to include ACE upgrade" checked>' +
   '<input type="date" class="form-control" id="ACEUpgradeDate" name="ACEUpgradeDate" aria-label="ACE Upgrade Date" aria-describedby="basic-addon-udACE">' +
+  '<input class="form-check-input mt-0" type="checkbox" value="" id="envCheckSUP" aria-label="Checkbox to include SUP upgrade" checked>' +
   '<input type="date" class="form-control" id="SUPUpgradeDate" name="SUPUpgradeDate" aria-label="SUP Upgrade Date" aria-describedby="basic-addon-udSUP">' +
+  '<input class="form-check-input mt-0" type="checkbox" value="" id="envCheckPRD" aria-label="Checkbox to include PRD upgrade" checked>' +
   '<input type="date" class="form-control" id="PRDUpgradeDate" name="PRDUpgradeDate" aria-label="PRD Upgrade Date" aria-describedby="basic-addon-udPRD">' +
   '<input type="date" class="form-control" id="InitialSUDeliveryDate" name="InitialSUDeliveryDate" aria-label="Initial SU Delivery Date" aria-describedby="basic-addon-SUInitial">' +
   '<input type="date" class="form-control" id="AllFixSUDeliveryDate" name="AllFixSUDeliveryDate" aria-label="All Fix SUs Delivery Date" aria-describedby="basic-addon-SUAllFix">' +
@@ -245,7 +253,7 @@ test('The UI gets parsed as expected', () => {
   expect(Object.keys(ui).length).toStrictEqual(0)
   expect(ui).toStrictEqual({})
   getUI()
-  expect(Object.keys(ui).length).toStrictEqual(9)
+  expect(Object.keys(ui).length).toStrictEqual(10)
   expect(ui.versionNameSelect.id).toBe('versionName')
   expect(ui.numVersionsSelect.id).toBe('numVersions')
   expect(ui.visContainer.className).toBe('mt-3')
@@ -254,6 +262,7 @@ test('The UI gets parsed as expected', () => {
   expect(Object.keys(ui.durationInput).length).toBe(5)
   expect(Object.keys(ui.durationValue).length).toBe(5)
   expect(Object.keys(ui.upgradeDateInput).length).toBe(8)
+  expect(Object.keys(ui.envCheck).length).toBe(8)
   expect(Object.keys(ui.deliveryDateInput).length).toBe(4)
 })
 

@@ -72,8 +72,10 @@ export function getUI () {
     ui.durationValue[phases[i]] = document.getElementById(`${phases[i]}DurationValue`)
   }
   ui.upgradeDateInput = {}
+  ui.envCheck = {}
   for (let i = 0; i < environments.length; i++) {
     ui.upgradeDateInput[environments[i]] = document.getElementById(`${environments[i]}UpgradeDate`)
+    ui.envCheck[environments[i]] = document.getElementById(`envCheck${environments[i]}`)
   }
   ui.deliveryDateInput = {}
   Object.keys(suDeliveries).forEach(function (key) {
@@ -148,6 +150,7 @@ export function setupEventListeners () {
   }
   for (let i = 0; i < environments.length; i++) {
     ui.upgradeDateInput[environments[i]].addEventListener('input', updateEnvironmentDate)
+    ui.envCheck[environments[i]].addEventListener('input', includeEnvironment)
   }
   Object.keys(suDeliveries).forEach(function (key) {
     ui.deliveryDateInput[key].addEventListener('input', updateSUDeliveryDate)
@@ -432,6 +435,23 @@ export function updateEnvironmentDate (evt) {
   const envName = evt.target.id.substring(0, 3)
   const startDate = evt.target.value
   app.updateVisItemDate(`env${envName}`, startDate, 'startPoint')
+}
+export function includeEnvironment (evt) {
+  const envName = evt.target.id.substring(evt.target.id.length - 3)
+  if (ui.envCheck[envName].checked) {
+    ui.upgradeDateInput[envName].disabled = false
+    const data = {
+      id: `env${envName}`,
+      content: envName,
+      group: 'environments',
+      type: 'point',
+      start: new Date(ui.upgradeDateInput[envName].value).setHours(8, 0, 0, 0)
+    }
+    items.add(data)
+  } else {
+    ui.upgradeDateInput[envName].disabled = true
+    items.remove(`env${envName}`)
+  }
 }
 
 export function updateSUDeliveryDate (evt) {
