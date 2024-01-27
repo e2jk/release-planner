@@ -62,9 +62,13 @@ test('UI events get triggered as expected', () => {
     '<input type="date" class="form-control" id="SUPUpgradeDate" name="SUPUpgradeDate" aria-label="SUP Upgrade Date" aria-describedby="basic-addon-udSUP">' +
     '<input class="form-check-input mt-0" type="checkbox" value="" id="envCheckPRD" aria-label="Checkbox to include PRD upgrade" checked>' +
     '<input type="date" class="form-control" id="PRDUpgradeDate" name="PRDUpgradeDate" aria-label="PRD Upgrade Date" aria-describedby="basic-addon-udPRD">' +
+    '<input class="form-check-input mt-0" type="checkbox" value="" id="SUCheckInitialSU" aria-label="Checkbox to include Initial SU delivery" checked>&nbsp;' +
     '<input type="date" class="form-control" id="InitialSUDeliveryDate" name="InitialSUDeliveryDate" aria-label="Initial SU Delivery Date" aria-describedby="basic-addon-SUInitial">' +
+    '<input class="form-check-input mt-0" type="checkbox" value="" id="SUCheckAllFixSU" aria-label="Checkbox to include All Fix SUs delivery" checked>&nbsp;' +
     '<input type="date" class="form-control" id="AllFixSUDeliveryDate" name="AllFixSUDeliveryDate" aria-label="All Fix SUs Delivery Date" aria-describedby="basic-addon-SUAllFix">' +
+    '<input class="form-check-input mt-0" type="checkbox" value="" id="SUCheckPreUpgradeCriticalSU" aria-label="Checkbox to include Pre-Upgrade Critical SU delivery" checked>&nbsp;' +
     '<input type="date" class="form-control" id="PreUpgradeCriticalSUDeliveryDate" name="PreUpgradeCriticalSUDeliveryDate" aria-label="Pre-Upgrade Critical SU Delivery Date" aria-describedby="basic-addon-SUPreUpgradeCritical">' +
+    '<input class="form-check-input mt-0" type="checkbox" value="" id="SUCheckPostUpgradeSU" aria-label="Checkbox to include Post-Upgrade SU delivery" checked>&nbsp;' +
     '<input type="date" class="form-control" id="PostUpgradeSUDeliveryDate" name="PostUpgradeSUDeliveryDate" aria-label="Post-Upgrade SU Delivery Date" aria-describedby="basic-addon-SUPostUpgrade">' +
     '<div id="visualization" class="mt-3"></div>'
   app.getUI()
@@ -84,11 +88,12 @@ test('UI events get triggered as expected', () => {
   }
   Object.keys(app.suDeliveries).forEach(function (key) {
     app.ui.deliveryDateInput[key].addEventListener = jest.fn()
+    app.ui.deliveryCheck[key].addEventListener = jest.fn()
   }, app.suDeliveries)
 
   app.setupEventListeners()
 
-  expect(Object.keys(app.ui).length).toStrictEqual(10)
+  expect(Object.keys(app.ui).length).toStrictEqual(11)
   expect(app.ui.numVersionsSelect.addEventListener).toBeCalledWith('change', expect.any(Function))
   expect(app.ui.startDateInput.upgrade.addEventListener).toBeCalledWith('input', expect.any(Function))
   expect(app.ui.endDateInput.upgrade.addEventListener).toBeCalledWith('input', expect.any(Function))
@@ -103,6 +108,7 @@ test('UI events get triggered as expected', () => {
   }
   Object.keys(app.suDeliveries).forEach(function (key) {
     expect(app.ui.deliveryDateInput[key].addEventListener).toBeCalledWith('input', expect.any(Function))
+    expect(app.ui.deliveryCheck[key].addEventListener).toBeCalledWith('input', expect.any(Function))
   }, app.suDeliveries)
 })
 
@@ -117,7 +123,7 @@ test('Exclude an environment from the planning', () => {
   expect(app.items.get('envPLY')).toStrictEqual({ id: 'envPLY', content: 'PLY', group: 'environments', type: 'point' })
 
   // Testing when triggered from an event
-  app.ui.envCheck.PLY.addEventListener('input', app.includeEnvironment)
+  app.ui.envCheck.PLY.addEventListener('input', app.includeEnvOrSUDelivery)
 
   app.ui.envCheck.PLY.click()
 
@@ -137,11 +143,51 @@ test('Include an environment in the planning', () => {
   expect(app.items.get('envPLY')).toBe(null)
 
   // Testing when triggered from an event
-  app.ui.envCheck.PLY.addEventListener('input', app.includeEnvironment)
+  app.ui.envCheck.PLY.addEventListener('input', app.includeEnvOrSUDelivery)
 
   app.ui.envCheck.PLY.click()
 
   expect(app.ui.envCheck.PLY.checked).toBe(true)
   expect(app.ui.upgradeDateInput.PLY.disabled).toBe(false)
   expect(app.items.get('envPLY')).toStrictEqual({ id: 'envPLY', content: 'PLY', group: 'environments', type: 'point', start: new Date('2024-01-27').setHours(8, 0, 0, 0) })
+})
+
+test('Exclude an SU delivery from the planning', () => {
+  document.body.innerHTML =
+    '<input class="form-check-input mt-0" type="checkbox" value="" id="SUCheckPreUpgradeCriticalSU" aria-label="Checkbox to include Pre-Upgrade Critical SU delivery" checked>&nbsp;' +
+    '<input type="date" class="form-control" id="PreUpgradeCriticalSUDeliveryDate" name="PreUpgradeCriticalSUDeliveryDate" aria-label="Pre-Upgrade Critical SU Delivery Date" aria-describedby="basic-addon-SUPreUpgradeCritical">'
+  app.getUI()
+
+  expect(app.ui.deliveryCheck.PreUpgradeCriticalSU.checked).toBe(true)
+  expect(app.ui.deliveryDateInput.PreUpgradeCriticalSU.disabled).toBe(false)
+  expect(app.items.get('suPreUpgradeCriticalSU')).toStrictEqual({ id: 'suPreUpgradeCriticalSU', content: 'Pre-Upgrade Critical', group: 'su', type: 'point' })
+
+  // Testing when triggered from an event
+  app.ui.deliveryCheck.PreUpgradeCriticalSU.addEventListener('input', app.includeEnvOrSUDelivery)
+
+  app.ui.deliveryCheck.PreUpgradeCriticalSU.click()
+
+  expect(app.ui.deliveryCheck.PreUpgradeCriticalSU.checked).toBe(false)
+  expect(app.ui.deliveryDateInput.PreUpgradeCriticalSU.disabled).toBe(true)
+  expect(app.items.get('suPreUpgradeCriticalSU')).toBe(null)
+})
+
+test('Include an SU delivery in the planning', () => {
+  document.body.innerHTML =
+    '<input class="form-check-input mt-0" type="checkbox" value="" id="SUCheckPreUpgradeCriticalSU" aria-label="Checkbox to include Pre-Upgrade Critical SU delivery">&nbsp;' +
+    '<input type="date" class="form-control" id="PreUpgradeCriticalSUDeliveryDate" name="PreUpgradeCriticalSUDeliveryDate" aria-label="Pre-Upgrade Critical SU Delivery Date" aria-describedby="basic-addon-SUPreUpgradeCritical" value="2024-01-28" disabled>'
+  app.getUI()
+
+  expect(app.ui.deliveryCheck.PreUpgradeCriticalSU.checked).toBe(false)
+  expect(app.ui.deliveryDateInput.PreUpgradeCriticalSU.disabled).toBe(true)
+  expect(app.items.get('suPreUpgradeCriticalSU')).toBe(null)
+
+  // Testing when triggered from an event
+  app.ui.deliveryCheck.PreUpgradeCriticalSU.addEventListener('input', app.includeEnvOrSUDelivery)
+
+  app.ui.deliveryCheck.PreUpgradeCriticalSU.click()
+
+  expect(app.ui.deliveryCheck.PreUpgradeCriticalSU.checked).toBe(true)
+  expect(app.ui.deliveryDateInput.PreUpgradeCriticalSU.disabled).toBe(false)
+  expect(app.items.get('suPreUpgradeCriticalSU')).toStrictEqual({ id: 'suPreUpgradeCriticalSU', content: 'Pre-Upgrade Critical', group: 'su', type: 'point', start: new Date('2024-01-28').setHours(8, 0, 0, 0) })
 })

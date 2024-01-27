@@ -78,8 +78,10 @@ export function getUI () {
     ui.envCheck[environments[i]] = document.getElementById(`envCheck${environments[i]}`)
   }
   ui.deliveryDateInput = {}
+  ui.deliveryCheck = {}
   Object.keys(suDeliveries).forEach(function (key) {
     ui.deliveryDateInput[key] = document.getElementById(`${key}DeliveryDate`)
+    ui.deliveryCheck[key] = document.getElementById(`SUCheck${key}`)
   }, suDeliveries)
 
   ui.visContainer = document.getElementById('visualization')
@@ -150,10 +152,11 @@ export function setupEventListeners () {
   }
   for (let i = 0; i < environments.length; i++) {
     ui.upgradeDateInput[environments[i]].addEventListener('input', updateEnvironmentDate)
-    ui.envCheck[environments[i]].addEventListener('input', includeEnvironment)
+    ui.envCheck[environments[i]].addEventListener('input', includeEnvOrSUDelivery)
   }
   Object.keys(suDeliveries).forEach(function (key) {
     ui.deliveryDateInput[key].addEventListener('input', updateSUDeliveryDate)
+    ui.deliveryCheck[key].addEventListener('input', includeEnvOrSUDelivery)
   }, suDeliveries)
 }
 
@@ -436,21 +439,39 @@ export function updateEnvironmentDate (evt) {
   const startDate = evt.target.value
   app.updateVisItemDate(`env${envName}`, startDate, 'startPoint')
 }
-export function includeEnvironment (evt) {
-  const envName = evt.target.id.substring(evt.target.id.length - 3)
-  if (ui.envCheck[envName].checked) {
-    ui.upgradeDateInput[envName].disabled = false
-    const data = {
-      id: `env${envName}`,
+export function includeEnvOrSUDelivery (evt) {
+  let envName, suName, dateElement, checkElement, itemID, data
+  if (evt.target.id.startsWith('envCheck')) {
+    envName = evt.target.id.substring(evt.target.id.length - 3)
+    checkElement = ui.envCheck[envName]
+    dateElement = ui.upgradeDateInput[envName]
+    itemID = `env${envName}`
+    data = {
+      id: itemID,
       content: envName,
       group: 'environments',
       type: 'point',
-      start: new Date(ui.upgradeDateInput[envName].value).setHours(8, 0, 0, 0)
+      start: new Date(dateElement.value).setHours(8, 0, 0, 0)
     }
+  } else if (evt.target.id.startsWith('SUCheck')) {
+    suName = evt.target.id.substring(7)
+    checkElement = ui.deliveryCheck[suName]
+    dateElement = ui.deliveryDateInput[suName]
+    itemID = `su${suName}`
+    data = {
+      id: itemID,
+      content: suDeliveries[suName],
+      group: 'su',
+      type: 'point',
+      start: new Date(dateElement.value).setHours(8, 0, 0, 0)
+    }
+  }
+  if (checkElement.checked) {
+    dateElement.disabled = false
     items.add(data)
   } else {
-    ui.upgradeDateInput[envName].disabled = true
-    items.remove(`env${envName}`)
+    dateElement.disabled = true
+    items.remove(itemID)
   }
 }
 
