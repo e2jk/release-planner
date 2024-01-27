@@ -147,10 +147,10 @@ export function setupEventListeners () {
     ui.endDateInput[phases[i]].addEventListener('input', updateDuration)
   }
   for (let i = 0; i < environments.length; i++) {
-    document.getElementById(`${environments[i]}UpgradeDate`).addEventListener('input', updateEnvironmentDate)
+    ui.upgradeDateInput[environments[i]].addEventListener('input', updateEnvironmentDate)
   }
   Object.keys(suDeliveries).forEach(function (key) {
-    document.getElementById(`${key}DeliveryDate`).addEventListener('input', updateSUDeliveryDate)
+    ui.deliveryDateInput[key].addEventListener('input', updateSUDeliveryDate)
   }, suDeliveries)
 }
 
@@ -378,10 +378,10 @@ export function setDefaultDates (skipRedrawTimeline) {
   app.updateVisItemDate('trainingPhase', ui.startDateInput.training.value, 'startPhase')
   app.updateVisItemDate('trainingPhase', ui.endDateInput.training.value, 'end')
   for (let i = 0; i < environments.length; i++) {
-    app.updateVisItemDate(`env${environments[i]}`, document.getElementById(`${environments[i]}UpgradeDate`).value, 'startPoint')
+    app.updateVisItemDate(`env${environments[i]}`, ui.upgradeDateInput[environments[i]].value, 'startPoint')
   }
   Object.keys(suDeliveries).forEach(function (key) {
-    app.updateVisItemDate(`su${key}`, document.getElementById(`${key}DeliveryDate`).value, 'startPoint')
+    app.updateVisItemDate(`su${key}`, ui.deliveryDateInput[key].value, 'startPoint')
   }, suDeliveries)
 
   // Define the timeline's begin and end dates
