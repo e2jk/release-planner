@@ -98,13 +98,13 @@ export function getClosestNextUpgradeVersion (currentYear, currentMonth) {
   return nextReleaseversion
 }
 
-export function getMondayIn4Weeks (today) {
-  // 3 weeks * 7 days * 24 hours * 60 minutes * 60 seconds * 1000 milliseconds
-  const mondayInFourWeeks = new Date(today.getTime() + 3 * 7 * 24 * 60 * 60 * 1000)
+export function getMondayNWeeksLater (initialDate, nWeeksLater) {
+  const sameDayInNWeeks = new Date(initialDate.getTime() + (nWeeksLater * 7 + 1) * 24 * 60 * 60 * 1000)
+  const mondayInNWeeks = sameDayInNWeeks
   // Find the next Monday
-  mondayInFourWeeks.setDate(mondayInFourWeeks.getDate() + (1 + 7 - mondayInFourWeeks.getDay()) % 7)
+  mondayInNWeeks.setDate(mondayInNWeeks.getDate() + (1 + 7 - mondayInNWeeks.getDay()) % 7)
   // Format the date as 'YYYY-MM-DD' for the input field
-  const formattedDate = `${mondayInFourWeeks.getFullYear()}-${(mondayInFourWeeks.getMonth() + 1).toString().padStart(2, '0')}-${mondayInFourWeeks.getDate().toString().padStart(2, '0')}`
+  const formattedDate = `${mondayInNWeeks.getFullYear()}-${(mondayInNWeeks.getMonth() + 1).toString().padStart(2, '0')}-${mondayInNWeeks.getDate().toString().padStart(2, '0')}`
   return formattedDate
 }
 
@@ -128,15 +128,12 @@ export function initialUISetup () {
   if (defaultOption) {
     defaultOption.selected = true
   }
-
-  // Set the default upgradeStartDate to be the Monday in 4 weeks
-  ui.startDateInput.upgrade.value = getMondayIn4Weeks(new Date())
+  app.updateVersionName()
 
   // Set the default values when the page is initialized (the other General settings are explicitly calculated and set elsewhere)
   ui.durationInput.upgrade.value = 14
   ui.numVersionsSelect.options[1].selected = true
   app.setDefaultDates(true)
-  app.updateVersionName()
 }
 
 export function setupEventListeners () {
@@ -428,10 +425,32 @@ export function updateVisGroupContent (groupID, content) {
   groups.update(group)
 }
 
-export function updateVersionName () {
-  const versionName = ui.versionNameSelect.options[ui.versionNameSelect.selectedIndex].text
+export function determineUpgradeStartDate (releaseMonth, today) {
+  if (!today) {
+    today = new Date()
+  }
+  const mondayIn3weeks = app.getMondayNWeeksLater(today, 3)
+  // Let's assume a new version is released the first Monday of the month
+  const releaseDate = app.getMondayNWeeksLater(new Date(releaseMonth), 0)
+  if (mondayIn3weeks > releaseDate) {
+    // If the version is already released today, start the Monday in 3 weeks
+    return mondayIn3weeks
+  } else {
+    // If the version is not yet released as of today, start 1 week after the date of the release
+    return app.getMondayNWeeksLater(new Date(releaseDate), 0)
+  }
+}
+export function updateVersionName (evt) {
+  const selectedVersion = ui.versionNameSelect.options[ui.versionNameSelect.selectedIndex]
+  const versionName = selectedVersion.text
   app.updateVisItemContent('upgradePeriod', `Upgrade to ${versionName}`)
   app.updateVisGroupContent('upgrade', versionName)
+
+  // Set the start date of the upgrade
+  ui.startDateInput.upgrade.value = app.determineUpgradeStartDate(selectedVersion.value)
+  if (evt) {
+    app.setDefaultDates()
+  }
 }
 
 export function updateEnvironmentDate (evt) {

@@ -52,14 +52,95 @@ test('Determine the next upgrade version', () => {
   expect(app.getClosestNextUpgradeVersion(2024, 11)).toBe('2025-02')
 })
 
-test('Determine Monday in 4 weeks', () => {
-  expect(app.getMondayIn4Weeks(new Date('2024-01-22'))).toBe('2024-02-12')
-  expect(app.getMondayIn4Weeks(new Date('2024-01-23'))).toBe('2024-02-19')
-  expect(app.getMondayIn4Weeks(new Date('2024-01-24'))).toBe('2024-02-19')
-  expect(app.getMondayIn4Weeks(new Date('2024-01-25'))).toBe('2024-02-19')
-  expect(app.getMondayIn4Weeks(new Date('2024-01-26'))).toBe('2024-02-19')
-  expect(app.getMondayIn4Weeks(new Date('2024-01-27'))).toBe('2024-02-19')
-  expect(app.getMondayIn4Weeks(new Date('2024-01-28'))).toBe('2024-02-19')
-  expect(app.getMondayIn4Weeks(new Date('2024-01-29'))).toBe('2024-02-19')
-  expect(app.getMondayIn4Weeks(new Date('2024-01-30'))).toBe('2024-02-26')
+test('Determine the very next Monday', () => {
+  // 2024-01-22 and 2024-01-29 are Mondays
+  expect(app.getMondayNWeeksLater(new Date('2024-01-20'), 0)).toBe('2024-01-22')
+  expect(app.getMondayNWeeksLater(new Date('2024-01-21'), 0)).toBe('2024-01-22')
+  expect(app.getMondayNWeeksLater(new Date('2024-01-22'), 0)).toBe('2024-01-29')
+  expect(app.getMondayNWeeksLater(new Date('2024-01-23'), 0)).toBe('2024-01-29')
+  expect(app.getMondayNWeeksLater(new Date('2024-01-24'), 0)).toBe('2024-01-29')
+  expect(app.getMondayNWeeksLater(new Date('2024-01-25'), 0)).toBe('2024-01-29')
+  expect(app.getMondayNWeeksLater(new Date('2024-01-26'), 0)).toBe('2024-01-29')
+  expect(app.getMondayNWeeksLater(new Date('2024-01-27'), 0)).toBe('2024-01-29')
+  expect(app.getMondayNWeeksLater(new Date('2024-01-28'), 0)).toBe('2024-01-29')
+  expect(app.getMondayNWeeksLater(new Date('2024-01-29'), 0)).toBe('2024-02-05')
+  expect(app.getMondayNWeeksLater(new Date('2024-01-30'), 0)).toBe('2024-02-05')
+})
+
+test('Determine Monday 1 week later', () => {
+  // 2024-01-22 and 2024-02-05 are Mondays
+  expect(app.getMondayNWeeksLater(new Date('2024-01-20'), 1)).toBe('2024-01-29')
+  expect(app.getMondayNWeeksLater(new Date('2024-01-21'), 1)).toBe('2024-01-29')
+  expect(app.getMondayNWeeksLater(new Date('2024-01-22'), 1)).toBe('2024-02-05')
+  expect(app.getMondayNWeeksLater(new Date('2024-01-23'), 1)).toBe('2024-02-05')
+  expect(app.getMondayNWeeksLater(new Date('2024-01-24'), 1)).toBe('2024-02-05')
+  expect(app.getMondayNWeeksLater(new Date('2024-01-25'), 1)).toBe('2024-02-05')
+  expect(app.getMondayNWeeksLater(new Date('2024-01-26'), 1)).toBe('2024-02-05')
+  expect(app.getMondayNWeeksLater(new Date('2024-01-27'), 1)).toBe('2024-02-05')
+  expect(app.getMondayNWeeksLater(new Date('2024-01-28'), 1)).toBe('2024-02-05')
+  expect(app.getMondayNWeeksLater(new Date('2024-01-29'), 1)).toBe('2024-02-12')
+  expect(app.getMondayNWeeksLater(new Date('2024-01-30'), 1)).toBe('2024-02-12')
+})
+
+test('Determine Monday 2 weeks later', () => {
+  // 2024-01-22 and 2024-02-05 are Mondays
+  expect(app.getMondayNWeeksLater(new Date('2024-01-20'), 2)).toBe('2024-02-05')
+  expect(app.getMondayNWeeksLater(new Date('2024-01-21'), 2)).toBe('2024-02-05')
+  expect(app.getMondayNWeeksLater(new Date('2024-01-22'), 2)).toBe('2024-02-12')
+  expect(app.getMondayNWeeksLater(new Date('2024-01-23'), 2)).toBe('2024-02-12')
+  expect(app.getMondayNWeeksLater(new Date('2024-01-24'), 2)).toBe('2024-02-12')
+  expect(app.getMondayNWeeksLater(new Date('2024-01-25'), 2)).toBe('2024-02-12')
+  expect(app.getMondayNWeeksLater(new Date('2024-01-26'), 2)).toBe('2024-02-12')
+  expect(app.getMondayNWeeksLater(new Date('2024-01-27'), 2)).toBe('2024-02-12')
+  expect(app.getMondayNWeeksLater(new Date('2024-01-28'), 2)).toBe('2024-02-12')
+  expect(app.getMondayNWeeksLater(new Date('2024-01-29'), 2)).toBe('2024-02-19')
+  expect(app.getMondayNWeeksLater(new Date('2024-01-30'), 2)).toBe('2024-02-19')
+})
+
+test('Determine Monday 3 weeks later', () => {
+  // 2024-01-22 and 2024-02-05 are Mondays
+  expect(app.getMondayNWeeksLater(new Date('2024-01-20'), 3)).toBe('2024-02-12')
+  expect(app.getMondayNWeeksLater(new Date('2024-01-21'), 3)).toBe('2024-02-12')
+  expect(app.getMondayNWeeksLater(new Date('2024-01-22'), 3)).toBe('2024-02-19')
+  expect(app.getMondayNWeeksLater(new Date('2024-01-23'), 3)).toBe('2024-02-19')
+  expect(app.getMondayNWeeksLater(new Date('2024-01-24'), 3)).toBe('2024-02-19')
+  expect(app.getMondayNWeeksLater(new Date('2024-01-25'), 3)).toBe('2024-02-19')
+  expect(app.getMondayNWeeksLater(new Date('2024-01-26'), 3)).toBe('2024-02-19')
+  expect(app.getMondayNWeeksLater(new Date('2024-01-27'), 3)).toBe('2024-02-19')
+  expect(app.getMondayNWeeksLater(new Date('2024-01-28'), 3)).toBe('2024-02-19')
+  expect(app.getMondayNWeeksLater(new Date('2024-01-29'), 3)).toBe('2024-02-26')
+  expect(app.getMondayNWeeksLater(new Date('2024-01-30'), 3)).toBe('2024-02-26')
+})
+
+test('Determine Monday 4 weeks later', () => {
+  // 2024-01-22 and 2024-02-05 are Mondays
+  expect(app.getMondayNWeeksLater(new Date('2024-01-20'), 4)).toBe('2024-02-19')
+  expect(app.getMondayNWeeksLater(new Date('2024-01-21'), 4)).toBe('2024-02-19')
+  expect(app.getMondayNWeeksLater(new Date('2024-01-22'), 4)).toBe('2024-02-26')
+  expect(app.getMondayNWeeksLater(new Date('2024-01-23'), 4)).toBe('2024-02-26')
+  expect(app.getMondayNWeeksLater(new Date('2024-01-24'), 4)).toBe('2024-02-26')
+  expect(app.getMondayNWeeksLater(new Date('2024-01-25'), 4)).toBe('2024-02-26')
+  expect(app.getMondayNWeeksLater(new Date('2024-01-26'), 4)).toBe('2024-02-26')
+  expect(app.getMondayNWeeksLater(new Date('2024-01-27'), 4)).toBe('2024-02-26')
+  expect(app.getMondayNWeeksLater(new Date('2024-01-28'), 4)).toBe('2024-02-26')
+  expect(app.getMondayNWeeksLater(new Date('2024-01-29'), 4)).toBe('2024-03-04')
+  expect(app.getMondayNWeeksLater(new Date('2024-01-30'), 4)).toBe('2024-03-04')
+})
+
+test('Start date is in 3 weeks when upgrading to a version that is already released', () => {
+  expect(app.determineUpgradeStartDate('2023-08', new Date('2024-12-06'))).toBe('2024-12-30')
+  expect(app.determineUpgradeStartDate('2023-08', new Date('2024-01-27'))).toBe('2024-02-19')
+  expect(app.determineUpgradeStartDate('2023-11', new Date('2024-01-27'))).toBe('2024-02-19')
+  // On a Monday
+  expect(app.determineUpgradeStartDate('2023-11', new Date('2024-01-29'))).toBe('2024-02-26')
+})
+
+test('Start date is one week after the release date when upgrading to a version that is not already released', () => {
+  expect(app.determineUpgradeStartDate('2024-08', new Date('2024-01-27'))).toBe('2024-08-12')
+  expect(app.determineUpgradeStartDate('2024-11', new Date('2024-01-27'))).toBe('2024-11-11')
+})
+
+test('Testing determineUpgradeStartDate without second parameter', () => {
+  // Returns the Monday in 3 weeks
+  expect(app.determineUpgradeStartDate('2023-11')).toBe(app.getMondayNWeeksLater(new Date(), 3))
 })

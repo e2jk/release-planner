@@ -57,13 +57,16 @@ test('updateVersionName when triggered from an event', () => {
         '<option value="2025-05">May 2025</option>' +
         '<option value="2025-08">August 2025</option>' +
         '<option value="2025-11">November 2025</option>' +
-        '</select>'
+        '</select>' +
+        '<input type="date" class="form-control" id="upgradeStartDate" name="upgradeStartDate">'
   app.getUI()
   // Testing when triggered from an event
   app.ui.versionNameSelect.addEventListener('input', app.updateVersionName)
 
   app.updateVisItemContent = jest.fn()
   app.updateVisGroupContent = jest.fn()
+  app.determineUpgradeStartDate = jest.fn()
+  app.setDefaultDates = jest.fn()
 
   const event = new Event('input')
   app.ui.versionNameSelect.dispatchEvent(event)
@@ -76,4 +79,6 @@ test('updateVersionName when triggered from an event', () => {
     'upgrade',
     'May 2024'
   )
+  expect(app.determineUpgradeStartDate).toHaveBeenCalledWith('2024-05')
+  expect(app.setDefaultDates).toHaveBeenCalled()
 })
