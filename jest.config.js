@@ -18,7 +18,8 @@ module.exports = {
     '<rootDir>/jest/',
     '<rootDir>/coverage/',
     '<rootDir>/.*.config.js',
-    '<rootDir>/public/'
+    '<rootDir>/public/',
+    '<rootDir>/.eslintrc.js'
   ],
   transformIgnorePatterns: ['node_modules/(?!(vis-timeline)/)'],
   transform: {
