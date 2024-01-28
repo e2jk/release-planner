@@ -10,6 +10,18 @@ import 'vis-timeline/styles/vis-timeline-graph2d.min.css'
 // ================================================================
 // Definition of Variables
 // Environments and SU Deliveries
+// export let upgradeType = "Classical"
+export const upgradeType = {
+  value: 'Classical',
+  // accessor property(setter)
+  get current () {
+    return this.value
+  },
+  // accessor property(setter)
+  set current (newUpgradeType) {
+    this.value = newUpgradeType
+  }
+}
 export const phases = ['analysis', 'build', 'testing', 'training']
 export const environments = ['REL', 'POC', 'TST', 'MST', 'ACE', 'PLY', 'SUP', 'PRD']
 export const suDeliveries = {
@@ -58,9 +70,15 @@ export const timelineOptions = {}
 // ================================================================
 // Functions
 export function getUI () {
+  ui.upgradeTypeToggle = document.getElementById('upgradeTypeToggle')
+  ui.upgradeType = {
+    classical: document.getElementById('upgradeTypeClassical'),
+    expedited: document.getElementById('upgradeTypeExpedited')
+  }
   ui.versionNameSelect = document.getElementById('versionName')
   ui.versionNameSelect = document.getElementById('versionName')
   ui.numVersionsSelect = document.getElementById('numVersions')
+  ui.phasesSection = document.getElementById('phasesSection')
   ui.startDateInput = { upgrade: document.getElementById('upgradeStartDate') }
   ui.endDateInput = { upgrade: document.getElementById('upgradeEndDate') }
   ui.durationInput = { upgrade: document.getElementById('upgradeDuration') }
@@ -98,14 +116,23 @@ export function getClosestNextUpgradeVersion (currentYear, currentMonth) {
   return nextReleaseversion
 }
 
+export function formatDate (dateToFormat) {
+  // Return the date as 'YYYY-MM-DD' for the input field
+  return `${dateToFormat.getFullYear()}-${(dateToFormat.getMonth() + 1).toString().padStart(2, '0')}-${dateToFormat.getDate().toString().padStart(2, '0')}`
+}
+
+export function dateAddNDays (sourceDate, daysOffset) {
+  const newDate = new Date(sourceDate.getTime())
+  newDate.setDate(sourceDate.getDate() + daysOffset)
+  return newDate
+}
+
 export function getMondayNWeeksLater (initialDate, nWeeksLater) {
   const sameDayInNWeeks = new Date(initialDate.getTime() + (nWeeksLater * 7 + 1) * 24 * 60 * 60 * 1000)
   const mondayInNWeeks = sameDayInNWeeks
   // Find the next Monday
   mondayInNWeeks.setDate(mondayInNWeeks.getDate() + (1 + 7 - mondayInNWeeks.getDay()) % 7)
-  // Format the date as 'YYYY-MM-DD' for the input field
-  const formattedDate = `${mondayInNWeeks.getFullYear()}-${(mondayInNWeeks.getMonth() + 1).toString().padStart(2, '0')}-${mondayInNWeeks.getDate().toString().padStart(2, '0')}`
-  return formattedDate
+  return formatDate(mondayInNWeeks)
 }
 
 export function initialUISetup () {
@@ -131,12 +158,16 @@ export function initialUISetup () {
   app.updateVersionName()
 
   // Set the default values when the page is initialized (the other General settings are explicitly calculated and set elsewhere)
+  ui.durationInput.upgrade.min = 7
+  ui.durationInput.upgrade.max = 40
   ui.durationInput.upgrade.value = 14
   ui.numVersionsSelect.options[1].selected = true
   app.setDefaultDates(true)
 }
 
 export function setupEventListeners () {
+  ui.upgradeType.classical.addEventListener('click', changeUpgradeType)
+  ui.upgradeType.expedited.addEventListener('click', changeUpgradeType)
   ui.versionNameSelect.addEventListener('input', updateVersionName)
   ui.numVersionsSelect.addEventListener('change', changeNumVersions)
   ui.startDateInput.upgrade.addEventListener('input', setDefaultDates)
@@ -155,6 +186,52 @@ export function setupEventListeners () {
     ui.deliveryDateInput[key].addEventListener('input', updateSUDeliveryDate)
     ui.deliveryCheck[key].addEventListener('input', includeEnvOrSUDelivery)
   }, suDeliveries)
+}
+
+export function changeUpgradeType (evt) {
+  evt.preventDefault()
+  app.upgradeType.current = evt.target.id.substring(11)
+  ui.upgradeTypeToggle.innerHTML = `${app.upgradeType.value} upgrade`
+  if (app.upgradeType.value === 'Classical') {
+    ui.upgradeType.classical.classList.add('active')
+    ui.upgradeType.expedited.classList.remove('active')
+    ui.durationInput.upgrade.min = 7
+    ui.durationInput.upgrade.max = 40
+    ui.durationInput.upgrade.value = 14
+    // Show the phases section and add to the timeline
+    ui.phasesSection.classList.remove('collapse')
+    groups.remove('environments')
+    groups.remove('su')
+    groups.add([
+      { id: 'phases', content: 'Phases' },
+      { id: 'environments', content: 'Environments' },
+      { id: 'su', content: 'SU Deliveries' }
+    ])
+    // Activate all SU deliveries
+    Object.keys(suDeliveries).forEach(function (key) {
+      if (!ui.deliveryCheck[key].checked) {
+        ui.deliveryCheck[key].click()
+      }
+    }, suDeliveries)
+  } else if (app.upgradeType.value === 'Expedited') {
+    ui.upgradeType.expedited.classList.add('active')
+    ui.upgradeType.classical.classList.remove('active')
+    ui.durationInput.upgrade.min = 1
+    ui.durationInput.upgrade.max = 4
+    ui.durationInput.upgrade.value = 2
+    // Hide the phases section and remove from timeline
+    ui.phasesSection.classList.add('collapse')
+    groups.remove('phases')
+    // Deactivate most SU deliveries, keep only initial
+    Object.keys(suDeliveries).forEach(function (key) {
+      if (key === 'InitialSU' && !ui.deliveryCheck[key].checked) {
+        ui.deliveryCheck[key].click()
+      } else if (key !== 'InitialSU' && ui.deliveryCheck[key].checked) {
+        ui.deliveryCheck[key].click()
+      }
+    }, suDeliveries)
+  }
+  app.setDefaultDates(false)
 }
 
 export function changeNumVersions () {
@@ -318,83 +395,116 @@ export function determineDefaultPhaseLengths () {
 }
 
 export function setDefaultDates (skipRedrawTimeline) {
-  determineDefaultPhaseLengths()
-  updateEndDate('upgrade')
+  let timelineEndDate, daysToShiftEnd
+  if (app.upgradeType.value === 'Classical') {
+    determineDefaultPhaseLengths()
+    updateEndDate('upgrade')
 
-  // Set start date of the Analysis phase is the same as start of the upgrade itself
-  ui.startDateInput.analysis.valueAsDate = setStartDate(ui.startDateInput.upgrade.value)
-  updateEndDate('analysis')
+    // Set start date of the Analysis phase is the same as start of the upgrade itself
+    ui.startDateInput.analysis.valueAsDate = setStartDate(ui.startDateInput.upgrade.value)
+    updateEndDate('analysis')
 
-  // Default start date of the build phase is the end of the analysis phase
-  ui.startDateInput.build.valueAsDate = setStartDate(ui.endDateInput.analysis.value)
-  updateEndDate('build')
+    // Default start date of the build phase is the end of the analysis phase
+    ui.startDateInput.build.valueAsDate = setStartDate(ui.endDateInput.analysis.value)
+    updateEndDate('build')
 
-  // Default start date of the testing phase is the end of the build phase
-  ui.startDateInput.testing.valueAsDate = setStartDate(ui.endDateInput.build.value)
-  updateEndDate('testing')
+    // Default start date of the testing phase is the end of the build phase
+    ui.startDateInput.testing.valueAsDate = setStartDate(ui.endDateInput.build.value)
+    updateEndDate('testing')
 
-  // Default start date of the training phase is the end of the build phase
-  ui.startDateInput.training.valueAsDate = setStartDate(ui.endDateInput.testing.value)
-  updateEndDate('training')
+    // Default start date of the training phase is the end of the build phase
+    ui.startDateInput.training.valueAsDate = setStartDate(ui.endDateInput.testing.value)
+    updateEndDate('training')
 
-  // Default dates for the environment upgrades
-  // REL at the start of the project
-  ui.upgradeDateInput.REL.value = ui.startDateInput.upgrade.value
-  // POC at the start of the build phase
-  ui.upgradeDateInput.POC.value = ui.startDateInput.build.value
-  // TST at the start of the testing phase
-  ui.upgradeDateInput.TST.value = ui.startDateInput.testing.value
-  // MST, ACEs and PLY at the start of the training phase
-  ui.upgradeDateInput.MST.value = ui.startDateInput.training.value
-  ui.upgradeDateInput.ACE.value = ui.startDateInput.training.value
-  ui.upgradeDateInput.PLY.value = ui.startDateInput.training.value
-  // PRD and SUP dates
-  ui.upgradeDateInput.PRD.value = ui.endDateInput.upgrade.value
-  // SUP 4 days before the PRD upgrade
-  const PRDUpgradeDate = new Date(ui.upgradeDateInput.PRD.value)
-  const SUPUpgradeDate = new Date(PRDUpgradeDate.getTime() - 4 * 24 * 60 * 60 * 1000) // 4 days in milliseconds
-  ui.upgradeDateInput.SUP.valueAsDate = SUPUpgradeDate
+    // Default dates for the environment upgrades
+    // REL at the start of the project
+    ui.upgradeDateInput.REL.value = ui.startDateInput.upgrade.value
+    // POC at the start of the build phase
+    ui.upgradeDateInput.POC.value = ui.startDateInput.build.value
+    // TST at the start of the testing phase
+    ui.upgradeDateInput.TST.value = ui.startDateInput.testing.value
+    // MST, ACEs and PLY at the start of the training phase
+    ui.upgradeDateInput.MST.value = ui.startDateInput.training.value
+    ui.upgradeDateInput.ACE.value = ui.startDateInput.training.value
+    ui.upgradeDateInput.PLY.value = ui.startDateInput.training.value
+    // PRD and SUP dates
+    ui.upgradeDateInput.PRD.value = ui.endDateInput.upgrade.value
+    // SUP 4 days before the PRD upgrade
+    const PRDUpgradeDate = new Date(ui.upgradeDateInput.PRD.value)
+    const SUPUpgradeDate = new Date(PRDUpgradeDate.getTime() - 4 * 24 * 60 * 60 * 1000) // 4 days in milliseconds
+    ui.upgradeDateInput.SUP.valueAsDate = SUPUpgradeDate
 
-  // Default dates for the SU deliveries
-  // Initial SU Delivery at the start of the project
-  ui.deliveryDateInput.InitialSU.value = ui.startDateInput.upgrade.value
-  // All Fix SUs Delivery 2 weeks after the end of the Testing phase
-  const testingEndDate = new Date(ui.endDateInput.testing.value)
-  const AllFixSUDeliveryDate = new Date(testingEndDate.getTime() - 2 * 7 * 24 * 60 * 60 * 1000) // 4 days in milliseconds
-  ui.deliveryDateInput.AllFixSU.valueAsDate = AllFixSUDeliveryDate
-  // Pre-Upgrade Critical SU 2 weeks before the PRD upgrade
-  const PreUpgradeCriticalSUDate = new Date(PRDUpgradeDate.getTime() - 2 * 7 * 24 * 60 * 60 * 1000) // 2 weeks in milliseconds
-  ui.deliveryDateInput.PreUpgradeCriticalSU.valueAsDate = PreUpgradeCriticalSUDate
-  // Post-Upgrade SU Delivery 2 weeks after the PRD upgrade
-  // (yeah, you could argue that the PRD upgrade date is thus not the real end of the upgrade...)
-  const PostUpgradeSUDate = new Date(PRDUpgradeDate.getTime() + 2 * 7 * 24 * 60 * 60 * 1000) // 2 weeks in milliseconds
-  ui.deliveryDateInput.PostUpgradeSU.valueAsDate = PostUpgradeSUDate
+    // Default dates for the SU deliveries
+    // Initial SU Delivery at the start of the project
+    ui.deliveryDateInput.InitialSU.value = ui.startDateInput.upgrade.value
+    // All Fix SUs Delivery 2 weeks after the end of the Testing phase
+    const testingEndDate = new Date(ui.endDateInput.testing.value)
+    const AllFixSUDeliveryDate = new Date(testingEndDate.getTime() - 2 * 7 * 24 * 60 * 60 * 1000) // 4 days in milliseconds
+    ui.deliveryDateInput.AllFixSU.valueAsDate = AllFixSUDeliveryDate
+    // Pre-Upgrade Critical SU 2 weeks before the PRD upgrade
+    const PreUpgradeCriticalSUDate = new Date(PRDUpgradeDate.getTime() - 2 * 7 * 24 * 60 * 60 * 1000) // 2 weeks in milliseconds
+    ui.deliveryDateInput.PreUpgradeCriticalSU.valueAsDate = PreUpgradeCriticalSUDate
+    // Post-Upgrade SU Delivery 2 weeks after the PRD upgrade
+    // (yeah, you could argue that the PRD upgrade date is thus not the real end of the upgrade...)
+    const PostUpgradeSUDate = new Date(PRDUpgradeDate.getTime() + 2 * 7 * 24 * 60 * 60 * 1000) // 2 weeks in milliseconds
+    ui.deliveryDateInput.PostUpgradeSU.valueAsDate = PostUpgradeSUDate
+
+    // Define the timeline's begin and end dates
+    timelineEndDate = PostUpgradeSUDate
+    // Shift the timeline's end date by a couple of days, so that the last SU package remains visible
+    daysToShiftEnd = 3 * parseInt(ui.durationInput.upgrade.value) / 6
+
+    app.updateVisItemDate('analysisPhase', ui.startDateInput.analysis.value, 'startPhase')
+    app.updateVisItemDate('analysisPhase', ui.endDateInput.analysis.value, 'end')
+    app.updateVisItemDate('buildPhase', ui.startDateInput.build.value, 'startPhase')
+    app.updateVisItemDate('buildPhase', ui.endDateInput.build.value, 'end')
+    app.updateVisItemDate('testingPhase', ui.startDateInput.testing.value, 'startPhase')
+    app.updateVisItemDate('testingPhase', ui.endDateInput.testing.value, 'end')
+    app.updateVisItemDate('trainingPhase', ui.startDateInput.training.value, 'startPhase')
+    app.updateVisItemDate('trainingPhase', ui.endDateInput.training.value, 'end')
+  } else if (app.upgradeType.value === 'Expedited') {
+    updateEndDate('upgrade')
+
+    // Default dates for the environment upgrades
+    const upgradeDuration = parseInt(ui.durationInput.upgrade.value)
+    const upgradeStartDate = new Date(ui.startDateInput.upgrade.value)
+    const dateShift = {
+      REL: [0, 0, 0, 0],
+      POC: [1, 3, 3, 4],
+      TST: [2, 7, 8, 9],
+      MST: [3, 9, 11, 15],
+      ACE: [3, 9, 11, 15],
+      PLY: [3, 9, 11, 15],
+      SUP: [4, 10, 16, 23],
+      PRD: [5, 11, 18, 25]
+    }
+    for (let i = 0; i < environments.length; i++) {
+      const daysOffset = dateShift[environments[i]][upgradeDuration - 1]
+      ui.upgradeDateInput[environments[i]].value = formatDate(dateAddNDays(upgradeStartDate, daysOffset))
+    }
+
+    // Initial SU Delivery at the start of the project
+    ui.deliveryDateInput.InitialSU.value = ui.startDateInput.upgrade.value
+
+    timelineEndDate = new Date(ui.endDateInput.upgrade.value)
+    daysToShiftEnd = 1
+  }
 
   app.updateVisItemDate('upgradePeriod', ui.startDateInput.upgrade.value, 'startPhase')
   app.updateVisItemDate('upgradePeriod', ui.endDateInput.upgrade.value, 'end')
-  app.updateVisItemDate('analysisPhase', ui.startDateInput.analysis.value, 'startPhase')
-  app.updateVisItemDate('analysisPhase', ui.endDateInput.analysis.value, 'end')
-  app.updateVisItemDate('buildPhase', ui.startDateInput.build.value, 'startPhase')
-  app.updateVisItemDate('buildPhase', ui.endDateInput.build.value, 'end')
-  app.updateVisItemDate('testingPhase', ui.startDateInput.testing.value, 'startPhase')
-  app.updateVisItemDate('testingPhase', ui.endDateInput.testing.value, 'end')
-  app.updateVisItemDate('trainingPhase', ui.startDateInput.training.value, 'startPhase')
-  app.updateVisItemDate('trainingPhase', ui.endDateInput.training.value, 'end')
   for (let i = 0; i < environments.length; i++) {
     app.updateVisItemDate(`env${environments[i]}`, ui.upgradeDateInput[environments[i]].value, 'startPoint')
   }
   Object.keys(suDeliveries).forEach(function (key) {
-    app.updateVisItemDate(`su${key}`, ui.deliveryDateInput[key].value, 'startPoint')
+    if (items.get(`su${key}`)) {
+      app.updateVisItemDate(`su${key}`, ui.deliveryDateInput[key].value, 'startPoint')
+    }
   }, suDeliveries)
 
-  // Define the timeline's begin and end dates
-  timelineOptions.start = ui.startDateInput.upgrade.value
-  const timelineEndDate = PostUpgradeSUDate
-  // Shift the timeline's end date by a couple of days, so that the last SU package remains visible
-  const daysToShiftEnd = 3 * parseInt(ui.durationInput.upgrade.value) / 6
-  timelineEndDate.setDate(PostUpgradeSUDate.getDate() + daysToShiftEnd)
-  timelineOptions.end = timelineEndDate
   if (!skipRedrawTimeline) {
+    timelineOptions.start = ui.startDateInput.upgrade.value
+    timelineEndDate.setDate(timelineEndDate.getDate() + daysToShiftEnd)
+    timelineOptions.end = timelineEndDate
     ui.timeline.setOptions(timelineOptions)
   }
 }

@@ -21,6 +21,8 @@ test('UI is properly configured initially', () => {
 
   expect(app.ui.versionNameSelect.options.length).toBe(0)
   expect(app.ui.numVersionsSelect.value).not.toBe('2')
+  expect(app.ui.durationInput.upgrade.min).not.toBe('7')
+  expect(app.ui.durationInput.upgrade.max).not.toBe('40')
   expect(app.ui.durationInput.upgrade.value).not.toBe('14')
 
   // Mock the nested function
@@ -31,6 +33,8 @@ test('UI is properly configured initially', () => {
 
   expect(app.ui.versionNameSelect.options.length).toBe(12)
   expect(app.ui.numVersionsSelect.value).toBe('2')
+  expect(app.ui.durationInput.upgrade.min).toBe('7')
+  expect(app.ui.durationInput.upgrade.max).toBe('40')
   expect(app.ui.durationInput.upgrade.value).toBe('14')
   expect(app.setDefaultDates).toHaveBeenCalled()
   expect(app.updateVersionName).toHaveBeenCalled()

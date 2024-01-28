@@ -6,6 +6,9 @@ const app = require('../app')
 
 test('UI events get triggered as expected', () => {
   document.body.innerHTML =
+    '<button class="btn btn-secondary dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false" id="upgradeTypeToggle">Classical upgrade</button>' +
+    '<li><a class="dropdown-item active" href="#" id="upgradeTypeClassical">Classical</a></li>' +
+    '<li><a class="dropdown-item" href="#" id="upgradeTypeExpedited">Expedited</a></li>' +
     '<select class="form-select" id="versionName" name="versionName">' +
     '<option value="2023-02">February 2023</option>' +
     '<option value="2023-05">May 2023</option>' +
@@ -72,6 +75,8 @@ test('UI events get triggered as expected', () => {
     '<input type="date" class="form-control" id="PostUpgradeSUDeliveryDate" name="PostUpgradeSUDeliveryDate" aria-label="Post-Upgrade SU Delivery Date" aria-describedby="basic-addon-SUPostUpgrade">' +
     '<div id="visualization" class="mt-3"></div>'
   app.getUI()
+  app.ui.upgradeType.classical.addEventListener = jest.fn()
+  app.ui.upgradeType.expedited.addEventListener = jest.fn()
   app.ui.numVersionsSelect.addEventListener = jest.fn()
   app.ui.durationInput.upgrade.addEventListener = jest.fn()
   app.ui.startDateInput.upgrade.addEventListener = jest.fn()
@@ -93,7 +98,9 @@ test('UI events get triggered as expected', () => {
 
   app.setupEventListeners()
 
-  expect(Object.keys(app.ui).length).toStrictEqual(11)
+  expect(Object.keys(app.ui).length).toStrictEqual(14)
+  expect(app.ui.upgradeType.classical.addEventListener).toBeCalledWith('click', expect.any(Function))
+  expect(app.ui.upgradeType.expedited.addEventListener).toBeCalledWith('click', expect.any(Function))
   expect(app.ui.numVersionsSelect.addEventListener).toBeCalledWith('change', expect.any(Function))
   expect(app.ui.startDateInput.upgrade.addEventListener).toBeCalledWith('input', expect.any(Function))
   expect(app.ui.endDateInput.upgrade.addEventListener).toBeCalledWith('input', expect.any(Function))

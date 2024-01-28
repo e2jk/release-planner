@@ -3,6 +3,7 @@
  */
 
 const {
+  upgradeType,
   phases,
   environments,
   suDeliveries,
@@ -11,6 +12,8 @@ const {
   items,
   timelineOptions,
   getUI,
+  formatDate,
+  dateAddNDays,
   setStartDate,
   setEndDate,
   getRoundedNumberOfWeeks,
@@ -22,6 +25,9 @@ const {
 } = require('../app')
 
 describe('Test default variables', () => {
+  test('The default upgrade type is Classical', () => {
+    expect(upgradeType).toStrictEqual({ current: 'Classical', value: 'Classical' })
+  })
   test('There are 4 default Phases', () => {
     expect(phases).toHaveLength(4)
     expect(phases).toStrictEqual(['analysis', 'build', 'testing', 'training'])
@@ -201,6 +207,9 @@ test('Duration between two dates is a rounded number of weeks', () => {
 
 test('The UI gets parsed as expected', () => {
   document.body.innerHTML =
+  '<button class="btn btn-secondary dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false" id="upgradeTypeToggle">Classical upgrade</button>' +
+  '<li><a class="dropdown-item active" href="#" id="upgradeTypeClassical">Classical</a></li>' +
+  '<li><a class="dropdown-item" href="#" id="upgradeTypeExpedited">Expedited</a></li>' +
   '<select class="form-select" id="versionName" name="versionName"></select>' +
   '<select class="form-select" id="numVersions" name="numVersions">' +
   '<option value="1">1 version</option>' +
@@ -212,6 +221,7 @@ test('The UI gets parsed as expected', () => {
   '<input type="date" class="form-control" id="upgradeStartDate" name="upgradeStartDate" value="XX">' +
   '<input type="date" class="form-control" id="upgradeEndDate" name="upgradeEndDate">' +
   '<input type="range" class="form-range" id="upgradeDuration" name="upgradeDuration">' +
+  '<div class="row row-gap-3" id="phasesSection">' +
   '<small class="text-body-secondary" id="analysisDurationValue">4 weeks</small>' +
   '<input type="range" class="form-range" id="analysisDuration" name="analysisDuration" min="1">' +
   '<input type="date" class="form-control" id="analysisStartDate" name="analysisStartDate" aria-label="Analysis Start Date" aria-describedby="basic-addon-asd">' +
@@ -228,6 +238,7 @@ test('The UI gets parsed as expected', () => {
   '<input type="range" class="form-range" id="trainingDuration" name="trainingDuration" min="1">' +
   '<input type="date" class="form-control" id="trainingStartDate" name="trainingStartDate" aria-label="Training Start Date" aria-describedby="basic-addon-trsd">' +
   '<input type="date" class="form-control" id="trainingEndDate" name="trainingEndDate" aria-label="Training End Date" aria-describedby="basic-addon-tred">' +
+  '</div>' +
   '<input class="form-check-input mt-0" type="checkbox" value="" id="envCheckREL" aria-label="Checkbox to include REL upgrade" checked>' +
   '<input type="date" class="form-control" id="RELUpgradeDate" name="RELUpgradeDate" aria-label="REL Upgrade Date" aria-describedby="basic-addon-udREL">' +
   '<input class="form-check-input mt-0" type="checkbox" value="" id="envCheckPOC" aria-label="Checkbox to include POC upgrade" checked>' +
@@ -257,9 +268,13 @@ test('The UI gets parsed as expected', () => {
   expect(Object.keys(ui).length).toStrictEqual(0)
   expect(ui).toStrictEqual({})
   getUI()
-  expect(Object.keys(ui).length).toStrictEqual(11)
+  expect(Object.keys(ui).length).toStrictEqual(14)
+  expect(ui.upgradeTypeToggle.innerHTML).toBe('Classical upgrade')
+  expect(ui.upgradeType.classical.id).toBe('upgradeTypeClassical')
+  expect(ui.upgradeType.expedited.id).toBe('upgradeTypeExpedited')
   expect(ui.versionNameSelect.id).toBe('versionName')
   expect(ui.numVersionsSelect.id).toBe('numVersions')
+  expect(ui.phasesSection.id).toBe('phasesSection')
   expect(ui.visContainer.className).toBe('mt-3')
   expect(Object.keys(ui.startDateInput).length).toBe(5)
   expect(Object.keys(ui.endDateInput).length).toBe(5)
@@ -337,4 +352,25 @@ test('Visualization group content gets updated', () => {
   expect(groups.get('upgrade').content).toBe('Upgrade')
   updateVisGroupContent('upgrade', 'This is the new group name')
   expect(groups.get('upgrade').content).toBe('This is the new group name')
+})
+
+test('Format date in YYYY-MM-DD format', () => {
+  expect(formatDate(new Date('2023-12-01'))).toBe('2023-12-01')
+  expect(formatDate(new Date('2024-01-28'))).toBe('2024-01-28')
+})
+
+test('Add N days to a date', () => {
+  expect(dateAddNDays(new Date('2024-01-28'), -3)).toStrictEqual(new Date('2024-01-25'))
+  expect(dateAddNDays(new Date('2024-01-28'), -1)).toStrictEqual(new Date('2024-01-27'))
+  expect(dateAddNDays(new Date('2024-01-28'), 0)).toStrictEqual(new Date('2024-01-28'))
+  expect(dateAddNDays(new Date('2024-01-28'), 1)).toStrictEqual(new Date('2024-01-29'))
+  expect(dateAddNDays(new Date('2024-01-28'), 3)).toStrictEqual(new Date('2024-01-31'))
+})
+
+test('Getter and setter for upgradeType', () => {
+  expect(upgradeType).toStrictEqual({ current: 'Classical', value: 'Classical' })
+  upgradeType.current = 'Expedited'
+  expect(upgradeType).toStrictEqual({ current: 'Expedited', value: 'Expedited' })
+  upgradeType.current = 'Classical'
+  expect(upgradeType).toStrictEqual({ current: 'Classical', value: 'Classical' })
 })
