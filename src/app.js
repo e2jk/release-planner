@@ -235,13 +235,16 @@ export function changeUpgradeType (evt) {
 }
 
 export function changeNumVersions () {
-  const numVersions = parseInt(ui.numVersionsSelect.value)
-  const calculatedDuration = 7 * numVersions
+  // Changing the number of versions during an Expedited upgrade has no effect
+  if (app.upgradeType.value === 'Classical') {
+    const numVersions = parseInt(ui.numVersionsSelect.value)
+    const calculatedDuration = 7 * numVersions
 
-  ui.durationInput.upgrade.value = calculatedDuration
-  ui.durationValue.upgrade.textContent = `${calculatedDuration} weeks`
-  // Changing the number of versions changes the entire planning, so recalculate all default dates
-  app.setDefaultDates(false)
+    ui.durationInput.upgrade.value = calculatedDuration
+    ui.durationValue.upgrade.textContent = `${calculatedDuration} weeks`
+    // Changing the number of versions changes the entire planning, so recalculate all default dates
+    app.setDefaultDates(false)
+  }
 }
 
 export function setStartDate (startDate) {
