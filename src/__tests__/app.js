@@ -2,46 +2,26 @@
  * @jest-environment jsdom
  */
 
-const {
-  upgradeType,
-  phases,
-  environments,
-  suDeliveries,
-  ui,
-  groups,
-  items,
-  timelineOptions,
-  getUI,
-  formatDate,
-  dateAddNDays,
-  setStartDate,
-  setEndDate,
-  getRoundedNumberOfWeeks,
-  calculateDefaultPhaseLengths,
-  determineDefaultPhaseLengths,
-  updateVisItemDate,
-  updateVisItemContent,
-  updateVisGroupContent
-} = require('../app')
+const app = require('../app')
 
 describe('Test default variables', () => {
   test('The default upgrade type is Classical', () => {
-    expect(upgradeType).toStrictEqual({ current: 'Classical', value: 'Classical' })
+    expect(app.upgradeType).toStrictEqual({ current: 'Classical', value: 'Classical' })
   })
-  test('There are 4 default Phases', () => {
-    expect(phases).toHaveLength(4)
-    expect(phases).toStrictEqual(['analysis', 'build', 'testing', 'training'])
+  test('There are 4 default app.phases', () => {
+    expect(app.phases).toHaveLength(4)
+    expect(app.phases).toStrictEqual(['analysis', 'build', 'testing', 'training'])
   })
 
-  test('There are 8 default Environments', () => {
-    expect(environments).toHaveLength(8)
-    expect(environments).toStrictEqual(['REL', 'POC', 'TST', 'MST', 'ACE', 'PLY', 'SUP', 'PRD'])
+  test('There are 8 default app.environments', () => {
+    expect(app.environments).toHaveLength(8)
+    expect(app.environments).toStrictEqual(['REL', 'POC', 'TST', 'MST', 'ACE', 'PLY', 'SUP', 'PRD'])
   })
 
   test('There are 4 default SU Deliveries', () => {
-    expect(Object.keys(suDeliveries).length).toStrictEqual(4)
-    expect(suDeliveries).toHaveProperty('PreUpgradeCriticalSU', 'Pre-Upgrade Critical')
-    expect(suDeliveries).toStrictEqual({
+    expect(Object.keys(app.suDeliveries).length).toStrictEqual(4)
+    expect(app.suDeliveries).toHaveProperty('PreUpgradeCriticalSU', 'Pre-Upgrade Critical')
+    expect(app.suDeliveries).toStrictEqual({
       InitialSU: 'Initial',
       AllFixSU: 'All Fix SUs',
       PreUpgradeCriticalSU: 'Pre-Upgrade Critical',
@@ -50,14 +30,14 @@ describe('Test default variables', () => {
   })
 
   test('The default `ui` object is empty', () => {
-    expect(Object.keys(ui).length).toStrictEqual(0)
-    expect(ui).toStrictEqual({})
+    expect(Object.keys(app.ui).length).toStrictEqual(0)
+    expect(app.ui).toStrictEqual({})
   })
 
-  test('There are 4 default groups for the timeline', () => {
-    expect(groups.length).toStrictEqual(4)
-    expect(groups.getIds()).toStrictEqual(['upgrade', 'phases', 'environments', 'su'])
-    expect(groups.get('upgrade')).toStrictEqual({
+  test('There are 4 default app.groups for the timeline', () => {
+    expect(app.groups.length).toStrictEqual(4)
+    expect(app.groups.getIds()).toStrictEqual(['upgrade', 'phases', 'environments', 'su'])
+    expect(app.groups.get('upgrade')).toStrictEqual({
       id: 'upgrade',
       content: 'Upgrade',
       nestedGroups: [
@@ -69,8 +49,8 @@ describe('Test default variables', () => {
   })
 
   test('There are 17 default bars and points for the timeline', () => {
-    expect(items.length).toStrictEqual(17)
-    expect(items.getIds()).toStrictEqual([
+    expect(app.items.length).toStrictEqual(17)
+    expect(app.items.getIds()).toStrictEqual([
       'upgradePeriod',
       'analysisPhase',
       'buildPhase',
@@ -89,18 +69,18 @@ describe('Test default variables', () => {
       'suPreUpgradeCriticalSU',
       'suPostUpgradeSU'
     ])
-    expect(items.get('buildPhase')).toStrictEqual({
+    expect(app.items.get('buildPhase')).toStrictEqual({
       id: 'buildPhase',
       group: 'phases',
       content: 'Build'
     })
-    expect(items.get('envPRD')).toStrictEqual({
+    expect(app.items.get('envPRD')).toStrictEqual({
       id: 'envPRD',
       group: 'environments',
       content: 'PRD',
       type: 'point'
     })
-    expect(items.get('suPostUpgradeSU')).toStrictEqual({
+    expect(app.items.get('suPostUpgradeSU')).toStrictEqual({
       id: 'suPostUpgradeSU',
       group: 'su',
       content: 'Post-Upgrade',
@@ -108,30 +88,30 @@ describe('Test default variables', () => {
     })
   })
 
-  test('The default `timelineOptions` object is empty', () => {
-    expect(Object.keys(timelineOptions).length).toStrictEqual(0)
-    expect(timelineOptions).toStrictEqual({})
+  test('The default `app.timelineOptions` object is empty', () => {
+    expect(Object.keys(app.timelineOptions).length).toStrictEqual(0)
+    expect(app.timelineOptions).toStrictEqual({})
   })
 })
 
 describe('If the start date is on a', () => {
   test('Monday, Tuesday, Wednesday or Thursday, it remains the same day', () => {
     // Wednesday
-    expect(setStartDate('2024-01-17')).toStrictEqual(new Date('2024-01-17'))
+    expect(app.setStartDate('2024-01-17')).toStrictEqual(new Date('2024-01-17'))
     // Thursday
-    expect(setStartDate('2024-01-18')).toStrictEqual(new Date('2024-01-18'))
+    expect(app.setStartDate('2024-01-18')).toStrictEqual(new Date('2024-01-18'))
     // Monday
-    expect(setStartDate('2024-01-22')).toStrictEqual(new Date('2024-01-22'))
+    expect(app.setStartDate('2024-01-22')).toStrictEqual(new Date('2024-01-22'))
     // Tuesday
-    expect(setStartDate('2024-01-23')).toStrictEqual(new Date('2024-01-23'))
+    expect(app.setStartDate('2024-01-23')).toStrictEqual(new Date('2024-01-23'))
   })
   test('Friday, Saturday or Sunday, it moves up to the next Monday', () => {
     // Friday
-    expect(setStartDate('2024-01-19')).toStrictEqual(new Date('2024-01-22'))
+    expect(app.setStartDate('2024-01-19')).toStrictEqual(new Date('2024-01-22'))
     // Saturday
-    expect(setStartDate('2024-01-20')).toStrictEqual(new Date('2024-01-22'))
+    expect(app.setStartDate('2024-01-20')).toStrictEqual(new Date('2024-01-22'))
     // Sunday
-    expect(setStartDate('2024-01-21')).toStrictEqual(new Date('2024-01-22'))
+    expect(app.setStartDate('2024-01-21')).toStrictEqual(new Date('2024-01-22'))
   })
 })
 
@@ -146,33 +126,33 @@ describe('If the end date is on a', () => {
   test('Tuesday, Wednesday, Thursday or Friday, it remains the same day', () => {
     // Tuesday
     startDateInput.value = '2024-01-23'
-    setEndDate(startDateInput, durationWeeksInput, endDateInput)
+    app.setEndDate(startDateInput, durationWeeksInput, endDateInput)
     expect(endDateInput.value).toBe('2024-04-30')
     // Wednesday
     startDateInput.value = '2024-01-24'
-    setEndDate(startDateInput, durationWeeksInput, endDateInput)
+    app.setEndDate(startDateInput, durationWeeksInput, endDateInput)
     expect(endDateInput.value).toBe('2024-05-01')
     // Thursday
     startDateInput.value = '2024-01-25'
-    setEndDate(startDateInput, durationWeeksInput, endDateInput)
+    app.setEndDate(startDateInput, durationWeeksInput, endDateInput)
     expect(endDateInput.value).toBe('2024-05-02')
     // Friday
     startDateInput.value = '2024-01-26'
-    setEndDate(startDateInput, durationWeeksInput, endDateInput)
+    app.setEndDate(startDateInput, durationWeeksInput, endDateInput)
     expect(endDateInput.value).toBe('2024-05-03')
   })
   test('Saturday, Sunday or Monday, it moves back to the prior Friday', () => {
     // Saturday
     startDateInput.value = '2024-01-27'
-    setEndDate(startDateInput, durationWeeksInput, endDateInput)
+    app.setEndDate(startDateInput, durationWeeksInput, endDateInput)
     expect(endDateInput.value).toBe('2024-05-03')
     // Sunday
     startDateInput.value = '2024-01-28'
-    setEndDate(startDateInput, durationWeeksInput, endDateInput)
+    app.setEndDate(startDateInput, durationWeeksInput, endDateInput)
     expect(endDateInput.value).toBe('2024-05-03')
     // Monday
     startDateInput.value = '2024-01-29'
-    setEndDate(startDateInput, durationWeeksInput, endDateInput)
+    app.setEndDate(startDateInput, durationWeeksInput, endDateInput)
     expect(endDateInput.value).toBe('2024-05-03')
   })
 })
@@ -189,20 +169,20 @@ test('The end date is empty when the start date is invalid', () => {
   durationWeeksInput.value = 14
   endDateInput.value = '2024-04-30'
   expect(endDateInput.value).toBe('2024-04-30')
-  setEndDate(startDateInput, durationWeeksInput, endDateInput)
+  app.setEndDate(startDateInput, durationWeeksInput, endDateInput)
   expect(endDateInput.value).toBe('')
 })
 
 test('Duration between two dates is a rounded number of weeks', () => {
-  expect(getRoundedNumberOfWeeks(new Date('2024-01-21'), new Date('2024-01-28'))).toBe(1)
-  expect(getRoundedNumberOfWeeks(new Date('2024-01-21'), new Date('2024-01-29'))).toBe(1)
-  expect(getRoundedNumberOfWeeks(new Date('2024-01-21'), new Date('2024-01-30'))).toBe(1)
-  expect(getRoundedNumberOfWeeks(new Date('2024-01-21'), new Date('2024-01-31'))).toBe(1)
-  expect(getRoundedNumberOfWeeks(new Date('2024-01-21'), new Date('2024-02-01'))).toBe(2)
-  expect(getRoundedNumberOfWeeks(new Date('2024-01-21'), new Date('2024-02-02'))).toBe(2)
-  expect(getRoundedNumberOfWeeks(new Date('2024-01-21'), new Date('2024-02-03'))).toBe(2)
-  expect(getRoundedNumberOfWeeks(new Date('2024-01-21'), new Date('2024-02-04'))).toBe(2)
-  expect(getRoundedNumberOfWeeks(new Date('2024-01-21'), new Date('2024-02-05'))).toBe(2)
+  expect(app.getRoundedNumberOfWeeks(new Date('2024-01-21'), new Date('2024-01-28'))).toBe(1)
+  expect(app.getRoundedNumberOfWeeks(new Date('2024-01-21'), new Date('2024-01-29'))).toBe(1)
+  expect(app.getRoundedNumberOfWeeks(new Date('2024-01-21'), new Date('2024-01-30'))).toBe(1)
+  expect(app.getRoundedNumberOfWeeks(new Date('2024-01-21'), new Date('2024-01-31'))).toBe(1)
+  expect(app.getRoundedNumberOfWeeks(new Date('2024-01-21'), new Date('2024-02-01'))).toBe(2)
+  expect(app.getRoundedNumberOfWeeks(new Date('2024-01-21'), new Date('2024-02-02'))).toBe(2)
+  expect(app.getRoundedNumberOfWeeks(new Date('2024-01-21'), new Date('2024-02-03'))).toBe(2)
+  expect(app.getRoundedNumberOfWeeks(new Date('2024-01-21'), new Date('2024-02-04'))).toBe(2)
+  expect(app.getRoundedNumberOfWeeks(new Date('2024-01-21'), new Date('2024-02-05'))).toBe(2)
 })
 
 test('The UI gets parsed as expected', () => {
@@ -265,35 +245,35 @@ test('The UI gets parsed as expected', () => {
   '<input type="date" class="form-control" id="PostUpgradeSUDeliveryDate" name="PostUpgradeSUDeliveryDate" aria-label="Post-Upgrade SU Delivery Date" aria-describedby="basic-addon-SUPostUpgrade">' +
   '<div id="visualization" class="mt-3"></div>'
 
-  expect(Object.keys(ui).length).toStrictEqual(0)
-  expect(ui).toStrictEqual({})
-  getUI()
-  expect(Object.keys(ui).length).toStrictEqual(14)
-  expect(ui.upgradeTypeToggle.innerHTML).toBe('Classical upgrade')
-  expect(ui.upgradeType.classical.id).toBe('upgradeTypeClassical')
-  expect(ui.upgradeType.expedited.id).toBe('upgradeTypeExpedited')
-  expect(ui.versionNameSelect.id).toBe('versionName')
-  expect(ui.numVersionsSelect.id).toBe('numVersions')
-  expect(ui.phasesSection.id).toBe('phasesSection')
-  expect(ui.visContainer.className).toBe('mt-3')
-  expect(Object.keys(ui.startDateInput).length).toBe(5)
-  expect(Object.keys(ui.endDateInput).length).toBe(5)
-  expect(Object.keys(ui.durationInput).length).toBe(5)
-  expect(Object.keys(ui.durationValue).length).toBe(5)
-  expect(Object.keys(ui.upgradeDateInput).length).toBe(8)
-  expect(Object.keys(ui.envCheck).length).toBe(8)
-  expect(Object.keys(ui.deliveryDateInput).length).toBe(4)
+  expect(Object.keys(app.ui).length).toStrictEqual(0)
+  expect(app.ui).toStrictEqual({})
+  app.getUI()
+  expect(Object.keys(app.ui).length).toStrictEqual(14)
+  expect(app.ui.upgradeTypeToggle.innerHTML).toBe('Classical upgrade')
+  expect(app.ui.upgradeType.classical.id).toBe('upgradeTypeClassical')
+  expect(app.ui.upgradeType.expedited.id).toBe('upgradeTypeExpedited')
+  expect(app.ui.versionNameSelect.id).toBe('versionName')
+  expect(app.ui.numVersionsSelect.id).toBe('numVersions')
+  expect(app.ui.phasesSection.id).toBe('phasesSection')
+  expect(app.ui.visContainer.className).toBe('mt-3')
+  expect(Object.keys(app.ui.startDateInput).length).toBe(5)
+  expect(Object.keys(app.ui.endDateInput).length).toBe(5)
+  expect(Object.keys(app.ui.durationInput).length).toBe(5)
+  expect(Object.keys(app.ui.durationValue).length).toBe(5)
+  expect(Object.keys(app.ui.upgradeDateInput).length).toBe(8)
+  expect(Object.keys(app.ui.envCheck).length).toBe(8)
+  expect(Object.keys(app.ui.deliveryDateInput).length).toBe(4)
 })
 
 test('Default phase lengths are calculated', () => {
-  expect(calculateDefaultPhaseLengths(7)).toStrictEqual([2, 2, 1, 2])
-  expect(calculateDefaultPhaseLengths(10)).toStrictEqual([3, 3, 2, 2])
-  expect(calculateDefaultPhaseLengths(14)).toStrictEqual([4, 4, 3, 3])
-  expect(calculateDefaultPhaseLengths(18)).toStrictEqual([5, 5, 4, 4])
-  expect(calculateDefaultPhaseLengths(21)).toStrictEqual([6, 6, 5, 4])
-  expect(calculateDefaultPhaseLengths(26)).toStrictEqual([7, 8, 7, 4])
-  expect(calculateDefaultPhaseLengths(28)).toStrictEqual([8, 8, 8, 4])
-  expect(calculateDefaultPhaseLengths(40)).toStrictEqual([12, 12, 12, 4])
+  expect(app.calculateDefaultPhaseLengths(7)).toStrictEqual([2, 2, 1, 2])
+  expect(app.calculateDefaultPhaseLengths(10)).toStrictEqual([3, 3, 2, 2])
+  expect(app.calculateDefaultPhaseLengths(14)).toStrictEqual([4, 4, 3, 3])
+  expect(app.calculateDefaultPhaseLengths(18)).toStrictEqual([5, 5, 4, 4])
+  expect(app.calculateDefaultPhaseLengths(21)).toStrictEqual([6, 6, 5, 4])
+  expect(app.calculateDefaultPhaseLengths(26)).toStrictEqual([7, 8, 7, 4])
+  expect(app.calculateDefaultPhaseLengths(28)).toStrictEqual([8, 8, 8, 4])
+  expect(app.calculateDefaultPhaseLengths(40)).toStrictEqual([12, 12, 12, 4])
 })
 
 test('Duration fields are updated with default phase lengths', () => {
@@ -308,69 +288,69 @@ test('Duration fields are updated with default phase lengths', () => {
     '<input type="range" class="form-range" id="testingDuration" name="testingDuration" min="1">' +
     '<small class="text-body-secondary" id="trainingDurationValue">4 weeks</small>' +
     '<input type="range" class="form-range" id="trainingDuration" name="trainingDuration" min="1">'
-  getUI()
-  determineDefaultPhaseLengths()
-  expect(ui.durationInput.analysis.value).toBe('7')
-  expect(ui.durationInput.build.value).toBe('8')
-  expect(ui.durationInput.testing.value).toBe('7')
-  expect(ui.durationInput.training.value).toBe('4')
-  expect(ui.durationInput.analysis.max).toBe('26')
-  expect(ui.durationInput.build.max).toBe('26')
-  expect(ui.durationInput.testing.max).toBe('26')
-  expect(ui.durationInput.training.max).toBe('26')
-  expect(ui.durationValue.analysis.textContent).toBe('7 weeks')
-  expect(ui.durationValue.build.textContent).toBe('8 weeks')
-  expect(ui.durationValue.testing.textContent).toBe('7 weeks')
-  expect(ui.durationValue.training.textContent).toBe('4 weeks')
+  app.getUI()
+  app.determineDefaultPhaseLengths()
+  expect(app.ui.durationInput.analysis.value).toBe('7')
+  expect(app.ui.durationInput.build.value).toBe('8')
+  expect(app.ui.durationInput.testing.value).toBe('7')
+  expect(app.ui.durationInput.training.value).toBe('4')
+  expect(app.ui.durationInput.analysis.max).toBe('26')
+  expect(app.ui.durationInput.build.max).toBe('26')
+  expect(app.ui.durationInput.testing.max).toBe('26')
+  expect(app.ui.durationInput.training.max).toBe('26')
+  expect(app.ui.durationValue.analysis.textContent).toBe('7 weeks')
+  expect(app.ui.durationValue.build.textContent).toBe('8 weeks')
+  expect(app.ui.durationValue.testing.textContent).toBe('7 weeks')
+  expect(app.ui.durationValue.training.textContent).toBe('4 weeks')
 })
 
 test('Visualization point date update sets its start time at 08:00', () => {
-  expect(items.get('envPOC').start).toBe(undefined)
-  updateVisItemDate('envPOC', '2024-01-24', 'startPoint')
-  expect(items.get('envPOC').start).toBe(new Date('2024-01-24').setHours(8, 0, 0, 0))
+  expect(app.items.get('envPOC').start).toBe(undefined)
+  app.updateVisItemDate('envPOC', '2024-01-24', 'startPoint')
+  expect(app.items.get('envPOC').start).toBe(new Date('2024-01-24').setHours(8, 0, 0, 0))
 })
 
 test('Visualization phase date update sets its start time', () => {
-  expect(items.get('trainingPhase').start).toBe(undefined)
-  updateVisItemDate('trainingPhase', '2024-01-15', 'startPhase')
-  expect(items.get('trainingPhase').start).toBe('2024-01-15')
+  expect(app.items.get('trainingPhase').start).toBe(undefined)
+  app.updateVisItemDate('trainingPhase', '2024-01-15', 'startPhase')
+  expect(app.items.get('trainingPhase').start).toBe('2024-01-15')
 })
 
 test('Visualization phase date update sets its end time at 23:59:59', () => {
-  expect(items.get('testingPhase').end).toBe(undefined)
-  updateVisItemDate('testingPhase', '2024-01-25', 'end')
-  expect(items.get('testingPhase').end).toBe(new Date('2024-01-25').setHours(23, 59, 59, 0))
+  expect(app.items.get('testingPhase').end).toBe(undefined)
+  app.updateVisItemDate('testingPhase', '2024-01-25', 'end')
+  expect(app.items.get('testingPhase').end).toBe(new Date('2024-01-25').setHours(23, 59, 59, 0))
 })
 
-test('Visualization items content gets updated', () => {
-  expect(items.get('upgradePeriod').content).toBe(undefined)
-  updateVisItemContent('upgradePeriod', 'This is the new item name')
-  expect(items.get('upgradePeriod').content).toBe('This is the new item name')
+test('Visualization app.items content gets updated', () => {
+  expect(app.items.get('upgradePeriod').content).toBe(undefined)
+  app.updateVisItemContent('upgradePeriod', 'This is the new item name')
+  expect(app.items.get('upgradePeriod').content).toBe('This is the new item name')
 })
 
 test('Visualization group content gets updated', () => {
-  expect(groups.get('upgrade').content).toBe('Upgrade')
-  updateVisGroupContent('upgrade', 'This is the new group name')
-  expect(groups.get('upgrade').content).toBe('This is the new group name')
+  expect(app.groups.get('upgrade').content).toBe('Upgrade')
+  app.updateVisGroupContent('upgrade', 'This is the new group name')
+  expect(app.groups.get('upgrade').content).toBe('This is the new group name')
 })
 
 test('Format date in YYYY-MM-DD format', () => {
-  expect(formatDate(new Date('2023-12-01'))).toBe('2023-12-01')
-  expect(formatDate(new Date('2024-01-28'))).toBe('2024-01-28')
+  expect(app.formatDate(new Date('2023-12-01'))).toBe('2023-12-01')
+  expect(app.formatDate(new Date('2024-01-28'))).toBe('2024-01-28')
 })
 
 test('Add N days to a date', () => {
-  expect(dateAddNDays(new Date('2024-01-28'), -3)).toStrictEqual(new Date('2024-01-25'))
-  expect(dateAddNDays(new Date('2024-01-28'), -1)).toStrictEqual(new Date('2024-01-27'))
-  expect(dateAddNDays(new Date('2024-01-28'), 0)).toStrictEqual(new Date('2024-01-28'))
-  expect(dateAddNDays(new Date('2024-01-28'), 1)).toStrictEqual(new Date('2024-01-29'))
-  expect(dateAddNDays(new Date('2024-01-28'), 3)).toStrictEqual(new Date('2024-01-31'))
+  expect(app.dateAddNDays(new Date('2024-01-28'), -3)).toStrictEqual(new Date('2024-01-25'))
+  expect(app.dateAddNDays(new Date('2024-01-28'), -1)).toStrictEqual(new Date('2024-01-27'))
+  expect(app.dateAddNDays(new Date('2024-01-28'), 0)).toStrictEqual(new Date('2024-01-28'))
+  expect(app.dateAddNDays(new Date('2024-01-28'), 1)).toStrictEqual(new Date('2024-01-29'))
+  expect(app.dateAddNDays(new Date('2024-01-28'), 3)).toStrictEqual(new Date('2024-01-31'))
 })
 
-test('Getter and setter for upgradeType', () => {
-  expect(upgradeType).toStrictEqual({ current: 'Classical', value: 'Classical' })
-  upgradeType.current = 'Expedited'
-  expect(upgradeType).toStrictEqual({ current: 'Expedited', value: 'Expedited' })
-  upgradeType.current = 'Classical'
-  expect(upgradeType).toStrictEqual({ current: 'Classical', value: 'Classical' })
+test('Getter and setter for app.upgradeType', () => {
+  expect(app.upgradeType).toStrictEqual({ current: 'Classical', value: 'Classical' })
+  app.upgradeType.current = 'Expedited'
+  expect(app.upgradeType).toStrictEqual({ current: 'Expedited', value: 'Expedited' })
+  app.upgradeType.current = 'Classical'
+  expect(app.upgradeType).toStrictEqual({ current: 'Classical', value: 'Classical' })
 })
