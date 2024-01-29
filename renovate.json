@@ -7,5 +7,6 @@
   "automergeType": "branch",
   "major": {
     "automerge": false
-  }
+  },
+  "dependencyDashboard": false
 }
