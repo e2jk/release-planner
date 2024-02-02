@@ -1,360 +1,360 @@
 <!doctype html>
 <html lang="en">
-    <head>
-        <title>Release Planner</title>
-        <!-- Required meta tags -->
-        <meta charset="utf-8" />
-        <meta
-            name="viewport"
-            content="width=device-width, initial-scale=1, shrink-to-fit=no"
-        />
+<head>
+    <title>Release Planner</title>
+    <!-- Required meta tags -->
+    <meta charset="utf-8" />
+    <meta
+    name="viewport"
+    content="width=device-width, initial-scale=1, shrink-to-fit=no"
+    />
+    
+    <!-- Bundled CSS -->
+    <link href="bundle.css" rel="stylesheet" type="text/css" />
+    
+    <style>
+        /* alternating column backgrounds */
+        .vis-time-axis .vis-grid.vis-odd {
+            background: #f5f5f5;
+        }
+        
+        /* gray background in weekends, white text color */
+        .vis-time-axis .vis-grid.vis-saturday,
+        .vis-time-axis .vis-grid.vis-sunday {
+            background: lightgray;
+        }
+        .vis-time-axis .vis-text.vis-saturday,
+        .vis-time-axis .vis-text.vis-sunday {
+            color: white;
+        }
+    </style>
+</head>
 
-        <!-- Bundled CSS -->
-        <link href="bundle.css" rel="stylesheet" type="text/css" />
-
-        <style>
-            /* alternating column backgrounds */
-            .vis-time-axis .vis-grid.vis-odd {
-              background: #f5f5f5;
-            }
-          
-            /* gray background in weekends, white text color */
-            .vis-time-axis .vis-grid.vis-saturday,
-            .vis-time-axis .vis-grid.vis-sunday {
-              background: lightgray;
-            }
-            .vis-time-axis .vis-text.vis-saturday,
-            .vis-time-axis .vis-text.vis-sunday {
-              color: white;
-            }
-          </style>
-    </head>
-
-    <body>
-        <header>
-            <!-- place navbar here -->
-        </header>
-        <main class="container">
-            <h1>Release Planner</h1>
-
-            <form class="collapse show multi-collapse" id="releaseParameters">
-                <div class="row row-gap-2">
-                    <!-- General -->
-                    <h2 class="mt-3">
-                        General
-                        <small class="text-body-secondary">Upgrade Duration: <span id="upgradeDurationValue">14 weeks</span></small>
-                    </h2>
-                    <div class="dropdown">
-                        <button class="btn btn-secondary dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false" id="upgradeTypeToggle">
-                            Classical upgrade
-                        </button>
-                        <ul class="dropdown-menu">
-                            <li><a class="dropdown-item active" href="#" id="upgradeTypeClassical">Classical</a></li>
-                            <li><a class="dropdown-item" href="#" id="upgradeTypeExpedited">Expedited</a></li>
-                        </ul>
-                    </div>
-                    <div class="col-lg-3 col-md-6">
-                        <div>
-                            <label for="versionName" class="form-label">Version you are upgrading to:</label>
-                            <select class="form-select" id="versionName" name="versionName"></select>
-                        </div>
-                    </div>
-
-                    <div class="col-lg-3 col-md-6">
-                        <div>
-                            <label for="numVersions" class="form-label">Number of Versions:</label>
-                            <select class="form-select" id="numVersions" name="numVersions">
-                                <option value="1">1 version</option>
-                                <option value="2" selected>2 versions</option>
-                                <option value="3">3 versions</option>
-                                <option value="4">4 versions</option>
-                            </select>
-                        </div>
-                    </div>
-
-                    <div class="col-lg-3 col-md-6">
-                        <div>
-                            <label for="upgradeStartDate" class="form-label">Upgrade Start Date:</label>
-                            <input type="date" class="form-control" id="upgradeStartDate" name="upgradeStartDate">
-                        </div>
-                    </div>
-
-                    <div class="col-lg-3 col-md-6">
-                        <div>
-                            <label for="upgradeEndDate" class="form-label">Upgrade End Date:</label>
-                            <input type="date" class="form-control" id="upgradeEndDate" name="upgradeEndDate">
-                        </div>
-                    </div>
-
-                    <div class="col-12">
-                        <div>
-                            
-                            <input type="range" class="form-range" id="upgradeDuration" name="upgradeDuration" min="7" max="40" value="14">
-                        </div>
+<body>
+    <header>
+        <!-- place navbar here -->
+    </header>
+    <main class="container">
+        <h1>Release Planner</h1>
+        
+        <form class="collapse show multi-collapse" id="releaseParameters">
+            <div class="row row-gap-2">
+                <!-- General -->
+                <h2 class="mt-3">
+                    General
+                    <small class="text-body-secondary">Upgrade Duration: <span id="upgradeDurationValue">14 weeks</span></small>
+                </h2>
+                <div class="dropdown">
+                    <button class="btn btn-secondary dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false" id="upgradeTypeToggle">
+                        Classical upgrade
+                    </button>
+                    <ul class="dropdown-menu">
+                        <li><a class="dropdown-item active" href="#" id="upgradeTypeClassical">Classical</a></li>
+                        <li><a class="dropdown-item" href="#" id="upgradeTypeExpedited">Expedited</a></li>
+                    </ul>
+                </div>
+                <div class="col-lg-3 col-md-6">
+                    <div>
+                        <label for="versionName" class="form-label">Version you are upgrading to:</label>
+                        <select class="form-select" id="versionName" name="versionName"></select>
                     </div>
                 </div>
-
-                <div class="row row-gap-3" id="phasesSection">
-                    <!-- Phases -->
-                    <h2 class="mt-3">Phases</h2>
-
-                    <div class="col-xl-3 col-md-6">
-                        <!-- Analysis Phase -->
-                        <div class="card">
-                            <div class="card-body">
-                                <h3 class="card-title">
-                                    Analysis
-                                    <small class="text-body-secondary" id="analysisDurationValue">4 weeks</small>
-                                </h3>
-                                <div>
-                                    <input type="range" class="form-range" id="analysisDuration" name="analysisDuration" min="1">
-                                </div>
-                                <div class="input-group mb-3">
-                                    <span class="input-group-text" id="basic-addon-asd">Start:</span>
-                                    <input type="date" class="form-control" id="analysisStartDate" name="analysisStartDate" aria-label="Analysis Start Date" aria-describedby="basic-addon-asd">
-                                </div>
-                                <div class="input-group mb-3">
-                                    <span class="input-group-text" id="basic-addon-aed">End:&nbsp;</span>
-                                    <input type="date" class="form-control" id="analysisEndDate" name="analysisEndDate" aria-label="Analysis End Date" aria-describedby="basic-addon-aed">
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-
-                    <div class="col-xl-3 col-md-6">
-                        <!-- Build Phase -->
-                        <div class="card">
-                            <div class="card-body">
-                                <h3 class="card-title">
-                                    Build
-                                    <small class="text-body-secondary" id="buildDurationValue">4 weeks</small>
-                                </h3>
-                                <div>
-                                    <input type="range" class="form-range" id="buildDuration" name="buildDuration" min="1">
-                                </div>
-                                <div class="input-group mb-3">
-                                    <span class="input-group-text" id="basic-addon-bsd">Start:</span>
-                                    <input type="date" class="form-control" id="buildStartDate" name="buildStartDate" aria-label="Build Start Date" aria-describedby="basic-addon-bsd">
-                                </div>
-                                <div class="input-group mb-3">
-                                    <span class="input-group-text" id="basic-addon-bed">End:&nbsp;</span>
-                                    <input type="date" class="form-control" id="buildEndDate" name="buildEndDate" aria-label="Build End Date" aria-describedby="basic-addon-bed">
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-
-                    <div class="col-xl-3 col-md-6">
-                        <!-- Testing Phase -->
-                        <div class="card">
-                            <div class="card-body">
-                                <h3 class="card-title">
-                                    Testing
-                                    <small class="text-body-secondary" id="testingDurationValue">4 weeks</small>
-                                </h3>
-                                <div>
-                                    <input type="range" class="form-range" id="testingDuration" name="testingDuration" min="1">
-                                </div>
-                                <div class="input-group mb-3">
-                                    <span class="input-group-text" id="basic-addon-tesd">Start:</span>
-                                    <input type="date" class="form-control" id="testingStartDate" name="testingStartDate" aria-label="Testing Start Date" aria-describedby="basic-addon-tesd">
-                                </div>
-                                <div class="input-group mb-3">
-                                    <span class="input-group-text" id="basic-addon-teed">End:&nbsp;</span>
-                                    <input type="date" class="form-control" id="testingEndDate" name="testingEndDate" aria-label="Testing End Date" aria-describedby="basic-addon-teed">
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-
-                    <div class="col-xl-3 col-md-6">
-                        <!-- Training Phase -->
-                        <div class="card">
-                            <div class="card-body">
-                                <h3 class="card-title">
-                                    Training
-                                    <small class="text-body-secondary" id="trainingDurationValue">4 weeks</small>
-                                </h3>
-                                <div>
-                                    <input type="range" class="form-range" id="trainingDuration" name="trainingDuration" min="1">
-                                </div>
-                                <div class="input-group mb-3">
-                                    <span class="input-group-text" id="basic-addon-trsd">Start:</span>
-                                    <input type="date" class="form-control" id="trainingStartDate" name="trainingStartDate" aria-label="Training Start Date" aria-describedby="basic-addon-trsd">
-                                </div>
-                                <div class="input-group mb-3">
-                                    <span class="input-group-text" id="basic-addon-tred">End:&nbsp;</span>
-                                    <input type="date" class="form-control" id="trainingEndDate" name="trainingEndDate" aria-label="Training End Date" aria-describedby="basic-addon-tred">
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-
-                <div class="row row-gap-2">
-                    <!-- Environments -->
-                    <h2 class="mt-3">Environments</h2>
-
-                    <div class="col-xl-3 col-md-6">
-                        <div class="input-group mb-1">
-                            <div class="input-group-text">
-                                <input class="form-check-input mt-0" type="checkbox" value="" id="envCheckREL" aria-label="Checkbox to include REL upgrade" checked>&nbsp;
-                                <span id="basic-addon-udREL">REL</span>
-                            </div>
-                            <input type="date" class="form-control" id="RELUpgradeDate" name="RELUpgradeDate" aria-label="REL Upgrade Date" aria-describedby="basic-addon-udREL">
-                        </div>
-                    </div>
-                    <div class="col-xl-3 col-md-6">
-                        <div class="input-group mb-1">
-                            <div class="input-group-text">
-                                <input class="form-check-input mt-0" type="checkbox" value="" id="envCheckPOC" aria-label="Checkbox to include POC upgrade" checked>&nbsp;
-                                <span id="basic-addon-udPOC">POC</span>
-                            </div>
-                            <input type="date" class="form-control" id="POCUpgradeDate" name="POCUpgradeDate" aria-label="POC Upgrade Date" aria-describedby="basic-addon-udPOC">
-                        </div>
-                    </div>
-                    <div class="col-xl-3 col-md-6">
-                        <div class="input-group mb-1">
-                            <div class="input-group-text">
-                                <input class="form-check-input mt-0" type="checkbox" value="" id="envCheckTST" aria-label="Checkbox to include TST upgrade" checked>&nbsp;
-                                <span id="basic-addon-udTST">TST</span>
-                            </div>
-                            <input type="date" class="form-control" id="TSTUpgradeDate" name="TSTUpgradeDate" aria-label="TST Upgrade Date" aria-describedby="basic-addon-udTST">
-                        </div>
-                    </div>
-                    <div class="col-xl-3 col-md-6">
-                        <div class="input-group mb-1">
-                            <div class="input-group-text">
-                                <input class="form-check-input mt-0" type="checkbox" value="" id="envCheckPLY" aria-label="Checkbox to include PLY upgrade" checked>&nbsp;
-                                <span id="basic-addon-udPLY">PLY</span>
-                            </div>
-                            <input type="date" class="form-control" id="PLYUpgradeDate" name="PLYUpgradeDate" aria-label="PLY Upgrade Date" aria-describedby="basic-addon-udPLY">
-                        </div>
-                    </div>
-                    <div class="col-xl-3 col-md-6">
-                        <div class="input-group mb-1">
-                            <div class="input-group-text">
-                                <input class="form-check-input mt-0" type="checkbox" value="" id="envCheckMST" aria-label="Checkbox to include MST upgrade" checked>&nbsp;
-                                <span id="basic-addon-udMST">MST</span>
-                            </div>
-                            <input type="date" class="form-control" id="MSTUpgradeDate" name="MSTUpgradeDate" aria-label="MST Upgrade Date" aria-describedby="basic-addon-udMST">
-                        </div>
-                    </div>
-                    <div class="col-xl-3 col-md-6">
-                        <div class="input-group mb-1">
-                            <div class="input-group-text">
-                                <input class="form-check-input mt-0" type="checkbox" value="" id="envCheckACE" aria-label="Checkbox to include ACE upgrade" checked>&nbsp;
-                                <span id="basic-addon-udACE">ACE</span>
-                            </div>
-                            <input type="date" class="form-control" id="ACEUpgradeDate" name="ACEUpgradeDate" aria-label="ACE Upgrade Date" aria-describedby="basic-addon-udACE">
-                        </div>
-                    </div>
-                    <div class="col-xl-3 col-md-6">
-                        <div class="input-group mb-1">
-                            <div class="input-group-text">
-                                <input class="form-check-input mt-0" type="checkbox" value="" id="envCheckSUP" aria-label="Checkbox to include SUP upgrade" checked>&nbsp;
-                                <span id="basic-addon-udSUP">SUP</span>
-                            </div>
-                            <input type="date" class="form-control" id="SUPUpgradeDate" name="SUPUpgradeDate" aria-label="SUP Upgrade Date" aria-describedby="basic-addon-udSUP">
-                        </div>
-                    </div>
-                    <div class="col-xl-3 col-md-6">
-                        <div class="input-group mb-1">
-                            <div class="input-group-text">
-                                <input class="form-check-input mt-0" type="checkbox" value="" id="envCheckPRD" aria-label="Checkbox to include PRD upgrade" checked>&nbsp;
-                                <span id="basic-addon-udPRD">PRD</span>
-                            </div>
-                            <input type="date" class="form-control" id="PRDUpgradeDate" name="PRDUpgradeDate" aria-label="PRD Upgrade Date" aria-describedby="basic-addon-udPRD">
-                        </div>
-                    </div>
-                </div>
-
-                <div class="row row-gap-2">
-                    <!-- SU deliveries -->
-                    <h2 class="mt-3">SU deliveries</h2>
-
-                    <div class="col-xl-3 col-md-6">
-                        <div class="input-group mb-1">
-                            <div class="input-group-text">
-                                <input class="form-check-input mt-0" type="checkbox" value="" id="SUCheckInitialSU" aria-label="Checkbox to include Initial SU delivery" checked>&nbsp;
-                                <span id="basic-addon-SUInitial">Initial</span>
-                            </div>
-                            <input type="date" class="form-control" id="InitialSUDeliveryDate" name="InitialSUDeliveryDate" aria-label="Initial SU Delivery Date" aria-describedby="basic-addon-SUInitial">
-                        </div>
-                    </div>
-                    <div class="col-xl-3 col-md-6">
-                        <div class="input-group mb-1">
-                            <div class="input-group-text">
-                                <input class="form-check-input mt-0" type="checkbox" value="" id="SUCheckAllFixSU" aria-label="Checkbox to include All Fix SUs delivery" checked>&nbsp;
-                                <span id="basic-addon-SUAllFix">All Fix SUs</span>
-                            </div>
-                            <input type="date" class="form-control" id="AllFixSUDeliveryDate" name="AllFixSUDeliveryDate" aria-label="All Fix SUs Delivery Date" aria-describedby="basic-addon-SUAllFix">
-                        </div>
-                    </div>
-                    <div class="col-xl-3 col-md-6">
-                        <div class="input-group mb-1">
-                            <div class="input-group-text">
-                                <input class="form-check-input mt-0" type="checkbox" value="" id="SUCheckPreUpgradeCriticalSU" aria-label="Checkbox to include Pre-Upgrade Critical SU delivery" checked>&nbsp;
-                                <span id="basic-addon-SUPreUpgradeCritical">Pre-Upgrade Critical</span>
-                            </div>
-                            <input type="date" class="form-control" id="PreUpgradeCriticalSUDeliveryDate" name="PreUpgradeCriticalSUDeliveryDate" aria-label="Pre-Upgrade Critical SU Delivery Date" aria-describedby="basic-addon-SUPreUpgradeCritical">
-                        </div>
-                    </div>
-                    <div class="col-xl-3 col-md-6">
-                        <div class="input-group mb-1">
-                            <div class="input-group-text">
-                                <input class="form-check-input mt-0" type="checkbox" value="" id="SUCheckPostUpgradeSU" aria-label="Checkbox to include Post-Upgrade SU delivery" checked>&nbsp;
-                                <span id="basic-addon-SUPostUpgrade">Post-Upgrade</span>
-                            </div>
-                            <input type="date" class="form-control" id="PostUpgradeSUDeliveryDate" name="PostUpgradeSUDeliveryDate" aria-label="Post-Upgrade SU Delivery Date" aria-describedby="basic-addon-SUPostUpgrade">
-                        </div>
-                    </div>
-                </div>
-
                 
-
-                <div class="row row-gap-2" id="vacationsSection">
-                    <!-- Vacations and holidays -->
-                    <h2 class="mt-3">Vacations and holidays</h2>
-                    <div class="dropdown">
-                        <button class="btn btn-secondary dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false" id="vacationCountryButton">
-                            <span id="vacationCountryText">Country</span>
-                            <div class="spinner-border spinner-border-sm collapse" role="status" id="vacationCountrySpinner">
-                                <span class="visually-hidden">Loading...</span>
-                            </div>
-                        </button>
-                        <ul class="dropdown-menu" id="vacationCountryList"></ul>
-                        <button class="btn btn-secondary dropdown-toggle disabled" type="button" data-bs-toggle="dropdown" aria-expanded="false" id="vacationSubdivisionButton">
-                            <span id="vacationSubdivisionText">Subdivision</span>
-                            <div class="spinner-border spinner-border-sm collapse" role="status" id="vacationSubdivisionSpinner">
-                                <span class="visually-hidden">Loading...</span>
-                            </div>
-                        </button>
-                        <ul class="dropdown-menu" id="vacationSubdivisionList"></ul>
+                <div class="col-lg-3 col-md-6">
+                    <div>
+                        <label for="numVersions" class="form-label">Number of Versions:</label>
+                        <select class="form-select" id="numVersions" name="numVersions">
+                            <option value="1">1 version</option>
+                            <option value="2" selected>2 versions</option>
+                            <option value="3">3 versions</option>
+                            <option value="4">4 versions</option>
+                        </select>
                     </div>
                 </div>
-            </form>
-
-            <button class="btn btn-primary mt-3 collapse show multi-collapse" type="button" data-bs-toggle="collapse" data-bs-target=".multi-collapse" aria-expanded="true">
-                Focus on the timeline
-            </button>
-
-            <button class="btn btn-primary mt-3 collapse multi-collapse" type="button" data-bs-toggle="collapse" data-bs-target=".multi-collapse" aria-expanded="false">
-                Modify the parameters
-            </button>
-
-        </main>
-
-        <div id="visualization" class="mt-3"></div>
-
-        <footer class="d-flex flex-wrap justify-content-between align-items-center py-3 my-4 border-top">
-            <p class="col-md-8 mb-0 text-body-secondary">&copy; 2024 Emilien Klein - This website is not in any way officially connected with <a href="https://www.epic.com/" class="link-danger link-offset-2 link-underline-opacity-25 link-underline-opacity-100-hover">Epic Systems Corporation</a>.</p>
-            <ul class="nav col-md-4 justify-content-end">
-                <li class="nav-item"><a href="https://github.com/e2jk/release-planner/" class="nav-link px-2 text-body-secondary">Made with 💖 for the Epic community</a></li>
-            </ul>
-        </footer>
-  
-        <!-- Bundled JavaScript -->
-        <script type="text/javascript" src="bundle.js"></script>
-    </body>
+                
+                <div class="col-lg-3 col-md-6">
+                    <div>
+                        <label for="upgradeStartDate" class="form-label">Upgrade Start Date:</label>
+                        <input type="date" class="form-control" id="upgradeStartDate" name="upgradeStartDate">
+                    </div>
+                </div>
+                
+                <div class="col-lg-3 col-md-6">
+                    <div>
+                        <label for="upgradeEndDate" class="form-label">Upgrade End Date:</label>
+                        <input type="date" class="form-control" id="upgradeEndDate" name="upgradeEndDate">
+                    </div>
+                </div>
+                
+                <div class="col-12">
+                    <div>
+                        
+                        <input type="range" class="form-range" id="upgradeDuration" name="upgradeDuration" min="7" max="40" value="14">
+                    </div>
+                </div>
+            </div>
+            
+            <div class="row row-gap-3" id="phasesSection">
+                <!-- Phases -->
+                <h2 class="mt-3">Phases</h2>
+                
+                <div class="col-xl-3 col-md-6">
+                    <!-- Analysis Phase -->
+                    <div class="card">
+                        <div class="card-body">
+                            <h3 class="card-title">
+                                Analysis
+                                <small class="text-body-secondary" id="analysisDurationValue">4 weeks</small>
+                            </h3>
+                            <div>
+                                <input type="range" class="form-range" id="analysisDuration" name="analysisDuration" min="1">
+                            </div>
+                            <div class="input-group mb-3">
+                                <span class="input-group-text" id="basic-addon-asd">Start:</span>
+                                <input type="date" class="form-control" id="analysisStartDate" name="analysisStartDate" aria-label="Analysis Start Date" aria-describedby="basic-addon-asd">
+                            </div>
+                            <div class="input-group mb-3">
+                                <span class="input-group-text" id="basic-addon-aed">End:&nbsp;</span>
+                                <input type="date" class="form-control" id="analysisEndDate" name="analysisEndDate" aria-label="Analysis End Date" aria-describedby="basic-addon-aed">
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="col-xl-3 col-md-6">
+                    <!-- Build Phase -->
+                    <div class="card">
+                        <div class="card-body">
+                            <h3 class="card-title">
+                                Build
+                                <small class="text-body-secondary" id="buildDurationValue">4 weeks</small>
+                            </h3>
+                            <div>
+                                <input type="range" class="form-range" id="buildDuration" name="buildDuration" min="1">
+                            </div>
+                            <div class="input-group mb-3">
+                                <span class="input-group-text" id="basic-addon-bsd">Start:</span>
+                                <input type="date" class="form-control" id="buildStartDate" name="buildStartDate" aria-label="Build Start Date" aria-describedby="basic-addon-bsd">
+                            </div>
+                            <div class="input-group mb-3">
+                                <span class="input-group-text" id="basic-addon-bed">End:&nbsp;</span>
+                                <input type="date" class="form-control" id="buildEndDate" name="buildEndDate" aria-label="Build End Date" aria-describedby="basic-addon-bed">
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="col-xl-3 col-md-6">
+                    <!-- Testing Phase -->
+                    <div class="card">
+                        <div class="card-body">
+                            <h3 class="card-title">
+                                Testing
+                                <small class="text-body-secondary" id="testingDurationValue">4 weeks</small>
+                            </h3>
+                            <div>
+                                <input type="range" class="form-range" id="testingDuration" name="testingDuration" min="1">
+                            </div>
+                            <div class="input-group mb-3">
+                                <span class="input-group-text" id="basic-addon-tesd">Start:</span>
+                                <input type="date" class="form-control" id="testingStartDate" name="testingStartDate" aria-label="Testing Start Date" aria-describedby="basic-addon-tesd">
+                            </div>
+                            <div class="input-group mb-3">
+                                <span class="input-group-text" id="basic-addon-teed">End:&nbsp;</span>
+                                <input type="date" class="form-control" id="testingEndDate" name="testingEndDate" aria-label="Testing End Date" aria-describedby="basic-addon-teed">
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="col-xl-3 col-md-6">
+                    <!-- Training Phase -->
+                    <div class="card">
+                        <div class="card-body">
+                            <h3 class="card-title">
+                                Training
+                                <small class="text-body-secondary" id="trainingDurationValue">4 weeks</small>
+                            </h3>
+                            <div>
+                                <input type="range" class="form-range" id="trainingDuration" name="trainingDuration" min="1">
+                            </div>
+                            <div class="input-group mb-3">
+                                <span class="input-group-text" id="basic-addon-trsd">Start:</span>
+                                <input type="date" class="form-control" id="trainingStartDate" name="trainingStartDate" aria-label="Training Start Date" aria-describedby="basic-addon-trsd">
+                            </div>
+                            <div class="input-group mb-3">
+                                <span class="input-group-text" id="basic-addon-tred">End:&nbsp;</span>
+                                <input type="date" class="form-control" id="trainingEndDate" name="trainingEndDate" aria-label="Training End Date" aria-describedby="basic-addon-tred">
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="row row-gap-2">
+                <!-- Environments -->
+                <h2 class="mt-3">Environments</h2>
+                
+                <div class="col-xl-3 col-md-6">
+                    <div class="input-group mb-1">
+                        <div class="input-group-text">
+                            <input class="form-check-input mt-0" type="checkbox" value="" id="envCheckREL" aria-label="Checkbox to include REL upgrade" checked>&nbsp;
+                            <span id="basic-addon-udREL">REL</span>
+                        </div>
+                        <input type="date" class="form-control" id="RELUpgradeDate" name="RELUpgradeDate" aria-label="REL Upgrade Date" aria-describedby="basic-addon-udREL">
+                    </div>
+                </div>
+                <div class="col-xl-3 col-md-6">
+                    <div class="input-group mb-1">
+                        <div class="input-group-text">
+                            <input class="form-check-input mt-0" type="checkbox" value="" id="envCheckPOC" aria-label="Checkbox to include POC upgrade" checked>&nbsp;
+                            <span id="basic-addon-udPOC">POC</span>
+                        </div>
+                        <input type="date" class="form-control" id="POCUpgradeDate" name="POCUpgradeDate" aria-label="POC Upgrade Date" aria-describedby="basic-addon-udPOC">
+                    </div>
+                </div>
+                <div class="col-xl-3 col-md-6">
+                    <div class="input-group mb-1">
+                        <div class="input-group-text">
+                            <input class="form-check-input mt-0" type="checkbox" value="" id="envCheckTST" aria-label="Checkbox to include TST upgrade" checked>&nbsp;
+                            <span id="basic-addon-udTST">TST</span>
+                        </div>
+                        <input type="date" class="form-control" id="TSTUpgradeDate" name="TSTUpgradeDate" aria-label="TST Upgrade Date" aria-describedby="basic-addon-udTST">
+                    </div>
+                </div>
+                <div class="col-xl-3 col-md-6">
+                    <div class="input-group mb-1">
+                        <div class="input-group-text">
+                            <input class="form-check-input mt-0" type="checkbox" value="" id="envCheckPLY" aria-label="Checkbox to include PLY upgrade" checked>&nbsp;
+                            <span id="basic-addon-udPLY">PLY</span>
+                        </div>
+                        <input type="date" class="form-control" id="PLYUpgradeDate" name="PLYUpgradeDate" aria-label="PLY Upgrade Date" aria-describedby="basic-addon-udPLY">
+                    </div>
+                </div>
+                <div class="col-xl-3 col-md-6">
+                    <div class="input-group mb-1">
+                        <div class="input-group-text">
+                            <input class="form-check-input mt-0" type="checkbox" value="" id="envCheckMST" aria-label="Checkbox to include MST upgrade" checked>&nbsp;
+                            <span id="basic-addon-udMST">MST</span>
+                        </div>
+                        <input type="date" class="form-control" id="MSTUpgradeDate" name="MSTUpgradeDate" aria-label="MST Upgrade Date" aria-describedby="basic-addon-udMST">
+                    </div>
+                </div>
+                <div class="col-xl-3 col-md-6">
+                    <div class="input-group mb-1">
+                        <div class="input-group-text">
+                            <input class="form-check-input mt-0" type="checkbox" value="" id="envCheckACE" aria-label="Checkbox to include ACE upgrade" checked>&nbsp;
+                            <span id="basic-addon-udACE">ACE</span>
+                        </div>
+                        <input type="date" class="form-control" id="ACEUpgradeDate" name="ACEUpgradeDate" aria-label="ACE Upgrade Date" aria-describedby="basic-addon-udACE">
+                    </div>
+                </div>
+                <div class="col-xl-3 col-md-6">
+                    <div class="input-group mb-1">
+                        <div class="input-group-text">
+                            <input class="form-check-input mt-0" type="checkbox" value="" id="envCheckSUP" aria-label="Checkbox to include SUP upgrade" checked>&nbsp;
+                            <span id="basic-addon-udSUP">SUP</span>
+                        </div>
+                        <input type="date" class="form-control" id="SUPUpgradeDate" name="SUPUpgradeDate" aria-label="SUP Upgrade Date" aria-describedby="basic-addon-udSUP">
+                    </div>
+                </div>
+                <div class="col-xl-3 col-md-6">
+                    <div class="input-group mb-1">
+                        <div class="input-group-text">
+                            <input class="form-check-input mt-0" type="checkbox" value="" id="envCheckPRD" aria-label="Checkbox to include PRD upgrade" checked>&nbsp;
+                            <span id="basic-addon-udPRD">PRD</span>
+                        </div>
+                        <input type="date" class="form-control" id="PRDUpgradeDate" name="PRDUpgradeDate" aria-label="PRD Upgrade Date" aria-describedby="basic-addon-udPRD">
+                    </div>
+                </div>
+            </div>
+            
+            <div class="row row-gap-2">
+                <!-- SU deliveries -->
+                <h2 class="mt-3">SU deliveries</h2>
+                
+                <div class="col-xl-3 col-md-6">
+                    <div class="input-group mb-1">
+                        <div class="input-group-text">
+                            <input class="form-check-input mt-0" type="checkbox" value="" id="SUCheckInitialSU" aria-label="Checkbox to include Initial SU delivery" checked>&nbsp;
+                            <span id="basic-addon-SUInitial">Initial</span>
+                        </div>
+                        <input type="date" class="form-control" id="InitialSUDeliveryDate" name="InitialSUDeliveryDate" aria-label="Initial SU Delivery Date" aria-describedby="basic-addon-SUInitial">
+                    </div>
+                </div>
+                <div class="col-xl-3 col-md-6">
+                    <div class="input-group mb-1">
+                        <div class="input-group-text">
+                            <input class="form-check-input mt-0" type="checkbox" value="" id="SUCheckAllFixSU" aria-label="Checkbox to include All Fix SUs delivery" checked>&nbsp;
+                            <span id="basic-addon-SUAllFix">All Fix SUs</span>
+                        </div>
+                        <input type="date" class="form-control" id="AllFixSUDeliveryDate" name="AllFixSUDeliveryDate" aria-label="All Fix SUs Delivery Date" aria-describedby="basic-addon-SUAllFix">
+                    </div>
+                </div>
+                <div class="col-xl-3 col-md-6">
+                    <div class="input-group mb-1">
+                        <div class="input-group-text">
+                            <input class="form-check-input mt-0" type="checkbox" value="" id="SUCheckPreUpgradeCriticalSU" aria-label="Checkbox to include Pre-Upgrade Critical SU delivery" checked>&nbsp;
+                            <span id="basic-addon-SUPreUpgradeCritical">Pre-Upgrade Critical</span>
+                        </div>
+                        <input type="date" class="form-control" id="PreUpgradeCriticalSUDeliveryDate" name="PreUpgradeCriticalSUDeliveryDate" aria-label="Pre-Upgrade Critical SU Delivery Date" aria-describedby="basic-addon-SUPreUpgradeCritical">
+                    </div>
+                </div>
+                <div class="col-xl-3 col-md-6">
+                    <div class="input-group mb-1">
+                        <div class="input-group-text">
+                            <input class="form-check-input mt-0" type="checkbox" value="" id="SUCheckPostUpgradeSU" aria-label="Checkbox to include Post-Upgrade SU delivery" checked>&nbsp;
+                            <span id="basic-addon-SUPostUpgrade">Post-Upgrade</span>
+                        </div>
+                        <input type="date" class="form-control" id="PostUpgradeSUDeliveryDate" name="PostUpgradeSUDeliveryDate" aria-label="Post-Upgrade SU Delivery Date" aria-describedby="basic-addon-SUPostUpgrade">
+                    </div>
+                </div>
+            </div>
+            
+            
+            
+            <div class="row row-gap-2" id="vacationsSection">
+                <!-- Vacations and holidays -->
+                <h2 class="mt-3">Vacations and holidays</h2>
+                <div class="dropdown">
+                    <button class="btn btn-secondary dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false" id="vacationCountryButton">
+                        <span id="vacationCountryText">Country</span>
+                        <div class="spinner-border spinner-border-sm collapse" role="status" id="vacationCountrySpinner">
+                            <span class="visually-hidden">Loading...</span>
+                        </div>
+                    </button>
+                    <ul class="dropdown-menu" id="vacationCountryList"></ul>
+                    <button class="btn btn-secondary dropdown-toggle disabled" type="button" data-bs-toggle="dropdown" aria-expanded="false" id="vacationSubdivisionButton">
+                        <span id="vacationSubdivisionText">Subdivision</span>
+                        <div class="spinner-border spinner-border-sm collapse" role="status" id="vacationSubdivisionSpinner">
+                            <span class="visually-hidden">Loading...</span>
+                        </div>
+                    </button>
+                    <ul class="dropdown-menu" id="vacationSubdivisionList"></ul>
+                </div>
+            </div>
+        </form>
+        
+        <button class="btn btn-primary mt-3 collapse show multi-collapse" type="button" data-bs-toggle="collapse" data-bs-target=".multi-collapse" aria-expanded="true">
+            Focus on the timeline
+        </button>
+        
+        <button class="btn btn-primary mt-3 collapse multi-collapse" type="button" data-bs-toggle="collapse" data-bs-target=".multi-collapse" aria-expanded="false">
+            Modify the parameters
+        </button>
+        
+    </main>
+    
+    <div id="visualization" class="mt-3"></div>
+    
+    <footer class="d-flex flex-wrap justify-content-between align-items-center py-3 my-4 border-top">
+        <p class="col-md-8 mb-0 text-body-secondary">&copy; 2024 Emilien Klein - This website is not in any way officially connected with <a href="https://www.epic.com/" class="link-danger link-offset-2 link-underline-opacity-25 link-underline-opacity-100-hover">Epic Systems Corporation</a>.</p>
+        <ul class="nav col-md-4 justify-content-end">
+            <li class="nav-item"><a href="https://github.com/e2jk/release-planner/" class="nav-link px-2 text-body-secondary">Made with 💖 for the Epic community</a></li>
+        </ul>
+    </footer>
+    
+    <!-- Bundled JavaScript -->
+    <script type="text/javascript" src="bundle.js"></script>
+</body>
 </html>
