@@ -797,7 +797,7 @@ export function startUp () {
   app.setupEventListeners()
   // Create the Timeline
   ui.timeline = new Timeline(ui.visContainer, items, groups, timelineOptions)
-  //
+  // Get the list of countries for vacations
   app.getCountriesForVacations()
 }
 
