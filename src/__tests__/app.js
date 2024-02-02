@@ -34,16 +34,17 @@ describe('Test default variables', () => {
     expect(app.ui).toStrictEqual({})
   })
 
-  test('There are 4 default app.groups for the timeline', () => {
-    expect(app.groups.length).toStrictEqual(4)
-    expect(app.groups.getIds()).toStrictEqual(['upgrade', 'phases', 'environments', 'su'])
+  test('There are 5 default app.groups for the timeline', () => {
+    expect(app.groups.length).toStrictEqual(5)
+    expect(app.groups.getIds()).toStrictEqual(['upgrade', 'phases', 'environments', 'su', 'vacations'])
     expect(app.groups.get('upgrade')).toStrictEqual({
       id: 'upgrade',
       content: 'Upgrade',
       nestedGroups: [
         'phases',
         'environments',
-        'su'
+        'su',
+        'vacations'
       ]
     })
   })
@@ -248,7 +249,7 @@ test('The UI gets parsed as expected', () => {
   expect(Object.keys(app.ui).length).toStrictEqual(0)
   expect(app.ui).toStrictEqual({})
   app.getUI()
-  expect(Object.keys(app.ui).length).toStrictEqual(14)
+  expect(Object.keys(app.ui).length).toStrictEqual(15)
   expect(app.ui.upgradeTypeToggle.innerHTML).toBe('Classical upgrade')
   expect(app.ui.upgradeType.classical.id).toBe('upgradeTypeClassical')
   expect(app.ui.upgradeType.expedited.id).toBe('upgradeTypeExpedited')

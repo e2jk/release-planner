@@ -270,7 +270,7 @@
                 </div>
 
                 <div class="row row-gap-2">
-                    <!-- Environments -->
+                    <!-- SU deliveries -->
                     <h2 class="mt-3">SU deliveries</h2>
 
                     <div class="col-xl-3 col-md-6">
@@ -308,6 +308,29 @@
                             </div>
                             <input type="date" class="form-control" id="PostUpgradeSUDeliveryDate" name="PostUpgradeSUDeliveryDate" aria-label="Post-Upgrade SU Delivery Date" aria-describedby="basic-addon-SUPostUpgrade">
                         </div>
+                    </div>
+                </div>
+
+                
+
+                <div class="row row-gap-2" id="vacationsSection">
+                    <!-- Vacations and holidays -->
+                    <h2 class="mt-3">Vacations and holidays</h2>
+                    <div class="dropdown">
+                        <button class="btn btn-secondary dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false" id="vacationCountryButton">
+                            <span id="vacationCountryText">Country</span>
+                            <div class="spinner-border spinner-border-sm collapse" role="status" id="vacationCountrySpinner">
+                                <span class="visually-hidden">Loading...</span>
+                            </div>
+                        </button>
+                        <ul class="dropdown-menu" id="vacationCountryList"></ul>
+                        <button class="btn btn-secondary dropdown-toggle disabled" type="button" data-bs-toggle="dropdown" aria-expanded="false" id="vacationSubdivisionButton">
+                            <span id="vacationSubdivisionText">Subdivision</span>
+                            <div class="spinner-border spinner-border-sm collapse" role="status" id="vacationSubdivisionSpinner">
+                                <span class="visually-hidden">Loading...</span>
+                            </div>
+                        </button>
+                        <ul class="dropdown-menu" id="vacationSubdivisionList"></ul>
                     </div>
                 </div>
             </form>

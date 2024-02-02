@@ -11,6 +11,7 @@ test('Application starts up at DOMContentLoaded', () => {
   app.getUI = jest.fn()
   app.initialUISetup = jest.fn()
   app.setupEventListeners = jest.fn()
+  app.getCountriesForVacations = jest.fn()
 
   const event = new Event('DOMContentLoaded')
   document.dispatchEvent(event)
@@ -18,6 +19,7 @@ test('Application starts up at DOMContentLoaded', () => {
   expect(app.getUI).toHaveBeenCalled()
   expect(app.initialUISetup).toHaveBeenCalled()
   expect(app.setupEventListeners).toHaveBeenCalled()
+  expect(app.getCountriesForVacations).toHaveBeenCalled()
   // TODO: confirm the constructor has been called (currently returns `undefined`)
   // expect(Timeline).toHaveBeenCalled();
 })

@@ -98,7 +98,7 @@ test('UI events get triggered as expected', () => {
 
   app.setupEventListeners()
 
-  expect(Object.keys(app.ui).length).toStrictEqual(14)
+  expect(Object.keys(app.ui).length).toStrictEqual(15)
   expect(app.ui.upgradeType.classical.addEventListener).toBeCalledWith('click', expect.any(Function))
   expect(app.ui.upgradeType.expedited.addEventListener).toBeCalledWith('click', expect.any(Function))
   expect(app.ui.numVersionsSelect.addEventListener).toBeCalledWith('change', expect.any(Function))

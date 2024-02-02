@@ -31,6 +31,18 @@ export const suDeliveries = {
   PostUpgradeSU: 'Post-Upgrade'
 }
 
+export const subdivisionsForVacations = {
+  value: null,
+  // accessor property(setter)
+  get list () {
+    return this.value
+  },
+  // accessor property(setter)
+  set list (newSubdivisionsList) {
+    this.value = newSubdivisionsList
+  }
+}
+
 // Keep references to the UI elements
 export const ui = {}
 
@@ -39,10 +51,11 @@ export const ui = {}
 // Create DataSets for the visualization (allows two way data-binding)
 // Groups for the upgrade, the phases and the environments
 export const groups = new DataSet([
-  { id: 'upgrade', content: 'Upgrade', nestedGroups: ['phases', 'environments', 'su'] },
+  { id: 'upgrade', content: 'Upgrade', nestedGroups: ['phases', 'environments', 'su', 'vacations'] },
   { id: 'phases', content: 'Phases' },
   { id: 'environments', content: 'Environments' },
-  { id: 'su', content: 'SU Deliveries' }
+  { id: 'su', content: 'SU Deliveries' },
+  { id: 'vacations', content: 'Vacations', visible: false }
 ])
 // Bars for phases
 export const items = new DataSet([
@@ -101,6 +114,21 @@ export function getUI () {
     ui.deliveryDateInput[key] = document.getElementById(`${key}DeliveryDate`)
     ui.deliveryCheck[key] = document.getElementById(`SUCheck${key}`)
   }, suDeliveries)
+  ui.vacations = {
+    section: document.getElementById('vacationsSection'),
+    country: {
+      button: document.getElementById('vacationCountryButton'),
+      text: document.getElementById('vacationCountryText'),
+      spinner: document.getElementById('vacationCountrySpinner'),
+      list: document.getElementById('vacationCountryList')
+    },
+    subdivision: {
+      button: document.getElementById('vacationSubdivisionButton'),
+      text: document.getElementById('vacationSubdivisionText'),
+      spinner: document.getElementById('vacationSubdivisionSpinner'),
+      list: document.getElementById('vacationSubdivisionList')
+    }
+  }
 
   ui.visContainer = document.getElementById('visualization')
 }
@@ -613,6 +641,155 @@ export function updateSUDeliveryDate (evt) {
   app.updateVisItemDate(`su${suName}`, startDate, 'startPoint')
 }
 
+export async function getJSONFromURL (requestURL, success) {
+  const request = new Request(requestURL)
+
+  const response = await fetch(request)
+  const jsonContent = await response.json()
+
+  success(jsonContent, requestURL)
+}
+
+/**
+ * @param {String} HTML representing a single element.
+ * @param {Boolean} flag representing whether or not to trim input whitespace, defaults to true.
+ * @return {Element | HTMLCollection | null}
+ */
+export function fromHTML (html, trim = true) {
+  // From https://stackoverflow.com/a/35385518
+  // Process the HTML string.
+  html = trim ? html.trim() : html
+  if (!html) return null
+
+  // Then set up a new template element.
+  const template = document.createElement('template')
+  template.innerHTML = html
+  const result = template.content.children
+
+  // Then return either an HTMLElement or HTMLCollection,
+  // based on whether the input HTML had one or more roots.
+  if (result.length === 1) return result[0]
+  return result
+}
+
+export function drawVacationsOnTimeline (type, data) {
+  // Remove all previous vacation items on the timeline
+  // When a new country is selected, remove all previous vacations.
+  // When a subdivision is selected, keep public holidays and remove only previous school holidays
+  let itemFilter = 'vac_'
+  if (type === 'school') {
+    itemFilter = 'vac_school'
+  }
+  const vacItems = items.get({
+    filter: function (item) {
+      return item.id.startsWith(itemFilter)
+    }
+  })
+  for (let i = 0; i < vacItems.length; i++) {
+    items.remove(vacItems[i].id)
+  }
+  let itemType
+  for (let i = 0; i < data.length; i++) {
+    itemType = 'box'
+    if (data[i].startDate !== data[i].endDate) {
+      itemType = 'range'
+    }
+    items.add({
+      id: `vac_${type}_${data[i].id}`,
+      content: getEnglishName(data[i].name),
+      group: 'vacations',
+      type: itemType,
+      start: new Date(data[i].startDate).setHours(0, 0, 0, 0),
+      end: new Date(data[i].endDate).setHours(23, 59, 59, 0)
+    })
+  }
+}
+
+export function selectVacationSubdivision (evt) {
+  evt.preventDefault()
+  const country = evt.target.id.substring(20).split('_')[0]
+  const subdivision = evt.target.id.substring(21 + country.length)
+  ui.vacations.subdivision.text.innerHTML = evt.target.innerHTML
+  app.getVacationsForCountrySubdivisions('school', country, subdivision)
+}
+
+export function selectVacationCountry (evt) {
+  evt.preventDefault()
+  ui.vacations.subdivision.button.classList.add('disabled')
+  const country = evt.target.id.substring(16)
+  ui.vacations.country.text.innerHTML = evt.target.innerHTML
+  groups.update({ id: 'vacations', visible: true })
+  app.getSubdivisionsForVacations(country)
+  app.getVacationsForCountrySubdivisions('public', country)
+}
+
+export function getEnglishName (names) {
+  let name = ''
+  for (let i = 0; i < names.length; i++) {
+    if (names[i].language === 'EN') {
+      name = names[i].text
+      continue
+    }
+  }
+  return name
+}
+
+export function populateSubdivisionsForVacations (data, requestURL) {
+  ui.vacations.subdivision.spinner.classList.remove('show')
+  subdivisionsForVacations.list = data
+  const country = requestURL.substring(56)
+  if (subdivisionsForVacations.list.length === 0) {
+    // This country has no subdivisions, hide the subdivision button and directly get the dates
+    ui.vacations.subdivision.button.classList.add('d-none')
+    app.getVacationsForCountrySubdivisions('school', country, null)
+  } else {
+    ui.vacations.subdivision.button.classList.remove('d-none')
+    ui.vacations.subdivision.button.classList.remove('disabled')
+    ui.vacations.subdivision.list.innerHTML = ''
+    for (let i = 0; i < subdivisionsForVacations.list.length; i++) {
+      const li = fromHTML(`<li><a class="dropdown-item" href="#" id="vacationSubdivision-${country}_${subdivisionsForVacations.list[i].code}">${getEnglishName(subdivisionsForVacations.list[i].name)}</a></li>`)
+      li.addEventListener('click', selectVacationSubdivision)
+      ui.vacations.subdivision.list.appendChild(li)
+    }
+  }
+}
+
+export function populateCountriesForVacations (data) {
+  ui.vacations.country.spinner.classList.remove('show')
+  for (let i = 0; i < data.length; i++) {
+    const li = fromHTML(`<li><a class="dropdown-item" href="#" id="vacationCountry-${data[i].isoCode}">${getEnglishName(data[i].name)}</a></li>`)
+    li.addEventListener('click', selectVacationCountry)
+    ui.vacations.country.list.appendChild(li)
+  }
+}
+
+export function getVacationsForCountrySubdivisions (type, country, subdivision) {
+  let urlType = 'PublicHolidays'
+  if (type === 'school') {
+    urlType = 'SchoolHolidays'
+  }
+  const upgradeStartDate = new Date(ui.startDateInput.upgrade.value)
+  const validFrom = formatDate(dateAddNDays(upgradeStartDate, -50))
+  const upgradeEndDate = new Date(ui.endDateInput.upgrade.value)
+  const validTo = formatDate(dateAddNDays(upgradeEndDate, 50))
+  let requestURL = `https://openholidaysapi.org/${urlType}?countryIsoCode=${country}&languageIsoCode=EN&validFrom=${validFrom}&validTo=${validTo}`
+  if (subdivision) {
+    requestURL += `&subdivisionCode=${subdivision}`
+  }
+  app.getJSONFromURL(requestURL, (data, requestURL) => { app.drawVacationsOnTimeline(type, data) })
+}
+
+export function getSubdivisionsForVacations (country) {
+  ui.vacations.subdivision.text.innerHTML = 'Subdivision'
+  ui.vacations.subdivision.spinner.classList.add('show')
+  app.getJSONFromURL(`https://openholidaysapi.org/Subdivisions?countryIsoCode=${country}`, app.populateSubdivisionsForVacations)
+}
+
+export function getCountriesForVacations () {
+  ui.vacations.country.spinner.classList.add('show')
+  app.getJSONFromURL('https://openholidaysapi.org/Countries', app.populateCountriesForVacations)
+}
+
 export function startUp () {
   // Initial setup of the UI
   app.getUI()
@@ -620,6 +797,8 @@ export function startUp () {
   app.setupEventListeners()
   // Create the Timeline
   ui.timeline = new Timeline(ui.visContainer, items, groups, timelineOptions)
+  //
+  app.getCountriesForVacations()
 }
 
 document.addEventListener('DOMContentLoaded', startUp)
