@@ -128,6 +128,11 @@ export function getUI () {
       list: document.getElementById('vacationSubdivisionList')
     }
   }
+  ui.textual = {
+    chronologicalText: document.getElementById('chronologicalTextTextarea'),
+    chronologicalList: document.getElementById('chronologicalListTextarea'),
+    grouped: document.getElementById('groupedTextarea')
+  }
 
   ui.visContainer = document.getElementById('visualization')
 }
@@ -338,6 +343,7 @@ export function updateDuration (evt) {
     app.updateVisItemDate(`${phase}Phase`, ui.startDateInput[phase].value, 'startPhase')
     app.updateVisItemDate(`${phase}Phase`, ui.endDateInput[phase].value, 'end')
   }
+  app.generateTextualRepresentations()
 }
 export function updateEndDate (evt) {
   const [phase, mode] = getPhaseTypeFromEventTarget(evt)
@@ -351,6 +357,7 @@ export function updateEndDate (evt) {
     app.updateVisItemDate(`${phase}Phase`, ui.startDateInput[phase].value, 'startPhase')
     app.updateVisItemDate(`${phase}Phase`, ui.endDateInput[phase].value, 'end')
   }
+  app.generateTextualRepresentations()
 }
 
 export function calculateDefaultPhaseLengths (upgradeDuration) {
@@ -537,6 +544,8 @@ export function setDefaultDates (skipRedrawTimeline) {
     timelineOptions.end = timelineEndDate
     ui.timeline.setOptions(timelineOptions)
   }
+
+  app.generateTextualRepresentations()
 }
 
 export function updateVisItemDate (itemID, date, type) {
@@ -597,6 +606,7 @@ export function updateEnvironmentDate (evt) {
   const envName = evt.target.id.substring(0, 3)
   const startDate = evt.target.value
   app.updateVisItemDate(`env${envName}`, startDate, 'startPoint')
+  app.generateTextualRepresentations()
 }
 export function includeEnvOrSUDelivery (evt) {
   let envName, suName, dateElement, checkElement, itemID, data
@@ -632,12 +642,14 @@ export function includeEnvOrSUDelivery (evt) {
     dateElement.disabled = true
     items.remove(itemID)
   }
+  app.generateTextualRepresentations()
 }
 
 export function updateSUDeliveryDate (evt) {
   const suName = evt.target.id.substring(0, evt.target.id.length - 'DeliveryDate'.length)
   const startDate = evt.target.value
   app.updateVisItemDate(`su${suName}`, startDate, 'startPoint')
+  app.generateTextualRepresentations()
 }
 
 export async function getJSONFromURL (requestURL, success) {
@@ -787,6 +799,88 @@ export function getSubdivisionsForVacations (country) {
 export function getCountriesForVacations () {
   ui.vacations.country.spinner.classList.add('show')
   app.getJSONFromURL('https://openholidaysapi.org/Countries', app.populateCountriesForVacations)
+}
+
+export function dateInEnglish (date) {
+  const weekday = new Date(date).toLocaleString('en-us', { weekday: 'long' })
+  return `${weekday} ${date}`
+}
+
+export function addToEvents (events, date, shortDescription, longDescription) {
+  let item = events.find(item => item.date === date)
+  if (!item) {
+    events.push({ date, values: [] })
+    item = events.find(item => item.date === date)
+  }
+  item.values.push([shortDescription, longDescription])
+  return events
+}
+
+export function generateTextualRepresentations () {
+  const selectedVersion = ui.versionNameSelect.options[ui.versionNameSelect.selectedIndex].text
+  let duration = parseInt(ui.durationInput.upgrade.value)
+  let startDate = ui.startDateInput.upgrade.value
+  let endDate = ui.endDateInput.upgrade.value
+
+  let chronologicalTextText
+  let chronologicalListText
+  let groupedText
+
+  let events = []
+  let text
+  let phaseName
+
+  if (app.upgradeType.value === 'Classical') {
+    chronologicalTextText = `The upgrade to version ${selectedVersion} will last ${duration} weeks and take place from ${dateInEnglish(startDate)} to ${dateInEnglish(endDate)}.\n`
+    chronologicalListText = chronologicalTextText
+    groupedText = `${chronologicalTextText}\nPhases:`
+    for (let i = 0; i < phases.length; i++) {
+      duration = parseInt(ui.durationInput[phases[i]].value)
+      startDate = ui.startDateInput[phases[i]].value
+      endDate = ui.endDateInput[phases[i]].value
+      phaseName = phases[i].charAt(0).toUpperCase() + phases[i].slice(1)
+      text = `The ${phaseName} phase will last ${duration} weeks and take place from ${dateInEnglish(startDate)} to ${dateInEnglish(endDate)}.`
+      groupedText = `${groupedText}\n- ${text}`
+      events = app.addToEvents(events, startDate, `${phaseName} start`, text)
+    }
+    groupedText = `${groupedText}\n`
+  } else if (app.upgradeType.value === 'Expedited') {
+    chronologicalTextText = `The expedited upgrade to version ${selectedVersion} will last ${duration} weeks and take place from ${dateInEnglish(startDate)} to ${dateInEnglish(endDate)}.\n`
+    chronologicalListText = chronologicalTextText
+    groupedText = chronologicalTextText
+  }
+  groupedText = `${groupedText}\nEnvironments:`
+  for (let i = 0; i < environments.length; i++) {
+    if (ui.envCheck[environments[i]].checked) {
+      startDate = ui.upgradeDateInput[environments[i]].value
+      text = `The ${environments[i]} environment will be upgraded on ${dateInEnglish(startDate)}.`
+      groupedText = `${groupedText}\n- ${text}`
+      events = app.addToEvents(events, startDate, `${environments[i]} environment upgrade`, text)
+    }
+  }
+  groupedText = `${groupedText}\n\nSU deliveries:`
+  Object.keys(suDeliveries).forEach(function (key) {
+    if (ui.deliveryCheck[key].checked) {
+      startDate = ui.deliveryDateInput[key].value
+      text = `The ${this[key]} SU package will be delivered on ${dateInEnglish(startDate)}.`
+      groupedText = `${groupedText}\n- ${text}`
+      events = app.addToEvents(events, startDate, `${this[key]} SU package delivery`, text)
+    }
+  }, suDeliveries)
+
+  events.sort(
+    (a, b) => a.date < b.date ? -1 : a.date > b.date ? 1 : 0
+  )
+  for (const event of events) {
+    for (let i = 0; i < event.values.length; i++) {
+      chronologicalTextText = `${chronologicalTextText}\n- ${event.values[i][1]}`
+      chronologicalListText = `${chronologicalListText}\n- ${event.date}: ${event.values[i][0]}`
+    }
+  }
+
+  ui.textual.chronologicalText.innerHTML = chronologicalTextText
+  ui.textual.chronologicalList.innerHTML = chronologicalListText
+  ui.textual.grouped.innerHTML = groupedText
 }
 
 export function startUp () {

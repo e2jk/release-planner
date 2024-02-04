@@ -12,6 +12,7 @@ test("updateEnvironmentDate when an environment's upgrade date is changed", () =
   document.getElementById('POCUpgradeDate').addEventListener('input', app.updateEnvironmentDate)
 
   app.updateVisItemDate = jest.fn()
+  app.generateTextualRepresentations = jest.fn()
 
   const event = new Event('input')
   document.getElementById('POCUpgradeDate').dispatchEvent(event)
@@ -21,6 +22,7 @@ test("updateEnvironmentDate when an environment's upgrade date is changed", () =
     '2024-01-24',
     'startPoint'
   )
+  expect(app.generateTextualRepresentations).toBeCalled()
 })
 
 test('updateSUDeliveryDate when an SU dDelivery date is changed', () => {
@@ -31,6 +33,7 @@ test('updateSUDeliveryDate when an SU dDelivery date is changed', () => {
   document.getElementById('AllFixSUDeliveryDate').addEventListener('input', app.updateSUDeliveryDate)
 
   app.updateVisItemDate = jest.fn()
+  app.generateTextualRepresentations = jest.fn()
 
   const event = new Event('input')
   document.getElementById('AllFixSUDeliveryDate').dispatchEvent(event)
@@ -40,6 +43,7 @@ test('updateSUDeliveryDate when an SU dDelivery date is changed', () => {
     '2024-01-24',
     'startPoint'
   )
+  expect(app.generateTextualRepresentations).toBeCalled()
 })
 
 test('updateVersionName when triggered from an event', () => {

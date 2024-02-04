@@ -24,6 +24,7 @@ test('Update analysis end date when triggered from an event', () => {
 
   app.setEndDate = jest.fn()
   app.updateVisItemDate = jest.fn()
+  app.generateTextualRepresentations = jest.fn()
 
   const event = new Event('input')
   app.ui.startDateInput.analysis.dispatchEvent(event)
@@ -49,6 +50,7 @@ test('Update analysis end date when triggered from an event', () => {
   )
 
   expect(app.ui.durationValue.analysis.textContent).toBe('99 weeks')
+  expect(app.generateTextualRepresentations).toBeCalled()
 })
 
 test('Update build end date when triggered inline as a function', () => {
@@ -61,6 +63,7 @@ test('Update build end date when triggered inline as a function', () => {
 
   app.setEndDate = jest.fn()
   app.updateVisItemDate = jest.fn()
+  app.generateTextualRepresentations = jest.fn()
 
   // Testing when ran directly
   app.updateEndDate('build')
@@ -84,6 +87,7 @@ test('Update build end date when triggered inline as a function', () => {
     '2024-02-13',
     'end'
   )
+  expect(app.generateTextualRepresentations).toBeCalled()
 })
 
 test('Update upgrade end date when triggered from an event', () => {
@@ -99,6 +103,7 @@ test('Update upgrade end date when triggered from an event', () => {
 
   app.setEndDate = jest.fn()
   app.setDefaultDates = jest.fn()
+  app.generateTextualRepresentations = jest.fn()
 
   const event = new Event('input')
   app.ui.startDateInput.upgrade.dispatchEvent(event)
@@ -112,4 +117,5 @@ test('Update upgrade end date when triggered from an event', () => {
   expect(app.setDefaultDates).toHaveBeenCalledWith(false)
 
   expect(app.ui.durationValue.upgrade.textContent).toBe('70 weeks')
+  expect(app.generateTextualRepresentations).toBeCalled()
 })

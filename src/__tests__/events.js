@@ -98,7 +98,7 @@ test('UI events get triggered as expected', () => {
 
   app.setupEventListeners()
 
-  expect(Object.keys(app.ui).length).toStrictEqual(15)
+  expect(Object.keys(app.ui).length).toStrictEqual(16)
   expect(app.ui.upgradeType.classical.addEventListener).toBeCalledWith('click', expect.any(Function))
   expect(app.ui.upgradeType.expedited.addEventListener).toBeCalledWith('click', expect.any(Function))
   expect(app.ui.numVersionsSelect.addEventListener).toBeCalledWith('change', expect.any(Function))
@@ -129,6 +129,8 @@ test('Exclude an environment from the planning', () => {
   expect(app.ui.upgradeDateInput.PLY.disabled).toBe(false)
   expect(app.items.get('envPLY')).toStrictEqual({ id: 'envPLY', content: 'PLY', group: 'environments', type: 'point' })
 
+  app.generateTextualRepresentations = jest.fn()
+
   // Testing when triggered from an event
   app.ui.envCheck.PLY.addEventListener('input', app.includeEnvOrSUDelivery)
 
@@ -137,6 +139,7 @@ test('Exclude an environment from the planning', () => {
   expect(app.ui.envCheck.PLY.checked).toBe(false)
   expect(app.ui.upgradeDateInput.PLY.disabled).toBe(true)
   expect(app.items.get('envPLY')).toBe(null)
+  expect(app.generateTextualRepresentations).toBeCalled()
 })
 
 test('Include an environment in the planning', () => {
@@ -149,6 +152,8 @@ test('Include an environment in the planning', () => {
   expect(app.ui.upgradeDateInput.PLY.disabled).toBe(true)
   expect(app.items.get('envPLY')).toBe(null)
 
+  app.generateTextualRepresentations = jest.fn()
+
   // Testing when triggered from an event
   app.ui.envCheck.PLY.addEventListener('input', app.includeEnvOrSUDelivery)
 
@@ -157,6 +162,7 @@ test('Include an environment in the planning', () => {
   expect(app.ui.envCheck.PLY.checked).toBe(true)
   expect(app.ui.upgradeDateInput.PLY.disabled).toBe(false)
   expect(app.items.get('envPLY')).toStrictEqual({ id: 'envPLY', content: 'PLY', group: 'environments', type: 'point', start: new Date('2024-01-27').setHours(8, 0, 0, 0) })
+  expect(app.generateTextualRepresentations).toBeCalled()
 })
 
 test('Exclude an SU delivery from the planning', () => {
@@ -169,6 +175,8 @@ test('Exclude an SU delivery from the planning', () => {
   expect(app.ui.deliveryDateInput.PreUpgradeCriticalSU.disabled).toBe(false)
   expect(app.items.get('suPreUpgradeCriticalSU')).toStrictEqual({ id: 'suPreUpgradeCriticalSU', content: 'Pre-Upgrade Critical', group: 'su', type: 'point' })
 
+  app.generateTextualRepresentations = jest.fn()
+
   // Testing when triggered from an event
   app.ui.deliveryCheck.PreUpgradeCriticalSU.addEventListener('input', app.includeEnvOrSUDelivery)
 
@@ -177,6 +185,7 @@ test('Exclude an SU delivery from the planning', () => {
   expect(app.ui.deliveryCheck.PreUpgradeCriticalSU.checked).toBe(false)
   expect(app.ui.deliveryDateInput.PreUpgradeCriticalSU.disabled).toBe(true)
   expect(app.items.get('suPreUpgradeCriticalSU')).toBe(null)
+  expect(app.generateTextualRepresentations).toBeCalled()
 })
 
 test('Include an SU delivery in the planning', () => {
@@ -189,6 +198,8 @@ test('Include an SU delivery in the planning', () => {
   expect(app.ui.deliveryDateInput.PreUpgradeCriticalSU.disabled).toBe(true)
   expect(app.items.get('suPreUpgradeCriticalSU')).toBe(null)
 
+  app.generateTextualRepresentations = jest.fn()
+
   // Testing when triggered from an event
   app.ui.deliveryCheck.PreUpgradeCriticalSU.addEventListener('input', app.includeEnvOrSUDelivery)
 
@@ -197,4 +208,5 @@ test('Include an SU delivery in the planning', () => {
   expect(app.ui.deliveryCheck.PreUpgradeCriticalSU.checked).toBe(true)
   expect(app.ui.deliveryDateInput.PreUpgradeCriticalSU.disabled).toBe(false)
   expect(app.items.get('suPreUpgradeCriticalSU')).toStrictEqual({ id: 'suPreUpgradeCriticalSU', content: 'Pre-Upgrade Critical', group: 'su', type: 'point', start: new Date('2024-01-28').setHours(8, 0, 0, 0) })
+  expect(app.generateTextualRepresentations).toBeCalled()
 })

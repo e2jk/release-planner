@@ -60,6 +60,7 @@ test('Confirm that dates are set by default for a classical upgrade', () => {
   app.updateVisItemDate = jest.fn()
   app.ui.timeline = jest.fn()
   app.ui.timeline.setOptions = jest.fn()
+  app.generateTextualRepresentations = jest.fn()
   app.setDefaultDates(false)
 
   // Phases durations, start and end dates
@@ -281,6 +282,8 @@ test('Confirm that dates are set by default for a classical upgrade', () => {
       end: new Date('2024-05-30')
     }
   )
+
+  expect(app.generateTextualRepresentations).toHaveBeenCalled()
 })
 
 test('Confirm that dates are set by default for an expedited upgrade', () => {
@@ -342,6 +345,7 @@ test('Confirm that dates are set by default for an expedited upgrade', () => {
   app.updateVisItemDate = jest.fn()
   app.ui.timeline = jest.fn()
   app.ui.timeline.setOptions = jest.fn()
+  app.generateTextualRepresentations = jest.fn()
   app.setDefaultDates(false)
 
   // Phases durations, start and end dates are (functionally) null, since phases are not used for expedited upgrades
@@ -467,4 +471,6 @@ test('Confirm that dates are set by default for an expedited upgrade', () => {
       end: new Date('2024-02-09')
     }
   )
+
+  expect(app.generateTextualRepresentations).toHaveBeenCalled()
 })
