@@ -89,7 +89,6 @@ export function getUI () {
     expedited: document.getElementById('upgradeTypeExpedited')
   }
   ui.versionNameSelect = document.getElementById('versionName')
-  ui.versionNameSelect = document.getElementById('versionName')
   ui.numVersionsSelect = document.getElementById('numVersions')
   ui.phasesSection = document.getElementById('phasesSection')
   ui.startDateInput = { upgrade: document.getElementById('upgradeStartDate') }
