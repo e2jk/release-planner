@@ -45,14 +45,69 @@
                         General
                         <small class="text-body-secondary">Upgrade Duration: <span id="upgradeDurationValue">14 weeks</span></small>
                     </h2>
-                    <div class="dropdown">
-                        <button class="btn btn-secondary dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false" id="upgradeTypeToggle">
-                            Classical upgrade
+                    <div>
+                        <span class="dropdown">
+                            <button class="btn btn-secondary dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false" id="upgradeTypeToggle">
+                                Classical upgrade
+                            </button>
+                            <ul class="dropdown-menu">
+                                <li><a class="dropdown-item active" href="#" id="upgradeTypeClassical">Classical</a></li>
+                                <li><a class="dropdown-item" href="#" id="upgradeTypeExpedited">Expedited</a></li>
+                            </ul>
+                        </span>
+                        <!-- Upgrade parameters modal window -->
+                        <div class="modal fade" id="parametersModal" tabindex="-1" aria-labelledby="parametersModalLabel" aria-hidden="true">
+                            <div class="modal-dialog modal-lg modal-dialog-scrollable">
+                                <div class="modal-content">
+                                    <div class="modal-header">
+                                        <h1 class="modal-title fs-5" id="parametersModalLabel">Upgrade parameters</h1>
+                                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                    </div>
+                                    <div class="modal-body">
+                                        These are the parameters that govern how a default upgrade planning is composed:
+                                        <ul class="list-group list-group-flush">
+                                            <li class="list-group-item">Upgrades and Phases start on a Monday</li>
+                                            <li class="list-group-item">Upgrades and Phases end on a Friday</li>
+                                            <li class="list-group-item">A Classical upgrade lasts 7 weeks per version, meaning 14 weeks for the 2-version upgrade that is proposed by default.</li>
+                                            <li class="list-group-item">An Expedited upgrade is usually seen during the implementation phase, all environments are upgraded almost simultaneously without formal phases (Analysis, BUild, etc.).</li>
+                                            <li class="list-group-item">When creating a classical upgrade schedule, the maximum duration of the training phase is 4 weeks (you can always modify that manually).</li>
+                                            <li class="list-group-item">Vacations and holidays are only displayed, they do not have an influence on the proposed planning. Add a comment <a href="https://github.com/e2jk/release-planner/issues/2#issuecomment-1924136981">here</a> if you have suggestions on what would be useful.</li>
+                                            <li class="list-group-item">
+                                                Environment upgrades are proposed in this way:
+                                                <ul>
+                                                    <li>REL at the start of the project</li>
+                                                    <li>POC at the start of the build phase</li>
+                                                    <li>TST at the start of the testing phase</li>
+                                                    <li>MST, ACEs and PLY at the start of the training phase</li>
+                                                    <li>SUP 4 days before the PRD upgrade</li>
+                                                    <li>PRD at the end of the project</li>
+                                                </ul>
+                                            </li>
+                                            <li class="list-group-item">
+                                                SU Deliveries are proposed in this way:
+                                                <ul>
+                                                    <li>Initial SU Delivery at the start of the project</li>
+                                                    <li>All Fix SUs Delivery 2 weeks after the end of the Testing phase</li>
+                                                    <li>Pre-Upgrade Critical SU 2 weeks before the PRD upgrade</li>
+                                                    <li>
+                                                        Post-Upgrade SU Delivery 2 weeks after the PRD upgrade
+                                                        <small>- (yeah, one could argue that the PRD upgrade date is thus not the real end of the upgrade project...)</small>
+                                                    </li>
+                                                </ul>
+                                            </li>
+                                        </ul>
+                                    </div>
+                                    <div class="modal-footer">
+                                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                                        <!-- <button type="button" class="btn btn-primary">Save changes</button> -->
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <!-- Button trigger modal -->
+                        <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#parametersModal">
+                            Upgrade parameters
                         </button>
-                        <ul class="dropdown-menu">
-                            <li><a class="dropdown-item active" href="#" id="upgradeTypeClassical">Classical</a></li>
-                            <li><a class="dropdown-item" href="#" id="upgradeTypeExpedited">Expedited</a></li>
-                        </ul>
                     </div>
                     <div class="col-lg-3 col-md-6">
                         <div>
