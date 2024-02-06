@@ -9,6 +9,12 @@ test('UI events get triggered as expected', () => {
     '<button class="btn btn-secondary dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false" id="upgradeTypeToggle">Classical upgrade</button>' +
     '<li><a class="dropdown-item active" href="#" id="upgradeTypeClassical">Classical</a></li>' +
     '<li><a class="dropdown-item" href="#" id="upgradeTypeExpedited">Expedited</a></li>' +
+    '<ul class="dropdown-menu">' +
+    '<li><a class="dropdown-item perVersionDurationToggleItem" href="#">1 week</a></li>' +
+    '<li><a class="dropdown-item perVersionDurationToggleItem" href="#">2 weeks</a></li>' +
+    '<li><a class="dropdown-item perVersionDurationToggleItem" href="#">6 weeks</a></li>' +
+    '<li><a class="dropdown-item perVersionDurationToggleItem active" href="#">7 weeks</a></li>' +
+    '<li><a class="dropdown-item perVersionDurationToggleItem" href="#">8 weeks</a></li>' +
     '<select class="form-select" id="versionName" name="versionName">' +
     '<option value="2023-02">February 2023</option>' +
     '<option value="2023-05">May 2023</option>' +
@@ -78,6 +84,9 @@ test('UI events get triggered as expected', () => {
   app.ui.upgradeType.classical.addEventListener = jest.fn()
   app.ui.upgradeType.expedited.addEventListener = jest.fn()
   app.ui.numVersionsSelect.addEventListener = jest.fn()
+  for (let i = 0; i < app.ui.perVersionDurationToggleItems.length; i++) {
+    app.ui.perVersionDurationToggleItems[i].addEventListener = jest.fn()
+  }
   app.ui.durationInput.upgrade.addEventListener = jest.fn()
   app.ui.startDateInput.upgrade.addEventListener = jest.fn()
   app.ui.endDateInput.upgrade.addEventListener = jest.fn()
@@ -98,10 +107,13 @@ test('UI events get triggered as expected', () => {
 
   app.setupEventListeners()
 
-  expect(Object.keys(app.ui).length).toStrictEqual(16)
+  expect(Object.keys(app.ui).length).toStrictEqual(20)
   expect(app.ui.upgradeType.classical.addEventListener).toBeCalledWith('click', expect.any(Function))
   expect(app.ui.upgradeType.expedited.addEventListener).toBeCalledWith('click', expect.any(Function))
   expect(app.ui.numVersionsSelect.addEventListener).toBeCalledWith('change', expect.any(Function))
+  for (let i = 0; i < app.ui.perVersionDurationToggleItems.length; i++) {
+    expect(app.ui.perVersionDurationToggleItems[i].addEventListener).toBeCalledWith('click', expect.any(Function))
+  }
   expect(app.ui.startDateInput.upgrade.addEventListener).toBeCalledWith('input', expect.any(Function))
   expect(app.ui.endDateInput.upgrade.addEventListener).toBeCalledWith('input', expect.any(Function))
   for (let i = 0; i < app.phases.length; i++) {

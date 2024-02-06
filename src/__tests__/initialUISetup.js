@@ -33,7 +33,7 @@ test('UI is properly configured initially', () => {
 
   expect(app.ui.versionNameSelect.options.length).toBe(12)
   expect(app.ui.numVersionsSelect.value).toBe('2')
-  expect(app.ui.durationInput.upgrade.min).toBe('7')
+  expect(app.ui.durationInput.upgrade.min).toBe('4')
   expect(app.ui.durationInput.upgrade.max).toBe('40')
   expect(app.ui.durationInput.upgrade.value).toBe('14')
   expect(app.setDefaultDates).toHaveBeenCalled()

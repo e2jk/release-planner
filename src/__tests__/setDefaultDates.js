@@ -67,27 +67,27 @@ test('Confirm that dates are set by default for a classical upgrade', () => {
   expect(app.ui.startDateInput.analysis.value).toBe('2024-01-25')
   expect(app.ui.startDateInput.build.value).toBe('2024-02-22')
   expect(app.ui.startDateInput.testing.value).toBe('2024-03-21')
-  expect(app.ui.startDateInput.training.value).toBe('2024-04-11')
+  expect(app.ui.startDateInput.training.value).toBe('2024-04-18')
   expect(app.ui.endDateInput.analysis.value).toBe('2024-02-22')
   expect(app.ui.endDateInput.build.value).toBe('2024-03-21')
-  expect(app.ui.endDateInput.testing.value).toBe('2024-04-11')
+  expect(app.ui.endDateInput.testing.value).toBe('2024-04-18')
   expect(app.ui.endDateInput.training.value).toBe('2024-05-09')
   expect(app.ui.durationInput.analysis.value).toBe('4')
   expect(app.ui.durationInput.build.value).toBe('4')
-  expect(app.ui.durationInput.testing.value).toBe('3')
-  expect(app.ui.durationInput.training.value).toBe('4')
+  expect(app.ui.durationInput.testing.value).toBe('4')
+  expect(app.ui.durationInput.training.value).toBe('3')
   // Environment upgrades
   expect(app.ui.upgradeDateInput.REL.value).toBe('2024-01-25')
   expect(app.ui.upgradeDateInput.POC.value).toBe('2024-02-22')
   expect(app.ui.upgradeDateInput.TST.value).toBe('2024-03-21')
-  expect(app.ui.upgradeDateInput.MST.value).toBe('2024-04-11')
-  expect(app.ui.upgradeDateInput.ACE.value).toBe('2024-04-11')
-  expect(app.ui.upgradeDateInput.PLY.value).toBe('2024-04-11')
+  expect(app.ui.upgradeDateInput.MST.value).toBe('2024-04-18')
+  expect(app.ui.upgradeDateInput.ACE.value).toBe('2024-04-18')
+  expect(app.ui.upgradeDateInput.PLY.value).toBe('2024-04-18')
   expect(app.ui.upgradeDateInput.SUP.value).toBe('2024-05-05')
   expect(app.ui.upgradeDateInput.PRD.value).toBe('2024-05-09')
   // SU deliveries
   expect(app.ui.deliveryDateInput.InitialSU.value).toBe('2024-01-25')
-  expect(app.ui.deliveryDateInput.AllFixSU.value).toBe('2024-03-28')
+  expect(app.ui.deliveryDateInput.AllFixSU.value).toBe('2024-04-04')
   expect(app.ui.deliveryDateInput.PreUpgradeCriticalSU.value).toBe('2024-04-25')
   expect(app.ui.deliveryDateInput.PostUpgradeSU.value).toBe('2024-05-23')
 
@@ -125,13 +125,13 @@ test('Confirm that dates are set by default for a classical upgrade', () => {
   expect(app.updateVisItemDate).toHaveBeenNthCalledWith(
     6,
     'testingPhase',
-    '2024-04-11',
+    '2024-04-18',
     'end'
   )
   expect(app.updateVisItemDate).toHaveBeenNthCalledWith(
     7,
     'trainingPhase',
-    '2024-04-11',
+    '2024-04-18',
     'startPhase'
   )
   expect(app.updateVisItemDate).toHaveBeenNthCalledWith(
@@ -173,13 +173,13 @@ test('Confirm that dates are set by default for a classical upgrade', () => {
   expect(app.updateVisItemDate).toHaveBeenNthCalledWith(
     14,
     'testingPhase',
-    '2024-04-11',
+    '2024-04-18',
     'end'
   )
   expect(app.updateVisItemDate).toHaveBeenNthCalledWith(
     15,
     'trainingPhase',
-    '2024-04-11',
+    '2024-04-18',
     'startPhase'
   )
   expect(app.updateVisItemDate).toHaveBeenNthCalledWith(
@@ -223,19 +223,19 @@ test('Confirm that dates are set by default for a classical upgrade', () => {
   expect(app.updateVisItemDate).toHaveBeenNthCalledWith(
     22,
     'envMST',
-    '2024-04-11',
+    '2024-04-18',
     'startPoint'
   )
   expect(app.updateVisItemDate).toHaveBeenNthCalledWith(
     23,
     'envACE',
-    '2024-04-11',
+    '2024-04-18',
     'startPoint'
   )
   expect(app.updateVisItemDate).toHaveBeenNthCalledWith(
     24,
     'envPLY',
-    '2024-04-11',
+    '2024-04-18',
     'startPoint'
   )
   expect(app.updateVisItemDate).toHaveBeenNthCalledWith(
@@ -260,7 +260,7 @@ test('Confirm that dates are set by default for a classical upgrade', () => {
   expect(app.updateVisItemDate).toHaveBeenNthCalledWith(
     28,
     'suAllFixSU',
-    '2024-03-28',
+    '2024-04-04',
     'startPoint'
   )
   expect(app.updateVisItemDate).toHaveBeenNthCalledWith(

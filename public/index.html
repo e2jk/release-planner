@@ -68,7 +68,29 @@
                                         <ul class="list-group list-group-flush">
                                             <li class="list-group-item">Upgrades and Phases start on a Monday</li>
                                             <li class="list-group-item">Upgrades and Phases end on a Friday</li>
-                                            <li class="list-group-item">A Classical upgrade lasts 7 weeks per version, meaning 14 weeks for the 2-version upgrade that is proposed by default.</li>
+                                            <li class="list-group-item">A Classical upgrade lasts 
+                                                <span class="dropdown">
+                                                    <button class="btn btn-secondary btn-sm dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false" id="perVersionDurationToggle">
+                                                        7 weeks
+                                                    </button>
+                                                    <ul class="dropdown-menu">
+                                                        <li><a class="dropdown-item perVersionDurationToggleItem" href="#">1 week</a></li>
+                                                        <li><a class="dropdown-item perVersionDurationToggleItem" href="#">2 weeks</a></li>
+                                                        <li><a class="dropdown-item perVersionDurationToggleItem" href="#">3 weeks</a></li>
+                                                        <li><a class="dropdown-item perVersionDurationToggleItem" href="#">4 weeks</a></li>
+                                                        <li><a class="dropdown-item perVersionDurationToggleItem" href="#">5 weeks</a></li>
+                                                        <li><a class="dropdown-item perVersionDurationToggleItem" href="#">6 weeks</a></li>
+                                                        <li><a class="dropdown-item perVersionDurationToggleItem active" href="#">7 weeks</a></li>
+                                                        <li><a class="dropdown-item perVersionDurationToggleItem" href="#">8 weeks</a></li>
+                                                        <li><a class="dropdown-item perVersionDurationToggleItem" href="#">9 weeks</a></li>
+                                                        <li><a class="dropdown-item perVersionDurationToggleItem" href="#">10 weeks</a></li>
+                                                        <li><a class="dropdown-item perVersionDurationToggleItem" href="#">11 weeks</a></li>
+                                                        <li><a class="dropdown-item perVersionDurationToggleItem" href="#">12 weeks</a></li>
+                                                        <li><a class="dropdown-item perVersionDurationToggleItem" href="#">13 weeks</a></li>
+                                                        <li><a class="dropdown-item perVersionDurationToggleItem" href="#">14 weeks</a></li>
+                                                    </ul>
+                                                </span> per version, which translates to <span id="defaultNumWeeks">14</span> weeks for the 2-version upgrade that is proposed by default.
+                                                <span class="text-info d-none" id="lowNumWeeksWarning"><br>Note: If you need a duration that is less than 4 weeks in total, please select an Expedicted upgrade type instead.</span></li>
                                             <li class="list-group-item">An Expedited upgrade is usually seen during the implementation phase, all environments are upgraded almost simultaneously without formal phases (Analysis, BUild, etc.).</li>
                                             <li class="list-group-item">When creating a classical upgrade schedule, the maximum duration of the training phase is 4 weeks (you can always modify that manually).</li>
                                             <li class="list-group-item">Vacations and holidays are only displayed, they do not have an influence on the proposed planning. Add a comment <a href="https://github.com/e2jk/release-planner/issues/2#issuecomment-1924136981">here</a> if you have suggestions on what would be useful.</li>
@@ -145,7 +167,7 @@
                     <div class="col-12">
                         <div>
                             
-                            <input type="range" class="form-range" id="upgradeDuration" name="upgradeDuration" min="7" max="40" value="14">
+                            <input type="range" class="form-range" id="upgradeDuration" name="upgradeDuration" min="4" max="40" value="14">
                         </div>
                     </div>
                 </div>

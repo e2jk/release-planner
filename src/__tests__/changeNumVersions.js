@@ -13,7 +13,9 @@ test('Changing the number of versions during a Classical upgrade changes the dur
     '<option value="4">4 versions</option>' +
     '</select>' +
     '<span id="upgradeDurationValue">14 weeks</span>' +
-    '<input type="range" class="form-range" id="upgradeDuration" name="upgradeDuration" min="7" max="40" value="14">'
+    '<input type="range" class="form-range" id="upgradeDuration" name="upgradeDuration" min="7" max="40" value="14">' +
+    '<li class="list-group-item">per version, which translates to <span id="defaultNumWeeks">12</span> weeks for the 2-version upgrade that is proposed by default.</li>'
+  app.getUI()
   expect(app.upgradeType).toStrictEqual({ current: 'Classical', value: 'Classical' })
   app.ui.numVersionsSelect = document.getElementById('numVersions')
   app.ui.durationInput = { upgrade: document.getElementById('upgradeDuration') }
@@ -29,8 +31,8 @@ test('Changing the number of versions during a Classical upgrade changes the dur
   app.setDefaultDates = jest.fn()
   app.changeNumVersions()
 
-  expect(app.ui.durationInput.upgrade.value).toBe('21')
-  expect(app.ui.durationValue.upgrade.textContent).toBe('21 weeks')
+  expect(app.ui.durationInput.upgrade.value).toBe('18')
+  expect(app.ui.durationValue.upgrade.textContent).toBe('18 weeks')
   expect(app.setDefaultDates).toHaveBeenCalled()
 })
 
@@ -44,6 +46,7 @@ test('Changing the number of versions during an Expedited upgrade does NOT chang
     '</select>' +
     '<span id="upgradeDurationValue">14 weeks</span>' +
     '<input type="range" class="form-range" id="upgradeDuration" name="upgradeDuration" min="7" max="40" value="14">'
+  app.getUI()
   expect(app.upgradeType).toStrictEqual({ current: 'Classical', value: 'Classical' })
   app.ui.numVersionsSelect = document.getElementById('numVersions')
   app.ui.durationInput = { upgrade: document.getElementById('upgradeDuration') }

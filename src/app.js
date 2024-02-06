@@ -90,6 +90,10 @@ export function getUI () {
   }
   ui.versionNameSelect = document.getElementById('versionName')
   ui.numVersionsSelect = document.getElementById('numVersions')
+  ui.perVersionDurationToggle = document.getElementById('perVersionDurationToggle')
+  ui.perVersionDurationToggleItems = document.getElementsByClassName('perVersionDurationToggleItem')
+  ui.defaultNumWeeks = document.getElementById('defaultNumWeeks')
+  ui.lowNumWeeksWarning = document.getElementById('lowNumWeeksWarning')
   ui.phasesSection = document.getElementById('phasesSection')
   ui.startDateInput = { upgrade: document.getElementById('upgradeStartDate') }
   ui.endDateInput = { upgrade: document.getElementById('upgradeEndDate') }
@@ -190,7 +194,7 @@ export function initialUISetup () {
   app.updateVersionName()
 
   // Set the default values when the page is initialized (the other General settings are explicitly calculated and set elsewhere)
-  ui.durationInput.upgrade.min = 7
+  ui.durationInput.upgrade.min = 4
   ui.durationInput.upgrade.max = 40
   ui.durationInput.upgrade.value = 14
   ui.numVersionsSelect.options[1].selected = true
@@ -202,6 +206,9 @@ export function setupEventListeners () {
   ui.upgradeType.expedited.addEventListener('click', changeUpgradeType)
   ui.versionNameSelect.addEventListener('input', updateVersionName)
   ui.numVersionsSelect.addEventListener('change', changeNumVersions)
+  for (let i = 0; i < ui.perVersionDurationToggleItems.length; i++) {
+    ui.perVersionDurationToggleItems[i].addEventListener('click', changePerVersionDuration)
+  }
   ui.startDateInput.upgrade.addEventListener('input', setDefaultDates)
   ui.durationInput.upgrade.addEventListener('input', updateEndDate)
   ui.endDateInput.upgrade.addEventListener('input', updateDuration)
@@ -227,9 +234,11 @@ export function changeUpgradeType (evt) {
   if (app.upgradeType.value === 'Classical') {
     ui.upgradeType.classical.classList.add('active')
     ui.upgradeType.expedited.classList.remove('active')
-    ui.durationInput.upgrade.min = 7
+    ui.durationInput.upgrade.min = 4
     ui.durationInput.upgrade.max = 40
-    ui.durationInput.upgrade.value = 14
+    const numWeeksPerVersion = parseInt(ui.defaultNumWeeks.innerHTML) / 2
+    const numVersions = parseInt(ui.numVersionsSelect.value)
+    ui.durationInput.upgrade.value = Math.max(numWeeksPerVersion * numVersions, 4)
     // Show the phases section and add to the timeline
     ui.phasesSection.classList.remove('collapse')
     groups.remove('environments')
@@ -270,13 +279,33 @@ export function changeNumVersions () {
   // Changing the number of versions during an Expedited upgrade has no effect
   if (app.upgradeType.value === 'Classical') {
     const numVersions = parseInt(ui.numVersionsSelect.value)
-    const calculatedDuration = 7 * numVersions
+    const numWeeksPerVersion = parseInt(ui.defaultNumWeeks.innerHTML) / 2
+    const calculatedDuration = numWeeksPerVersion * numVersions
 
     ui.durationInput.upgrade.value = calculatedDuration
     ui.durationValue.upgrade.textContent = `${calculatedDuration} weeks`
-    // Changing the number of versions changes the entire planning, so recalculate all default dates
+    // Changing the number of versions changes the entire default planning, so recalculate all default dates
     app.setDefaultDates(false)
   }
+}
+
+export function changePerVersionDuration (evt) {
+  evt.preventDefault()
+  const numWeeksPerVersion = parseInt(evt.target.innerHTML.substring(0, evt.target.innerHTML.indexOf(' ')))
+  ui.perVersionDurationToggle.innerHTML = evt.target.innerHTML
+  const numVersions = parseInt(ui.numVersionsSelect.value)
+  ui.durationInput.upgrade.value = Math.max(numWeeksPerVersion * numVersions, 4)
+  ui.defaultNumWeeks.innerHTML = Math.max(numWeeksPerVersion * 2, 4)
+  for (let i = 0; i < ui.perVersionDurationToggleItems.length; i++) {
+    ui.perVersionDurationToggleItems[i].classList.remove('active')
+  }
+  evt.target.classList.add('active')
+  if (numWeeksPerVersion < 4) {
+    ui.lowNumWeeksWarning.classList.remove('d-none')
+  } else {
+    ui.lowNumWeeksWarning.classList.add('d-none')
+  }
+  app.setDefaultDates()
 }
 
 export function setStartDate (startDate) {
@@ -364,10 +393,10 @@ export function calculateDefaultPhaseLengths (upgradeDuration) {
   let durationToAllocate = upgradeDuration
 
   // Minimum phase durations
-  let analysisDuration = 2
-  let buildDuration = 2
+  let analysisDuration = 1
+  let buildDuration = 1
   let testingDuration = 1
-  let trainingDuration = 2
+  let trainingDuration = 1
   durationToAllocate = durationToAllocate - (analysisDuration + buildDuration + testingDuration + trainingDuration)
 
   // Allocate the time evenly to the 4 different phases

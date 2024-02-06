@@ -62,6 +62,13 @@ test('Change upgrade type from Classical to Expedited', () => {
     '<button class="btn btn-secondary dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false" id="upgradeTypeToggle">Expedited upgrade</button>' +
     '<li><a class="dropdown-item" href="#" id="upgradeTypeClassical">Classical</a></li>' +
     '<li><a class="dropdown-item active" href="#" id="upgradeTypeExpedited">Expedited</a></li>' +
+    '<select class="form-select" id="numVersions" name="numVersions">' +
+    '<option value="1">1 version</option>' +
+    '<option value="2">2 versions</option>' +
+    '<option value="3" selected>3 versions</option>' +
+    '<option value="4">4 versions</option>' +
+    '</select>' +
+    'per version, which translates to <span id="defaultNumWeeks">12</span> weeks for the 2-version upgrade that is proposed by default.' +
     '<input type="range" class="form-range" id="upgradeDuration" name="upgradeDuration">' +
     '<div class="row row-gap-3 collapse" id="phasesSection"></div>' +
     '<input class="form-check-input mt-0" type="checkbox" value="" id="SUCheckInitialSU" aria-label="Checkbox to include Initial SU delivery">&nbsp;' +
@@ -99,9 +106,9 @@ test('Change upgrade type from Classical to Expedited', () => {
   expect(app.ui.upgradeType.expedited.classList.contains('active')).toBe(false)
   expect(app.ui.phasesSection.classList.contains('collapse')).toBe(false)
   expect(app.groups.get('phases')).toStrictEqual({ content: 'Phases', id: 'phases' })
-  expect(app.ui.durationInput.upgrade.min).toBe('7')
+  expect(app.ui.durationInput.upgrade.min).toBe('4')
   expect(app.ui.durationInput.upgrade.max).toBe('40')
-  expect(app.ui.durationInput.upgrade.value).toBe('14')
+  expect(app.ui.durationInput.upgrade.value).toBe('18')
   expect(app.ui.deliveryCheck.InitialSU.checked).toBe(true)
   expect(app.ui.deliveryCheck.AllFixSU.checked).toBe(true)
   expect(app.ui.deliveryCheck.PreUpgradeCriticalSU.checked).toBe(true)
