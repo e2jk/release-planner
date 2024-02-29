@@ -6,6 +6,8 @@ import 'bootstrap/dist/css/bootstrap.min.css'
 // Import minified vis-timeline JavaScript and CSS
 import { Timeline, DataSet } from 'vis-timeline/standalone/esm/vis-timeline-graph2d.min.js'
 import 'vis-timeline/styles/vis-timeline-graph2d.min.css'
+// Import SheetJS
+import * as XLSX from 'xlsx-js-style';
 
 // ================================================================
 // Definition of Variables
@@ -137,7 +139,7 @@ export function getUI () {
     chronologicalList: document.getElementById('chronologicalListTextarea'),
     grouped: document.getElementById('groupedTextarea')
   }
-
+  ui.exportToExcel = document.getElementById('exportToExcelButton')
   ui.visContainer = document.getElementById('visualization')
 }
 
@@ -225,6 +227,7 @@ export function setupEventListeners () {
     ui.deliveryDateInput[key].addEventListener('input', updateSUDeliveryDate)
     ui.deliveryCheck[key].addEventListener('input', includeEnvOrSUDelivery)
   }, suDeliveries)
+  ui.exportToExcel.addEventListener('click', exportToExcel)
 }
 
 export function changeUpgradeType (evt) {
@@ -618,13 +621,17 @@ export function determineUpgradeStartDate (releaseMonth, today) {
     return app.getMondayNWeeksLater(new Date(releaseDate), 0)
   }
 }
-export function updateVersionName (evt) {
+export function getVersionName () {
   const selectedVersion = ui.versionNameSelect.options[ui.versionNameSelect.selectedIndex]
-  const versionName = selectedVersion.text
+  return selectedVersion.text
+}
+export function updateVersionName (evt) {
+  const versionName = getVersionName()
   app.updateVisItemContent('upgradePeriod', `Upgrade to ${versionName}`)
   app.updateVisGroupContent('upgrade', versionName)
 
   // Set the start date of the upgrade
+  const selectedVersion = ui.versionNameSelect.options[ui.versionNameSelect.selectedIndex]
   ui.startDateInput.upgrade.value = app.determineUpgradeStartDate(selectedVersion.value)
   if (evt) {
     app.setDefaultDates()
@@ -846,7 +853,7 @@ export function addToEvents (events, date, shortDescription, longDescription) {
 }
 
 export function generateTextualRepresentations () {
-  const selectedVersion = ui.versionNameSelect.options[ui.versionNameSelect.selectedIndex].text
+  const versionName = getVersionName()
   let duration = parseInt(ui.durationInput.upgrade.value)
   let startDate = ui.startDateInput.upgrade.value
   let endDate = ui.endDateInput.upgrade.value
@@ -860,7 +867,7 @@ export function generateTextualRepresentations () {
   let phaseName
 
   if (app.upgradeType.value === 'Classical') {
-    chronologicalTextText = `The upgrade to version ${selectedVersion} will last ${duration} weeks and take place from ${dateInEnglish(startDate)} to ${dateInEnglish(endDate)}.\n`
+    chronologicalTextText = `The upgrade to version ${versionName} will last ${duration} weeks and take place from ${dateInEnglish(startDate)} to ${dateInEnglish(endDate)}.\n`
     chronologicalListText = chronologicalTextText
     groupedText = `${chronologicalTextText}\nPhases:`
     for (let i = 0; i < phases.length; i++) {
@@ -874,7 +881,7 @@ export function generateTextualRepresentations () {
     }
     groupedText = `${groupedText}\n`
   } else if (app.upgradeType.value === 'Expedited') {
-    chronologicalTextText = `The expedited upgrade to version ${selectedVersion} will last ${duration} weeks and take place from ${dateInEnglish(startDate)} to ${dateInEnglish(endDate)}.\n`
+    chronologicalTextText = `The expedited upgrade to version ${versionName} will last ${duration} weeks and take place from ${dateInEnglish(startDate)} to ${dateInEnglish(endDate)}.\n`
     chronologicalListText = chronologicalTextText
     groupedText = chronologicalTextText
   }
@@ -910,6 +917,66 @@ export function generateTextualRepresentations () {
   ui.textual.chronologicalText.innerHTML = chronologicalTextText
   ui.textual.chronologicalList.innerHTML = chronologicalListText
   ui.textual.grouped.innerHTML = groupedText
+}
+
+export function getExportDataArray () {
+  const versionName = getVersionName()
+  const upgradeStartDate = new Date(ui.startDateInput.upgrade.value)
+  const startPlanning = dateAddNDays(upgradeStartDate, -5)
+  const upgradeEndDate = new Date(ui.endDateInput.upgrade.value)
+  const endPlanning = dateAddNDays(upgradeEndDate, 20)
+  console.log(startPlanning, endPlanning);
+
+  const diffTime = Math.abs(endPlanning - startPlanning);
+  const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+  console.log(diffDays + " days");
+
+  // const dateArray = {}
+  // const dateRow = [,,,]
+  // let day
+  // for (let i = 0; i < diffDays; i++) {
+  //   day = dateAddNDays(upgradeStartDate, i)
+  //   // console.log(day);
+  //   dateArray[day.toISOString().substring(0, 10)] = i
+  //   dateRow.push(i)
+  // }
+  // console.log(dateArray);
+  // console.log(dateRow);
+
+  const aoa = [
+    [, , `Upgrade to ${versionName}`],
+    [  1,   2,    ,    ,   5,   6,   7],
+    [  2,   3,    ,    ,   6,   7,   8],
+    [  3,   4,    ,    ,   7,   8,   9],
+    [  4,   5,   6,   7,   8,   9,   0]
+  ];
+  return aoa
+}
+
+export function exportToExcel () {
+  // Create data representation
+  const aoa = getExportDataArray()
+  console.log(aoa);
+
+  // Create a Workbook
+  // const worksheet = XLSX.utils.json_to_sheet(rows);
+  const worksheet = XLSX.utils.aoa_to_sheet(aoa);
+  const workbook = XLSX.utils.book_new();
+  XLSX.utils.book_append_sheet(workbook, worksheet, "Dates");
+
+  // Clean up Workbook
+  // Change Header Names
+  // XLSX.utils.sheet_add_aoa(worksheet, [["Name", "Birthday"]], { origin: "A1" });
+  // Change Column Widths
+  // const max_width_name = rows.reduce((w, r) => Math.max(w, r.name.length), 10);
+  // const max_width_dob = rows.reduce((w, r) => Math.max(w, r.birthday.length), 10);
+  // console.log(max_width_name, max_width_dob);
+  // worksheet["!cols"] = [ { wch: max_width_name }, { wch: max_width_dob } ];
+
+  // Export the file
+  const versionName = getVersionName()
+  XLSX.writeFile(workbook, `Upgrade - ${versionName}.xlsx`, { compression: true });
+  console.log("done!");
 }
 
 export function startUp () {

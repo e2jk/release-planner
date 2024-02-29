@@ -79,6 +79,7 @@ test('UI events get triggered as expected', () => {
     '<input type="date" class="form-control" id="PreUpgradeCriticalSUDeliveryDate" name="PreUpgradeCriticalSUDeliveryDate" aria-label="Pre-Upgrade Critical SU Delivery Date" aria-describedby="basic-addon-SUPreUpgradeCritical">' +
     '<input class="form-check-input mt-0" type="checkbox" value="" id="SUCheckPostUpgradeSU" aria-label="Checkbox to include Post-Upgrade SU delivery" checked>&nbsp;' +
     '<input type="date" class="form-control" id="PostUpgradeSUDeliveryDate" name="PostUpgradeSUDeliveryDate" aria-label="Post-Upgrade SU Delivery Date" aria-describedby="basic-addon-SUPostUpgrade">' +
+    '<button class="btn btn-primary mt-3" type="button" id="exportToExcelButton">Export to Excel</button>' +
     '<div id="visualization" class="mt-3"></div>'
   app.getUI()
   app.ui.upgradeType.classical.addEventListener = jest.fn()
@@ -104,10 +105,11 @@ test('UI events get triggered as expected', () => {
     app.ui.deliveryDateInput[key].addEventListener = jest.fn()
     app.ui.deliveryCheck[key].addEventListener = jest.fn()
   }, app.suDeliveries)
+  app.ui.exportToExcel.addEventListener = jest.fn()
 
   app.setupEventListeners()
 
-  expect(Object.keys(app.ui).length).toStrictEqual(20)
+  expect(Object.keys(app.ui).length).toStrictEqual(21)
   expect(app.ui.upgradeType.classical.addEventListener).toBeCalledWith('click', expect.any(Function))
   expect(app.ui.upgradeType.expedited.addEventListener).toBeCalledWith('click', expect.any(Function))
   expect(app.ui.numVersionsSelect.addEventListener).toBeCalledWith('change', expect.any(Function))
@@ -129,6 +131,7 @@ test('UI events get triggered as expected', () => {
     expect(app.ui.deliveryDateInput[key].addEventListener).toBeCalledWith('input', expect.any(Function))
     expect(app.ui.deliveryCheck[key].addEventListener).toBeCalledWith('input', expect.any(Function))
   }, app.suDeliveries)
+  expect(app.ui.exportToExcel.addEventListener).toBeCalledWith('click', expect.any(Function))
 })
 
 test('Exclude an environment from the planning', () => {

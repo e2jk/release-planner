@@ -247,12 +247,13 @@ test('The UI gets parsed as expected', () => {
   '<textarea class="form-control" id="chronologicalTextTextarea" rows="10"></textarea>' +
   '<textarea class="form-control" id="chronologicalListTextarea" rows="20"></textarea>' +
   '<textarea class="form-control" id="groupedTextarea" rows="10"></textarea>' +
+  '<button class="btn btn-primary mt-3" type="button" id="exportToExcelButton">Export to Excel</button>' +
   '<div id="visualization" class="mt-3"></div>'
 
   expect(Object.keys(app.ui).length).toStrictEqual(0)
   expect(app.ui).toStrictEqual({})
   app.getUI()
-  expect(Object.keys(app.ui).length).toStrictEqual(20)
+  expect(Object.keys(app.ui).length).toStrictEqual(21)
   expect(app.ui.upgradeTypeToggle.innerHTML).toBe('Classical upgrade')
   expect(app.ui.upgradeType.classical.id).toBe('upgradeTypeClassical')
   expect(app.ui.upgradeType.expedited.id).toBe('upgradeTypeExpedited')
@@ -270,6 +271,7 @@ test('The UI gets parsed as expected', () => {
   expect(Object.keys(app.ui.upgradeDateInput).length).toBe(8)
   expect(Object.keys(app.ui.envCheck).length).toBe(8)
   expect(Object.keys(app.ui.deliveryDateInput).length).toBe(4)
+  expect(app.ui.exportToExcel.id).toBe('exportToExcelButton')
 })
 
 test('Default phase lengths are calculated', () => {

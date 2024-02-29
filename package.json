@@ -46,6 +46,7 @@
   },
   "dependencies": {
     "bootstrap": "^5.3.2",
-    "vis-timeline": "^7.7.3"
+    "vis-timeline": "^7.7.3",
+    "xlsx-js-style": "^1.2.0"
   }
 }
