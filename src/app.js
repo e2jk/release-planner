@@ -7,7 +7,7 @@ import 'bootstrap/dist/css/bootstrap.min.css'
 import { Timeline, DataSet } from 'vis-timeline/standalone/esm/vis-timeline-graph2d.min.js'
 import 'vis-timeline/styles/vis-timeline-graph2d.min.css'
 // Import SheetJS
-import * as XLSX from 'xlsx-js-style';
+import * as XLSX from 'xlsx-js-style'
 
 // ================================================================
 // Definition of Variables
@@ -925,11 +925,11 @@ export function getExportDataArray () {
   const startPlanning = dateAddNDays(upgradeStartDate, -5)
   const upgradeEndDate = new Date(ui.endDateInput.upgrade.value)
   const endPlanning = dateAddNDays(upgradeEndDate, 20)
-  console.log(startPlanning, endPlanning);
+  console.log(startPlanning, endPlanning)
 
-  const diffTime = Math.abs(endPlanning - startPlanning);
-  const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
-  console.log(diffDays + " days");
+  const diffTime = Math.abs(endPlanning - startPlanning)
+  const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24))
+  console.log(diffDays + ' days')
 
   // const dateArray = {}
   // const dateRow = [,,,]
@@ -944,25 +944,25 @@ export function getExportDataArray () {
   // console.log(dateRow);
 
   const aoa = [
-    [, , `Upgrade to ${versionName}`],
-    [  1,   2,    ,    ,   5,   6,   7],
-    [  2,   3,    ,    ,   6,   7,   8],
-    [  3,   4,    ,    ,   7,   8,   9],
-    [  4,   5,   6,   7,   8,   9,   0]
-  ];
+    [null, null, `Upgrade to ${versionName}`],
+    [1, 2, null, null, 5, 6, 7],
+    [2, 3, null, null, 6, 7, 8],
+    [3, 4, null, null, 7, 8, 9],
+    [4, 5, 6, 7, 8, 9, 0]
+  ]
   return aoa
 }
 
 export function exportToExcel () {
   // Create data representation
   const aoa = getExportDataArray()
-  console.log(aoa);
+  console.log(aoa)
 
   // Create a Workbook
   // const worksheet = XLSX.utils.json_to_sheet(rows);
-  const worksheet = XLSX.utils.aoa_to_sheet(aoa);
-  const workbook = XLSX.utils.book_new();
-  XLSX.utils.book_append_sheet(workbook, worksheet, "Dates");
+  const worksheet = XLSX.utils.aoa_to_sheet(aoa)
+  const workbook = XLSX.utils.book_new()
+  XLSX.utils.book_append_sheet(workbook, worksheet, 'Dates')
 
   // Clean up Workbook
   // Change Header Names
@@ -975,8 +975,8 @@ export function exportToExcel () {
 
   // Export the file
   const versionName = getVersionName()
-  XLSX.writeFile(workbook, `Upgrade - ${versionName}.xlsx`, { compression: true });
-  console.log("done!");
+  XLSX.writeFile(workbook, `Upgrade - ${versionName}.xlsx`, { compression: true })
+  console.log('done!')
 }
 
 export function startUp () {
