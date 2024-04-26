@@ -3,6 +3,7 @@
  */
 
 const app = require('../app')
+jest.unmock('xlsx-js-style')
 
 describe('Test default variables', () => {
   test('The default upgrade type is Classical', () => {
@@ -631,4 +632,187 @@ SU deliveries:
 - The All Fix SUs SU package will be delivered on Thursday 2024-02-22.
 - The Post-Upgrade SU package will be delivered on Saturday 2024-02-24.`
   )
+})
+
+test('Retrieve the ISO week of the date', () => {
+  expect(app.getWeek(new Date('2024-01-17'))).toBe(3)
+  expect(app.getWeek(new Date('2024-04-16'))).toBe(16)
+  expect(app.getWeek(new Date('2024-02-29'))).toBe(9)
+  expect(app.getWeek(new Date('2023-02-28'))).toBe(9)
+  expect(app.getWeek(new Date('2023-12-31'))).toBe(52)
+  expect(app.getWeek(new Date('2024-01-01'))).toBe(1)
+  expect(app.getWeek(new Date('2024-01-04'))).toBe(1)
+  expect(app.getWeek(new Date('2024-12-31'))).toBe(1)
+  expect(app.getWeek(new Date('2025-01-01'))).toBe(1)
+  expect(app.getWeek(new Date('2025-01-04'))).toBe(1)
+  expect(app.getWeek(new Date('2026-12-31'))).toBe(53)
+  expect(app.getWeek(new Date('2027-01-01'))).toBe(53)
+  expect(app.getWeek(new Date('2027-01-04'))).toBe(1)
+})
+
+test('Check for leap years', () => {
+  expect(app.leapYear('2019')).toBe(false)
+  expect(app.leapYear('2020')).toBe(true)
+  expect(app.leapYear('2021')).toBe(false)
+  expect(app.leapYear('2022')).toBe(false)
+  expect(app.leapYear('2023')).toBe(false)
+  expect(app.leapYear('2024')).toBe(true)
+  expect(app.leapYear('2025')).toBe(false)
+  expect(app.leapYear('2000')).toBe(true)
+  expect(app.leapYear('2100')).toBe(false)
+})
+
+test('Check for leap years', () => {
+  expect(app.getDaysInMonth(2024, 0)).toBe(31)
+  expect(app.getDaysInMonth(2024, 1)).toBe(29)
+  expect(app.getDaysInMonth(2024, 2)).toBe(31)
+  expect(app.getDaysInMonth(2024, 3)).toBe(30)
+  expect(app.getDaysInMonth(2024, 4)).toBe(31)
+  expect(app.getDaysInMonth(2024, 5)).toBe(30)
+  expect(app.getDaysInMonth(2024, 6)).toBe(31)
+  expect(app.getDaysInMonth(2024, 7)).toBe(31)
+  expect(app.getDaysInMonth(2024, 8)).toBe(30)
+  expect(app.getDaysInMonth(2024, 9)).toBe(31)
+  expect(app.getDaysInMonth(2024, 10)).toBe(30)
+  expect(app.getDaysInMonth(2024, 11)).toBe(31)
+  expect(app.getDaysInMonth(2000, 1)).toBe(29)
+  expect(app.getDaysInMonth(2023, 1)).toBe(28)
+  expect(app.getDaysInMonth(2100, 1)).toBe(28)
+  expect(app.getDaysInMonth(2024, 12)).toBeUndefined()
+  expect(app.getDaysInMonth(2024, -1)).toBeUndefined()
+  expect(app.getDaysInMonth(-1, 3)).toBe(30)
+})
+
+test('Generate data array for Excel export and format the worksheet', () => {
+  document.body.innerHTML =
+    '<select class="form-select" id="versionName" name="versionName">' +
+    '<option value="2023-05">May 2023</option>' +
+    '<option value="2023-08" selected>August 2023</option>' +
+    '<option value="2023-11">November 2023</option>' +
+    '</select>' +
+    '<input type="date" class="form-control" id="upgradeStartDate" name="upgradeStartDate" value="2024-02-04">' +
+    '<input type="date" class="form-control" id="upgradeEndDate" name="upgradeEndDate" value="2024-10-01">'
+  app.getUI()
+
+  const aoa = app.getExportDataArray()
+  expect(aoa.length).toBe(4)
+  expect(aoa[0].length).toBe(3)
+  expect(aoa[0][2]).toBe('Upgrade to August 2023')
+  expect(aoa[0][3]).toBeUndefined()
+
+  expect(aoa[1].length).toBe(265)
+  expect(aoa[1][3]).toBe('Month')
+  expect(aoa[1][4]).toStrictEqual({
+    f: 'PROPER(TEXT(E4, "mmmm")&" "&YEAR(E4))',
+    t: 'n',
+    z: 'mm',
+    s: {
+      alignment: { horizontal: 'center' },
+      fill: { fgColor: { rgb: '0da0db' } }
+    }
+  })
+  expect(aoa[1][5]).toStrictEqual({
+    f: 'IF(DAY(F4)=1,PROPER(TEXT(F4, "mmmm")&" "&YEAR(F4)),"")',
+    t: 'n',
+    z: 'mm',
+    s: {
+      alignment: { horizontal: 'center' },
+      fill: { fgColor: { rgb: '0da0db' } }
+    }
+  })
+  expect(aoa[1][6]).toStrictEqual({
+    f: 'IF(DAY(G4)=1,PROPER(TEXT(G4, "mmmm")&" "&YEAR(G4)),"")',
+    t: 'n',
+    z: 'mm',
+    s: {
+      alignment: { horizontal: 'center' },
+      fill: { fgColor: { rgb: '0a78a4' } }
+    }
+  })
+  expect(aoa[1][34]).toStrictEqual({
+    f: 'IF(DAY(AI4)=1,PROPER(TEXT(AI4, "mmmm")&" "&YEAR(AI4)),"")',
+    t: 'n',
+    z: 'mm',
+    s: {
+      alignment: { horizontal: 'center' },
+      fill: { fgColor: { rgb: '0a78a4' } }
+    }
+  })
+  expect(aoa[1][35]).toStrictEqual({
+    f: 'IF(DAY(AJ4)=1,PROPER(TEXT(AJ4, "mmmm")&" "&YEAR(AJ4)),"")',
+    t: 'n',
+    z: 'mm',
+    s: {
+      alignment: { horizontal: 'center' },
+      fill: { fgColor: { rgb: '0da0db' } }
+    }
+  })
+  expect(aoa[2][265]).toBeUndefined()
+
+  expect(aoa[2].length).toBe(265)
+  expect(aoa[2][3]).toBe('Week')
+  expect(aoa[2][4]).toStrictEqual({
+    f: 'WEEKNUM(E4)',
+    t: 'n',
+    s: {
+      alignment: { horizontal: 'center' },
+      fill: { fgColor: { rgb: '9ac4d5' } }
+    }
+  })
+  expect(aoa[2][5]).toStrictEqual({
+    f: 'IF(WEEKDAY(F4)=2,WEEKNUM(F4),"")',
+    t: 'n',
+    s: {
+      alignment: { horizontal: 'center' },
+      fill: { fgColor: { rgb: '9ac4d5' } }
+    }
+  })
+  expect(aoa[2][9]).toStrictEqual({
+    f: 'IF(WEEKDAY(J4)=2,WEEKNUM(J4),"")',
+    t: 'n',
+    s: {
+      alignment: { horizontal: 'center' },
+      fill: { fgColor: { rgb: '9ac4d5' } }
+    }
+  })
+  expect(aoa[2][10]).toStrictEqual({
+    f: 'IF(WEEKDAY(K4)=2,WEEKNUM(K4),"")',
+    t: 'n',
+    s: {
+      alignment: { horizontal: 'center' },
+      fill: { fgColor: { rgb: 'b0e0f3' } }
+    }
+  })
+  expect(aoa[2][265]).toBeUndefined()
+
+  expect(aoa[3].length).toBe(265)
+  expect(aoa[3][3]).toBe('Day')
+  expect(aoa[3][4]).toStrictEqual({ t: 'd', v: new Date('2024-01-29T23:00:00.000Z'), z: 'D' })
+  expect(aoa[3][35]).toStrictEqual({ t: 'd', v: new Date('2024-02-29T23:00:00.000Z'), z: 'D' })
+  expect(aoa[3][264]).toStrictEqual({ t: 'd', v: new Date('2024-10-15T22:00:00.000Z'), z: 'D' })
+  expect(aoa[3][265]).toBeUndefined()
+
+  // The data is valid, now test formating the worksheet with that data
+  const worksheet = app.formatWorksheet(aoa)
+  // COlumn width
+  expect(worksheet['!cols'].length).toBe(265)
+  for (let column = 0; column < 4; column++) {
+    expect(worksheet['!cols'][column]).toBeUndefined()
+  }
+  for (let column = 4; column < 265; column++) {
+    expect(worksheet['!cols'][column]).toStrictEqual({ wch: 2.22 })
+  }
+  expect(worksheet['!cols'][265]).toBeUndefined()
+  // Merged cells
+  expect(worksheet['!merges'].length).toBe(48)
+  // Months
+  expect(worksheet['!merges'][0]).toStrictEqual({ s: { c: 4, r: 1 }, e: { c: 5, r: 1 } })
+  expect(worksheet['!merges'][1]).toStrictEqual({ s: { c: 6, r: 1 }, e: { c: 34, r: 1 } })
+  expect(worksheet['!merges'][9]).toStrictEqual({ s: { c: 249, r: 1 }, e: { c: 264, r: 1 } })
+  // Weeks
+  expect(worksheet['!merges'][10]).toStrictEqual({ s: { c: 4, r: 2 }, e: { c: 9, r: 2 } })
+  expect(worksheet['!merges'][11]).toStrictEqual({ s: { c: 10, r: 2 }, e: { c: 16, r: 2 } })
+  expect(worksheet['!merges'][12]).toStrictEqual({ s: { c: 17, r: 2 }, e: { c: 23, r: 2 } })
+  expect(worksheet['!merges'][47]).toStrictEqual({ s: { c: 262, r: 2 }, e: { c: 264, r: 2 } })
+  expect(worksheet['!merges'][48]).toBeUndefined()
 })

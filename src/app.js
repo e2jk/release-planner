@@ -173,6 +173,30 @@ export function getMondayNWeeksLater (initialDate, nWeeksLater) {
   return formatDate(mondayInNWeeks)
 }
 
+// Returns the ISO week of the date
+// Adapted from https://weeknumber.com/how-to/javascript
+export function getWeek (sourceDate) {
+  const date = new Date(sourceDate.getTime())
+  date.setHours(0, 0, 0, 0)
+  // Thursday in current week decides the year.
+  date.setDate(date.getDate() + 3 - (date.getDay() + 6) % 7)
+  // January 4 is always in week 1.
+  const week1 = new Date(date.getFullYear(), 0, 4)
+  // Adjust to Thursday in week 1 and count number of weeks from date to week1.
+  return 1 + Math.round(((date.getTime() - week1.getTime()) / 86400000 -
+                        3 + (week1.getDay() + 6) % 7) / 7)
+}
+
+// From https://stackoverflow.com/a/16353241
+export function leapYear (year) {
+  return ((year % 4 === 0) && (year % 100 !== 0)) || (year % 400 === 0)
+}
+
+// From https://stackoverflow.com/a/1464716
+export function getDaysInMonth (year, month) {
+  return [31, (leapYear(year) ? 29 : 28), 31, 30, 31, 30, 31, 31, 30, 31, 30, 31][month]
+}
+
 export function initialUISetup () {
   // Dynamically generate the list of versions for the 3 years around today
   const currentYear = new Date().getFullYear()
@@ -922,61 +946,119 @@ export function generateTextualRepresentations () {
 export function getExportDataArray () {
   const versionName = getVersionName()
   const upgradeStartDate = new Date(ui.startDateInput.upgrade.value)
+  // No UTC-shifted times when extracting to Excel
+  upgradeStartDate.setHours(0, 0, 0, 0)
   const startPlanning = dateAddNDays(upgradeStartDate, -5)
   const upgradeEndDate = new Date(ui.endDateInput.upgrade.value)
+  upgradeEndDate.setHours(0, 0, 0, 0)
   const endPlanning = dateAddNDays(upgradeEndDate, 20)
-  console.log(startPlanning, endPlanning)
 
   const diffTime = Math.abs(endPlanning - startPlanning)
   const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24))
-  console.log(diffDays + ' days')
-
-  // const dateArray = {}
-  // const dateRow = [,,,]
-  // let day
-  // for (let i = 0; i < diffDays; i++) {
-  //   day = dateAddNDays(upgradeStartDate, i)
-  //   // console.log(day);
-  //   dateArray[day.toISOString().substring(0, 10)] = i
-  //   dateRow.push(i)
-  // }
-  // console.log(dateArray);
-  // console.log(dateRow);
 
   const aoa = [
     [null, null, `Upgrade to ${versionName}`],
-    [1, 2, null, null, 5, 6, 7],
-    [2, 3, null, null, 6, 7, 8],
-    [3, 4, null, null, 7, 8, 9],
-    [4, 5, 6, 7, 8, 9, 0]
+    [null, null, null, 'Month'],
+    [null, null, null, 'Week'],
+    [null, null, null, 'Day']
   ]
+
+  let dateCell
+  let dateValue = dateAddNDays(startPlanning, -1)
+  for (let column = 4; column < diffDays; column++) {
+    dateCell = XLSX.utils.encode_cell({ r: 3, c: column })
+    dateValue = dateAddNDays(dateValue, 1)
+    // Month in the 2nd line
+    aoa[1][column] = {
+      t: 'n',
+      z: 'mm',
+      // Only display the month number on the first day of the month
+      f: `IF(DAY(${dateCell})=1,PROPER(TEXT(${dateCell}, "mmmm")&" "&YEAR(${dateCell})),"")`,
+      s: {
+        fill: {
+          fgColor: {
+            rgb: dateValue.getMonth() % 2 === 0 ? '0da0db' : '0a78a4'
+          }
+        },
+        alignment: {
+          horizontal: 'center'
+        }
+      }
+    }
+    // Week number in 3rd line
+    aoa[2][column] = {
+      t: 'n',
+      // Only display the week number on Mondays
+      f: `IF(WEEKDAY(${dateCell})=2,WEEKNUM(${dateCell}),"")`,
+      s: {
+        fill: {
+          fgColor: {
+            rgb: getWeek(dateValue) % 2 === 0 ? 'b0e0f3' : '9ac4d5'
+          }
+        },
+        alignment: {
+          horizontal: 'center'
+        }
+      }
+    }
+    // Day in 4th line
+    aoa[3][column] = { t: 'd', v: dateValue, z: 'D' }
+  }
+  // Hardcode the first columns' values
+  dateCell = XLSX.utils.encode_cell({ r: 3, c: 4 })
+  aoa[1][4].f = `PROPER(TEXT(${dateCell}, "mmmm")&" "&YEAR(${dateCell}))`
+  aoa[2][4].f = `WEEKNUM(${dateCell})`
+  aoa[3][4] = { t: 'd', v: startPlanning, z: 'D' }
+
   return aoa
+}
+
+export function formatWorksheet (aoa) {
+  const worksheet = XLSX.utils.aoa_to_sheet(aoa)
+
+  // Change Column Widths
+  if (!worksheet['!cols']) worksheet['!cols'] = []
+  const numColumns = aoa[2].length
+  for (let column = 4; column < numColumns; column++) {
+    if (!worksheet['!cols'][column]) worksheet['!cols'][column] = { wch: 2.22 }
+  }
+
+  // Merge Months and weeks
+  if (!worksheet['!merges']) worksheet['!merges'] = []
+  // Months
+  let day
+  let endColumn
+  for (let column = 4; column < numColumns; column++) {
+    day = aoa[3][column].v
+    endColumn = column + getDaysInMonth(day.getFullYear(), day.getMonth()) - day.getDate()
+    endColumn = Math.min(endColumn, numColumns - 1)
+    worksheet['!merges'].push({ s: { c: column, r: 1 }, e: { c: endColumn, r: 1 } })
+    column = endColumn
+  }
+  // Weeks
+  for (let column = 4; column < numColumns; column++) {
+    day = aoa[3][column].v
+    endColumn = column + 7 - day.getDay()
+    endColumn = Math.min(endColumn, numColumns - 1)
+    worksheet['!merges'].push({ s: { c: column, r: 2 }, e: { c: endColumn, r: 2 } })
+    column = endColumn
+  }
+
+  return worksheet
 }
 
 export function exportToExcel () {
   // Create data representation
-  const aoa = getExportDataArray()
-  console.log(aoa)
+  const aoa = app.getExportDataArray()
 
   // Create a Workbook
-  // const worksheet = XLSX.utils.json_to_sheet(rows);
-  const worksheet = XLSX.utils.aoa_to_sheet(aoa)
+  const worksheet = app.formatWorksheet(aoa)
   const workbook = XLSX.utils.book_new()
   XLSX.utils.book_append_sheet(workbook, worksheet, 'Dates')
 
-  // Clean up Workbook
-  // Change Header Names
-  // XLSX.utils.sheet_add_aoa(worksheet, [["Name", "Birthday"]], { origin: "A1" });
-  // Change Column Widths
-  // const max_width_name = rows.reduce((w, r) => Math.max(w, r.name.length), 10);
-  // const max_width_dob = rows.reduce((w, r) => Math.max(w, r.birthday.length), 10);
-  // console.log(max_width_name, max_width_dob);
-  // worksheet["!cols"] = [ { wch: max_width_name }, { wch: max_width_dob } ];
-
   // Export the file
-  const versionName = getVersionName()
+  const versionName = app.getVersionName()
   XLSX.writeFile(workbook, `Upgrade - ${versionName}.xlsx`, { compression: true })
-  console.log('done!')
 }
 
 export function startUp () {
